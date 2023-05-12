@@ -1,28 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
-  String firstName;
-  String lastName;
+  String? firstName;
+  String? lastName;
   String? email;
-  String uid;
-  String pesel;
-
+  String? uid;
+  String? pesel;
+  String? accesToken;
 
   User({
-    required this.firstName,
-    required this.lastName,
+    this.firstName,
+    this.lastName,
     this.email = "not assigned",
-    required this.uid,
-    required this.pesel,
+    this.uid,
+    this.pesel,
+    this.accesToken,
   });
 
   Map<String, dynamic> toJson() => {
-    "firstName": firstName,
-    "lastName": lastName,
-    "email": email?? "not assigned",
-    "uid": uid,
-    "pesel": pesel,
-  };
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email ?? "not assigned",
+        "uid": uid,
+        "pesel": pesel,
+        "accesToken": accesToken ?? "-"
+      };
 
   static User fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -32,6 +34,7 @@ class User {
       email: snapshot['email'],
       uid: snapshot['uid'],
       pesel: snapshot['pesel'],
+      accesToken: snapshot['accesToken']
     );
   }
 }

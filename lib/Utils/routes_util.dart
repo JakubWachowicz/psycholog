@@ -3,6 +3,7 @@
 import 'package:get/get.dart';
 import 'package:jw_projekt/view/screens/chat_screen.dart';
 
+import '../model/chat.dart';
 import '../view/screens/auth/login_screen.dart';
 import '../view/screens/auth/signup_screen.dart';
 import '../view/screens/home_screen.dart';
@@ -17,13 +18,15 @@ class RoutesUtil{
 
 
   static String temp = "l";
+  static late Chat chat;
 
   static String getHomeRoute()=>_home;
   static String getLoginRoute()=>_login;
   static String getSignupRoute()=>_signup;
   static String getConfirmVideo()=>_confirm;
-  static String getChat(String username) {
-    temp = username;
+  static String getChat(String chatId,Chat newChat) {
+    temp = chatId;
+    chat = newChat;
     return _chat;
   }
 
@@ -33,6 +36,6 @@ class RoutesUtil{
     GetPage(name: _home, page: ()=>HomeScreen()),
     GetPage(name: _login, page: ()=>LoginScreen()),
     GetPage(name: _signup, page: ()=>SignUpScreen()),
-    GetPage(name: _chat, page: ()=>ChatScreen(userName: temp)),
+    GetPage(name: _chat, page: ()=>ChatScreen(userName: temp,chat: chat,)),
   ];
 }

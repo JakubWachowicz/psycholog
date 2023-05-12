@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:jw_projekt/Utils/color_util.dart';
-import 'package:jw_projekt/view/screens/chat_menu.dart';
+
 
 import '../controller/auth_controller.dart';
 import '../view/screens/chat_screen.dart';
@@ -36,7 +36,7 @@ const textColor = Colors.green;
 //final buttonColor = '#ffcc00'.toColor();
 //final buttonColor = '#ff5500'.toColor();
 //final buttonColor ='#f7d5e1'.toColor();
-final buttonColor = Colors.black;
+const buttonColor = Colors.green;
 final borderColor = Colors.black54;
 final borderFocusedColor = Colors.green;
 
@@ -44,8 +44,8 @@ final borderFocusedColor = Colors.green;
 
 String lol = "Test person";
 var pages = [
-  ChatMenu(),
-  ChatScreen(userName: lol,),
+
+  Text("2"),
   Text("3"),
 
 ];

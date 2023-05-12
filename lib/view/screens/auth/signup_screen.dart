@@ -102,13 +102,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: InkWell(
                     onTap: () async {
                       Future<bool> ret = authcontroller.registerUser(_userNameController.text,'test',
-                          _emailController.text, _passwordController.text,'test');
+                          _emailController.text, _passwordController.text,'test',"lol");
                       await ret?Get.toNamed(RoutesUtil.getLoginRoute()):null;
                     },
                     child: const Center(
                         child: Text(
                           'register',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700,color: Colors.white),
                         ))),
               ),
               const SizedBox(
@@ -119,7 +119,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     print('sing');
                     Get.toNamed(RoutesUtil.getLoginRoute());
                   },
-                  child: Text('Already have an account?',style: TextStyle(color: textColor,fontWeight: FontWeight.w600),))
+                  child: Text('Already have an account?',style: TextStyle(color: buttonColor,fontWeight: FontWeight.w600),))
             ],
           ),
         ));

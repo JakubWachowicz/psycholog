@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jw_projekt/common/services/storage.dart';
+import 'package:jw_projekt/common/stores/config.dart';
+import 'package:jw_projekt/common/stores/user.dart';
+import 'package:jw_projekt/pages/welcome/controller.dart';
 import 'package:jw_projekt/view/screens/auth/login_screen.dart';
 
 import 'Utils/constants.dart';
@@ -8,12 +12,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'common/routes/pages.dart';
 import 'controller/auth_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+  await Get.putAsync<StorageService>(() => StorageService().init());
+  Get.put<ConfigStore>(ConfigStore());
+  Get.put(WelcomeController());
+
+  Get.put<UserStore>(UserStore());
   await Firebase.initializeApp().then((value) {
     Get.put(AuthenticationClontroller());
   });
@@ -30,15 +41,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
-    return  GetMaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      initialRoute: RoutesUtil.getLoginRoute(),
-      getPages: RoutesUtil.routes,
-    );
+    return  ScreenUtilInit(builder: (BuildContext context, Widget? child) =>
+
+        GetMaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.light().copyWith(
+            scaffoldBackgroundColor: Colors.white,
+          ),
+          initialRoute: AppPages.INITIAL,
+          getPages: AppPages.routes,
+        )
+      ,);
   }
 }
 

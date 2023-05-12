@@ -4,11 +4,13 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
 import '../../../Utils/routes_util.dart';
+import '../../../model/chat.dart';
 
 class ChatTile extends StatefulWidget {
 
   final String user;
-  const ChatTile({Key? key, required this.user}) : super(key: key);
+  final Chat chatId;
+  const ChatTile({Key? key, required this.user,required this.chatId}) : super(key: key);
 
   @override
   State<ChatTile> createState() => _ChatTileState();
@@ -20,7 +22,7 @@ class _ChatTileState extends State<ChatTile> {
     return InkWell(
       onTap: (){
         print('lol');
-        Get.toNamed(RoutesUtil.getChat(widget.user));
+        Get.toNamed(RoutesUtil.getChat(widget.user,widget.chatId));
 
       },
       child: Container(
