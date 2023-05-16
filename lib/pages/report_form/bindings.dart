@@ -8,7 +8,7 @@ class ReportFormBinding implements Bindings{
 
   @override
   void dependencies() {
-    Get.lazyPut<ReportFormBinding>(()=> ReportFormBinding());
+    Get.lazyPut<ReportFormConroller>(()=> ReportFormConroller());
 
   }
 

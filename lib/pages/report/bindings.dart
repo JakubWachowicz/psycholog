@@ -8,7 +8,7 @@ class ReportBinding implements Bindings{
 
   @override
   void dependencies() {
-    Get.lazyPut<ReportBinding>(()=> ReportBinding());
+    Get.lazyPut<ReportConroller>(()=> ReportConroller());
 
   }
 

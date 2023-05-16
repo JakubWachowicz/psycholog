@@ -8,7 +8,7 @@ class ReportCategoryList extends GetView<ReportConroller> {
   Widget _buildCategory(String goTo, Icon icon) {
     return InkWell(
       onTap: () {
-        controller.goForm(ReportTypes.Custom);
+        controller.goForm(goTo);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -50,16 +50,16 @@ class ReportCategoryList extends GetView<ReportConroller> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildCategory("Test", Icon(Icons.person,)),
-              _buildCategory("Test", Icon(Icons.person)),
+              _buildCategory("Domestic violence", Icon(Icons.person,)),
+              _buildCategory("School violence", Icon(Icons.person)),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildCategory("Test", Icon(Icons.person)),
-              _buildCategory("Test", Icon(Icons.person)),
+              _buildCategory("Problems in school", Icon(Icons.person)),
+              _buildCategory("Others", Icon(Icons.person)),
             ],
           ),
         ],

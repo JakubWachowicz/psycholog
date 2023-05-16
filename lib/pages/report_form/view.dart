@@ -17,12 +17,66 @@ class ReportFormPage extends GetView<ReportFormConroller> {
   Widget build(BuildContext context) {
 
 
+
+    Widget _buildTitleEditor(){
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          controller: controller.reportTitle,
+          maxLines: 1,
+          decoration: InputDecoration(
+            hintText: "Enter report title"
+          ),
+
+        ),
+      );
+    }
     Widget _buildContentEditor(){
-      return TextFormField(controller: controller.reportContent,);
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextFormField(
+          minLines: 3,
+          maxLines: 10,
+          controller: controller.reportContent,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+
+            ),
+            hintText: 'Enter rapport content'
+          ),
+        ),
+      );
+    }
+
+    Widget _buildSubmitButton(){
+      return InkWell(
+        onTap: () => {
+          controller.sendReportToFirebase(controller.reportTitle.text,controller.reportContent.text)
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(10.w)), color: Colors.green,
+          ),
+          width: double.infinity,
+          height: 60.w,
+
+          child: Center(child: Text("Message me",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20.sp),)),
+        ),
+
+      );
     }
 
 
     return Scaffold(
+
+      appBar: AppBar(title: Text( controller.reportType,
+        overflow: TextOverflow.clip,
+        maxLines: 1,),
+        backgroundColor: Colors.green,
+
+      ),
+
         body: Column(
 
           mainAxisAlignment: MainAxisAlignment.center,
@@ -30,7 +84,12 @@ class ReportFormPage extends GetView<ReportFormConroller> {
 
 
         children: [
-          _buildContentEditor()
+          Text('Report Title'),
+          _buildTitleEditor(),
+          Text('Report Content'),
+          _buildContentEditor(),
+          _buildSubmitButton()
+
         ],
       ),
     );

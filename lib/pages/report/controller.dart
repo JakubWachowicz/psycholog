@@ -9,11 +9,6 @@ import 'package:jw_projekt/pages/signin/state.dart';
 import '../../common/routes/routes.dart';
 import '../../controller/auth_controller.dart';
 
-enum ReportTypes{
-  SchoolViolence,
-  DomesticViolence,
-  Custom,
-}
 
 class ReportConroller extends GetxController{
 
@@ -23,8 +18,11 @@ class ReportConroller extends GetxController{
 
 
 
-  goForm(ReportTypes reportType){
-    Get.toNamed("/reportForm");
+  goForm(String reportType){
+    Get.offAndToNamed("/reportForm", parameters: {
+    "reportType": reportType});
+
+
   }
 
 }
