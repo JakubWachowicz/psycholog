@@ -10,11 +10,25 @@ Widget ChatRightItem(Msgcontent item){
     padding: EdgeInsets.only(top:10.w,left: 15.w,right: 15.w,bottom: 10.w),
     child: Column(
       children: [
-        Text(item.sender??"Nie ma"),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+
+                child: Container(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(item.sender??"Nie ma"),
+                    ))),
+          ],
+        ),
         Row(
 
           mainAxisAlignment: MainAxisAlignment.end,
             children: [
+
 
               ConstrainedBox(constraints: BoxConstraints(
                 maxWidth: 230.w,
@@ -40,12 +54,15 @@ Widget ChatRightItem(Msgcontent item){
         ),
         Container(
           alignment: Alignment.topRight,
-          child: Text(
-            duTimeLineFormat(
-              item.addtime!.toDate(),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              duTimeLineFormat(
+                item.addtime!.toDate(),
+              ),
+              overflow: TextOverflow.clip,
+              maxLines: 1,
             ),
-            overflow: TextOverflow.clip,
-            maxLines: 1,
           ),
         )
       ],

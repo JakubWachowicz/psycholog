@@ -41,6 +41,7 @@ class MessageList extends GetView<MessagesConroller> {
            "to_uid":to_uid,
            "to_name":to_name,
            "to_avatar":to_avatar,
+           "from_name": controller.name
          });
 
         },
@@ -92,7 +93,7 @@ class MessageList extends GetView<MessagesConroller> {
                     height: 54.w,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           duTimeLineFormat(
@@ -102,9 +103,18 @@ class MessageList extends GetView<MessagesConroller> {
                           maxLines: 1,
 
                         ),
+                        controller.state.unreadMsgCounter[item.id] != 0? Container(
+
+                            decoration: BoxDecoration(color: Colors.green,borderRadius: BorderRadius.circular(90)),
+
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(controller.state.unreadMsgCounter[item.id].toString()??"erre",style: TextStyle(color: Colors.white),),
+                            )):Text("")
                       ],
                     ),
                   ),
+
                 ],
               ),
             )

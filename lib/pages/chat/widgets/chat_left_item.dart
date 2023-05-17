@@ -10,7 +10,20 @@ Widget ChatLeftItem(Msgcontent item) {
     padding: EdgeInsets.only(top: 10.w, left: 15.w, right: 15.w, bottom: 10.w),
     child: Column(
       children: [
-        Text(item.sender??"Nie ma"),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+
+                child: Container(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(item.sender??"Nie ma"),
+                    ))),
+          ],
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -47,12 +60,15 @@ Widget ChatLeftItem(Msgcontent item) {
         ),
         Container(
           alignment: Alignment.topLeft,
-          child: Text(
-            duTimeLineFormat(
-              item.addtime!.toDate(),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              duTimeLineFormat(
+                item.addtime!.toDate(),
+              ),
+              overflow: TextOverflow.clip,
+              maxLines: 1,
             ),
-            overflow: TextOverflow.clip,
-            maxLines: 1,
           ),
         )
       ],

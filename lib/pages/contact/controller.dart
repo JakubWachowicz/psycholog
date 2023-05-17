@@ -9,6 +9,11 @@ import '../../entities/specialist.dart';
 import '../../entities/user.dart';
 import '../../entities/messages.dart';
 
+
+
+import 'package:firebase_auth/firebase_auth.dart' as authP;
+
+
 class ContactConroller extends GetxController {
   ContactConroller();
 
@@ -24,9 +29,41 @@ class ContactConroller extends GetxController {
     asyncLoadAllData();
   }
 
+
+
+
+
+
+
+  String? getCurrentUserId() {
+    authP.FirebaseAuth auth = authP.FirebaseAuth.instance;
+    String? currentUser = auth.currentUser?.uid;
+    return currentUser;
+  }
+
+  Future<UserData?> fetchCurrentUser() async {
+    var userSnapshot = await db
+        .collection("users")
+        .withConverter(
+      fromFirestore: UserData.fromFirestore,
+      toFirestore: (UserData userData, options) => userData.toFirestore(),
+    )
+        .where("id", isEqualTo: getCurrentUserId())
+        .get();
+
+    if (userSnapshot.docs.isNotEmpty) {
+      return userSnapshot.docs[0].data();
+    }
+
+    return null;
+  }
+
   goChat(UserData to_userdata) async {
 
 
+
+
+    UserData? data = await fetchCurrentUser()!;
     print(to_userdata);
 
     var from_messages = await db
@@ -53,7 +90,7 @@ class ContactConroller extends GetxController {
       var msgdata = Msg(
           from_uid: userdata.accessToken,
           to_uid: to_userdata.id,
-          from_name: userdata.displayName,
+          from_name: data?.name??"Niepowodzenie",
           to_name: to_userdata.name,
           from_avatar: userdata.photoUrl,
           to_avatar: to_userdata.photourl,
@@ -72,6 +109,7 @@ class ContactConroller extends GetxController {
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
+          "from_name": data?.name?? "",
 
         });
       });
@@ -82,6 +120,7 @@ class ContactConroller extends GetxController {
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
+          "from_name": data?.name?? "",
         });
       } else if (to_messages.docs.isNotEmpty) {
         Get.toNamed("/chat", parameters: {
@@ -89,6 +128,7 @@ class ContactConroller extends GetxController {
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
+          "from_name": data?.name?? "",
         });
       }
     }

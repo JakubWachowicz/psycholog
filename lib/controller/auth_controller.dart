@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-import 'package:jw_projekt/model/user.dart' as model;
+
 import 'package:jw_projekt/pages/welcome/index.dart';
 
 import '../Utils/constants.dart';

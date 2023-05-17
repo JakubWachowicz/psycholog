@@ -6,12 +6,12 @@ import 'package:jw_projekt/pages/messages/index.dart';
 
 import '../common/stores/user.dart';
 import '../entities/user.dart';
-import '../model/message.dart';
+
 
 class MessageController extends GetxController{
 
 
-  final Rx<List<Message>> _videoList = Rx<List<Message>>([]);
+
   final db = FirebaseFirestore.instance;
   final token = FirebaseAuth.instance.currentUser!.uid;
   final MessagesState state= MessagesState();
@@ -23,8 +23,8 @@ class MessageController extends GetxController{
   }
 
   Future<void>sendMessage(String receiverId,String text,String chatId)async {
-    Message message = Message(chatId: chatId, senderId: firebaseAuth.currentUser!.uid, text: text, receiverId: receiverId, timestamp: DateTime.now());
-    await firestore.collection('chats').doc(chatId).collection('messages').add(message.toJson());
+
+
   }
 
 

@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-class Msg{
-
-
+class Msg {
   final String? from_uid;
   final String? to_uid;
   final String? from_name;
@@ -13,7 +10,8 @@ class Msg{
   final String? last_msg;
   final Timestamp? last_time;
   final int? msg_num;
-
+  final String? from_lastMessageSeen;
+  final String? to_lastMessageSeen;
 
   Msg({
     this.from_uid,
@@ -25,9 +23,9 @@ class Msg{
     this.last_msg,
     this.last_time,
     this.msg_num,
+    this.from_lastMessageSeen,
+    this.to_lastMessageSeen,
   });
-
-
 
   factory Msg.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -44,6 +42,8 @@ class Msg{
       last_msg: data?['last_msg'],
       last_time: data?['last_time'],
       msg_num: data?['msg_num'],
+      from_lastMessageSeen: data?['from_lastMessageSeen'],
+      to_lastMessageSeen: data?['to_lastMessageSeen'],
     );
   }
 
@@ -58,10 +58,10 @@ class Msg{
       if (last_msg != null) "last_msg": last_msg,
       if (last_time != null) "last_time": last_time,
       if (msg_num != null) "msg_num": msg_num,
+      if (from_lastMessageSeen != null)
+        "from_lastMessageSeen": from_lastMessageSeen,
+      if (to_lastMessageSeen != null)
+        "to_lastMessageSeen": to_lastMessageSeen,
     };
   }
-
 }
-
-
-

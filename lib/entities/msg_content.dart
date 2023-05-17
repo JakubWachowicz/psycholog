@@ -6,15 +6,15 @@ class Msgcontent {
   final String? content;
   final String? type;
   final Timestamp? addtime;
+  final String? isRead;
 
   Msgcontent({
-
-
     this.uid,
     this.sender,
     this.content,
     this.type,
     this.addtime,
+    this.isRead,
   });
 
   factory Msgcontent.fromFirestore(
@@ -28,16 +28,18 @@ class Msgcontent {
       content: data?['content'],
       type: data?['type'],
       addtime: data?['addtime'],
+      isRead: data?['isRead'],
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      if (uid != null) "uid": uid,
-      if (sender != null) "sender": uid,
-      if (content != null) "content": content,
-      if (type != null) "type": type,
-      if (addtime != null) "addtime": addtime,
+      if (uid != null) 'uid': uid,
+      if (sender != null) 'sender': sender,
+      if (content != null) 'content': content,
+      if (type != null) 'type': type,
+      if (addtime != null) 'addtime': addtime,
+      if (isRead != null) 'isRead': isRead,
     };
   }
 }

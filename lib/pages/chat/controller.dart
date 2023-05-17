@@ -24,6 +24,7 @@ class ChatConroller extends GetxController {
   final user_id = UserStore.to.token;
   final db = FirebaseFirestore.instance;
   var listener;
+  late final sender;
 
 
 
@@ -31,11 +32,12 @@ class ChatConroller extends GetxController {
     if( textController.text.trim() == "") return;
     String sendContent = textController.text;
     final content = Msgcontent(
-      sender: UserStore.to.profile.displayName??"null" ,
+      sender: name,
       content: sendContent,
       type: "text",
       addtime: Timestamp.now(),
-      uid: user_id
+      uid: user_id,
+      isRead: "False",
     );
     await db
         .collection("messages")
@@ -58,6 +60,18 @@ class ChatConroller extends GetxController {
     });
   }
 
+
+  void updateIsRead(DocumentReference documentRef, bool isRead) {
+    documentRef.update({'isRead': isRead.toString()})
+        .then((value) {
+      print('isRead updated successfully');
+    })
+        .catchError((error) {
+      print('Failed to update isRead: $error');
+    });
+  }
+
+
   @override
   void onReady() {
     super.onReady();
@@ -70,6 +84,7 @@ class ChatConroller extends GetxController {
             toFirestore: (Msgcontent msgcontent, options) =>
                 msgcontent.toFirestore())
         .orderBy("addtime", descending: false);
+
     state.msgcontentList.clear();
     listener = messages.snapshots().listen(
       (event) {
@@ -78,6 +93,9 @@ class ChatConroller extends GetxController {
             case DocumentChangeType.added:
               if (change.doc.data() != null) {
                 state.msgcontentList.insert((0), change.doc.data()!);
+                if(change.doc.data()?.uid != user_id){
+                  updateIsRead(change.doc.reference, true);
+                }
               }
               break;
             case DocumentChangeType.modified:
@@ -91,6 +109,7 @@ class ChatConroller extends GetxController {
     );
   }
 
+  late final name;
   @override
   void onInit() {
     super.onInit();
@@ -100,6 +119,9 @@ class ChatConroller extends GetxController {
     state.to_uid.value = data['to_uid'] ?? "";
     state.to_name.value = data['to_name'] ?? "";
     state.to_avatar.value = data['to_avatar'] ?? "";
+    name = data['from_name'] ?? "";
+    print("lLAASgas");
+    print(name);
   }
 
   @override

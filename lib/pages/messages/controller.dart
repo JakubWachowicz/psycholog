@@ -4,9 +4,13 @@ import 'package:get/get.dart';
 import 'package:jw_projekt/common/stores/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jw_projekt/pages/messages/state.dart';
+import '../../entities/msg_content.dart';
 import '../../entities/user.dart';
 import '../../entities/messages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import 'package:firebase_auth/firebase_auth.dart' as authP;
+
 class MessagesConroller extends GetxController {
   MessagesConroller();
 
@@ -15,17 +19,43 @@ class MessagesConroller extends GetxController {
   final token = UserStore.to.token;
   var listener;
 
-
   final RefreshController refreshController = RefreshController(
-      initialRefresh:true,
-      );
+    initialRefresh: true,
+  );
+
   @override
   void onReady() {
     super.onReady();
     asyncLoadAllData();
   }
 
+  String? getCurrentUserId() {
+    authP.FirebaseAuth auth = authP.FirebaseAuth.instance;
+    String? currentUser = auth.currentUser?.uid;
+    return currentUser;
+  }
+
+  Future<UserData?> fetchCurrentUser() async {
+    var userSnapshot = await db
+        .collection("users")
+        .withConverter(
+          fromFirestore: UserData.fromFirestore,
+          toFirestore: (UserData userData, options) => userData.toFirestore(),
+        )
+        .where("id", isEqualTo: getCurrentUserId())
+        .get();
+
+    if (userSnapshot.docs.isNotEmpty) {
+      return userSnapshot.docs[0].data();
+    }
+
+    return null;
+  }
+
   goChat(UserData to_userdata) async {
+    UserData? data = await fetchCurrentUser()!;
+    print(to_userdata);
+
     var from_messages = await db
         .collection("messages")
         .withConverter(
@@ -40,7 +70,8 @@ class MessagesConroller extends GetxController {
         .withConverter(
             fromFirestore: Msg.fromFirestore,
             toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("from_uid", isEqualTo:to_userdata.id).where("to_uid",isEqualTo: token )
+        .where("from_uid", isEqualTo: to_userdata.id)
+        .where("to_uid", isEqualTo: token)
         .get();
 
     if (from_messages.docs.isEmpty && to_messages.docs.isEmpty) {
@@ -50,7 +81,7 @@ class MessagesConroller extends GetxController {
       var msgdata = Msg(
           from_uid: userdata.accessToken,
           to_uid: to_userdata.id,
-          from_name: userdata.displayName,
+          from_name: data?.name ?? "Niepowodzenie",
           to_name: to_userdata.name,
           from_avatar: userdata.photoUrl,
           to_avatar: to_userdata.photourl,
@@ -69,7 +100,7 @@ class MessagesConroller extends GetxController {
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
-
+          "from_name": data?.name ?? "",
         });
       });
     } else {
@@ -79,6 +110,7 @@ class MessagesConroller extends GetxController {
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
+          "from_name": data?.name ?? "",
         });
       } else if (to_messages.docs.isNotEmpty) {
         Get.toNamed("/chat", parameters: {
@@ -86,15 +118,26 @@ class MessagesConroller extends GetxController {
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
+          "from_name": data?.name ?? "",
         });
       }
     }
   }
 
+  late final name;
+
+  @override
+  void onInit() async {
+    // TODO: implement onInit
+    super.onInit();
+    UserData? data = await fetchCurrentUser();
+    name = data?.name;
+  }
+
   void onRefresh() {
     asyncLoadAllData().then((_) {
       refreshController.refreshCompleted(resetFooterState: true);
-    }).catchError((_){
+    }).catchError((_) {
       refreshController.refreshFailed();
     });
   }
@@ -102,13 +145,25 @@ class MessagesConroller extends GetxController {
   void onLoading() {
     asyncLoadAllData().then((_) {
       refreshController.refreshCompleted(resetFooterState: true);
-    }).catchError((_){
+    }).catchError((_) {
       refreshController.refreshFailed();
     });
   }
 
+  Future<int> getUnreadMessageCount(String docId) async {
+    var from_messages = await db
+        .collection("messages")
+        .doc(docId)
+        .collection("msglist")
+        .withConverter(
+            fromFirestore: Msgcontent.fromFirestore,
+            toFirestore: (Msgcontent msg, options) => msg.toFirestore())
+        .where("uid", isNotEqualTo: token)
+        .where("isRead", isEqualTo: "True")
+        .get();
 
-
+    return from_messages.docs.length;
+  }
 
   asyncLoadAllData() async {
     var from_messages = await db
@@ -126,12 +181,35 @@ class MessagesConroller extends GetxController {
         .where("to_uid", isEqualTo: token)
         .get();
     state.messageList.clear();
+
+    for (var msg in from_messages.docs) {
+      final unreadCount = await getUnreadMessageCount(msg.id);
+      state.unreadMsgCounter[msg.id] = unreadCount;
+      print(unreadCount);
+      print("Toje saa");
+      print(state.unreadMsgCounter[msg.id]);
+      print("Toje poo");
+    }
+
+    for (var msg in to_messages.docs) {
+      final unreadCount = await getUnreadMessageCount(msg.id);
+      state.unreadMsgCounter[msg.id] = unreadCount;
+      print(unreadCount);
+    }
+
     if (from_messages.docs.isNotEmpty) {
       state.messageList.assignAll(from_messages.docs);
     }
     if (to_messages.docs.isNotEmpty) {
       state.messageList.assignAll(to_messages.docs);
     }
+    state.messageList.sort((a, b) {
+      final aTime = a.data().last_time;
+
+      final bTime = b.data().last_time;
+
+      return bTime!.compareTo(aTime!);
+    });
   }
 
 /*asyncLoadAllData() async {

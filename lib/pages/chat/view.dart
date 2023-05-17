@@ -112,11 +112,14 @@ class ChatPage extends GetView<ChatConroller> {
         child: Stack(
           children: [
 
-            ChatList(),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: ChatList(),
+            ),
 
               Positioned(
                 bottom:  0.h,
-                height: 50.h,
+
 
                   child: Container(
 
@@ -127,13 +130,15 @@ class ChatPage extends GetView<ChatConroller> {
                       children: [
 
                         //Text input field
-                        Container(
-                          width: 360.w,
-                          height: 50.w,
-                          child: TextField(
+                        SizedBox(
 
+                          width: 360.w,
+                          height:  80.w,
+                          child: TextField(
+                            expands: true,
                             keyboardType: TextInputType.multiline,
-                            maxLines: 3,
+
+                            maxLines: null,
                             controller: controller.textController,
                             autofocus: false,
                             focusNode: controller.contentNode,
