@@ -8,6 +8,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../common/routes/routes.dart';
 import '../../controller/auth_controller.dart';
+import '../../controller/db_data_controller.dart';
+import '../../entities/user.dart';
+
+
 
 class LoginConroller extends GetxController{
 
@@ -21,12 +25,15 @@ class LoginConroller extends GetxController{
 
   final db = FirebaseFirestore.instance;
 
+  final dbDataController = DbDataController();
+
   bool get isEmailValid => true;
 
   bool get isPasswordValid => true;
+  final token = UserStore.to.token;
 
   void validateTextFields(String login, String password){
-
+    
     if(login.length == ""){
       state.emailErrorMessage = Rx<String>("Enter email");
     }
@@ -38,11 +45,26 @@ class LoginConroller extends GetxController{
 
   }
 
+  
   Future<void> handleLogin() async{
       bool isValid = await auth.loginUser(emailController.text, passwordController.text);
 
       if(isValid){
-        Get.offAndToNamed(AppRoutes.Application);
+
+        UserData? user =await dbDataController.fetchCurrentUser();
+        if(user?.role == 'admin'){
+          UserStore.to.setRole('admin');
+          Get.offAndToNamed(AppRoutes.AdminApplication);
+        }
+        else if(user?.role == 'specialist'){
+          UserStore.to.setRole('specialist');
+          Get.offAndToNamed(AppRoutes.SpecialistApplication);
+        }
+        else{
+          UserStore.to.setRole('student');
+          Get.offAndToNamed(AppRoutes.Application);
+        }
+
       }
       else{
         print("lol");

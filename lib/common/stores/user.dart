@@ -13,6 +13,7 @@ class UserStore extends GetxController {
   final _isLogin = false.obs;
 
   String token = '';
+  String role = '';
 
   final _profile = UserLoginResponseEntity().obs;
 
@@ -24,6 +25,8 @@ class UserStore extends GetxController {
   void onInit() {
     super.onInit();
     token = StorageService.to.getString(STORAGE_USER_TOKEN_KEY);
+    role = StorageService.to.getString(STORAGE_USER_ROLE_KEY);
+
     var profileOffline = StorageService.to.getString(STORAGE_USER_PROFILE_KEY);
     if (profileOffline.isNotEmpty) {
       _isLogin.value = true;
@@ -37,6 +40,10 @@ class UserStore extends GetxController {
     token = value;
   }
 
+  Future<void> setRole(String value) async {
+    await StorageService.to.setString(STORAGE_USER_ROLE_KEY, value);
+    role = value;
+  }
 
   Future<String> getProfile() async {
     if (token.isEmpty) return "";
@@ -59,5 +66,6 @@ class UserStore extends GetxController {
     await StorageService.to.remove(STORAGE_USER_PROFILE_KEY);
     _isLogin.value = false;
     token = '';
+    role = '';
   }
 }

@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:jw_projekt/common/routes/routes.dart';
-import 'package:jw_projekt/pages/messages/bindings.dart';
-
-import '../../pages/application/bindings.dart';
-import '../../pages/application/view.dart';
-import '../../pages/chat/bindings.dart';
-import '../../pages/chat/view.dart';
+import 'package:jw_projekt/pages/specialist/specialist_application/view.dart';
+import '../../pages/admin/admin_application/index.dart';
 import '../../pages/login/bindings.dart';
 import '../../pages/login/view.dart';
-import '../../pages/messages/view.dart';
-import '../../pages/report_form/index.dart';
+import '../../pages/specialist/specialist_application/bindings.dart';
+import '../../pages/student/application/index.dart';
+import '../../pages/student/chat/index.dart';
+import '../../pages/student/messages/index.dart';
+import '../../pages/student/report_form/index.dart';
 import '../../pages/welcome/index.dart';
 import '../middlewares/router_welcome.dart';
 
@@ -40,6 +39,17 @@ class AppPages{
       name: AppRoutes.Application,
       page:() => ApplicationPage(),
       binding: ApplicationBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.AdminApplication,
+      page:() => AdminApplicationPage(),
+      binding: AdminApplicationBinding(),
+    ),
+
+    GetPage(
+      name: AppRoutes.SpecialistApplication,
+      page:() => SpecialistApplicationPage(),
+      binding: SpecialistApplicationBinding(),
     ),
     GetPage(
       name: AppRoutes.Messages,
