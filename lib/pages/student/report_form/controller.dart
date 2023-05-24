@@ -25,6 +25,11 @@ class ReportFormConroller extends GetxController{
   }
 
   Future<void> sendReportToFirebase(String title, String content) async {
+
+    if(title.trim().isEmpty || content.trim().isEmpty){
+      Get.snackbar("Error", "Enter all fields");
+      return null;
+    }
     try {
       await FirebaseFirestore.instance.collection('reports').add({
         'reportId':generateReportId(),

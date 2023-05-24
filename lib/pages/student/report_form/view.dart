@@ -87,6 +87,7 @@ class ReportFormPage extends GetView<ReportFormConroller> {
                        fontWeight: FontWeight.bold)),
                  ),
                  _buildContentEditor(),
+                 SizedBox(height: 30.w,),
                  _buildSubmitButton()
 
                ],
