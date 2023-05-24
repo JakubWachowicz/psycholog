@@ -6,6 +6,8 @@ import '../../pages/admin/admin_application/index.dart';
 import '../../pages/login/bindings.dart';
 import '../../pages/login/view.dart';
 import '../../pages/specialist/specialist_application/bindings.dart';
+import '../../pages/specialist/specialist_chat/index.dart';
+import '../../pages/specialist/specialist_report_menagment/index.dart';
 import '../../pages/student/application/index.dart';
 import '../../pages/student/chat/index.dart';
 import '../../pages/student/messages/index.dart';
@@ -62,11 +64,22 @@ class AppPages{
       page:() => ChatPage(),
       binding: ChatBinding(),
     ),
+    GetPage(
+      name: AppRoutes.SpecialistChat,
+      page:() => SpecialistChatPage(),
+      binding: SpecialistChatBinding(),
+    ),
 
     GetPage(
       name: AppRoutes.ReportForm,
       page:() => ReportFormPage(),
       binding: ReportFormBinding(),
+    ),
+
+    GetPage(
+      name: AppRoutes.SpecialistReportMenagment,
+      page:() => SpecialistReportsMenagmentPage(),
+      binding: SpecialistReportMenagmentBinding(),
     )
 
 

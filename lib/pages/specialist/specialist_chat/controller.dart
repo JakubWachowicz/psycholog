@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:jw_projekt/common/stores/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jw_projekt/pages/specialist/specialist_chat/state.dart';
 import 'package:jw_projekt/pages/student/chat/state.dart';
 
 import '../../../common/routes/routes.dart';
@@ -11,11 +12,11 @@ import '../../../entities/msg_content.dart';
 
 
 
-class ChatConroller extends GetxController {
+class SpecialistChatConroller extends GetxController {
   AuthenticationClontroller auth = AuthenticationClontroller();
-  final state = ChatState();
+  final state = SpecialistChatState();
 
-  ChatConroller();
+  SpecialistChatConroller();
 
   var doc_id = null;
   final textController = TextEditingController();
@@ -61,9 +62,13 @@ class ChatConroller extends GetxController {
   }
 
 
+
+
   void updateIsRead(DocumentReference documentRef, bool isRead) {
 
-    if(Get.currentRoute.contains(AppRoutes.Chat)){
+    print("________________________________");
+    print(Get.currentRoute);
+    if(Get.currentRoute.contains(AppRoutes.SpecialistChat)){
       documentRef.update({'isRead': isRead.toString()})
           .then((value) {
         print('isRead updated successfully');
@@ -71,6 +76,7 @@ class ChatConroller extends GetxController {
           .catchError((error) {
         print('Failed to update isRead: $error');
       });
+
     }
 
   }
@@ -96,12 +102,9 @@ class ChatConroller extends GetxController {
           switch (change.type) {
             case DocumentChangeType.added:
               if (change.doc.data() != null) {
-                print('Zmiana');
                 state.msgcontentList.insert((0), change.doc.data()!);
                 if(change.doc.data()?.uid != user_id){
-                  print('Ważne info');
-                  print(change.doc.data()?.uid );
-                  print(user_id);
+                  print('Tutaj trzeba się zatrzymać');
                   updateIsRead(change.doc.reference, true);
                 }
               }
@@ -143,8 +146,6 @@ class ChatConroller extends GetxController {
       name =  data['from_name'];
       topName = state.to_name.value;
     }
-    print("lLAASgas");
-    print(name);
   }
 
   @override

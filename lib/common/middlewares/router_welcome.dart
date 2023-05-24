@@ -32,7 +32,7 @@ class RouteWelcomeMiddleware extends GetMiddleware{
           return const RouteSettings(name:AppRoutes.AdminApplication);
         }
         else if (UserStore.to.role == "specialist"){
-          Get.offAndToNamed(AppRoutes.SpecialistApplication);
+          return RouteSettings(name:AppRoutes.SpecialistApplication);
         }
         else{
           return const RouteSettings(name:AppRoutes.Application);

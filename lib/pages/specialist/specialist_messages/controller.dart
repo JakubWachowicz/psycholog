@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:jw_projekt/common/routes/routes.dart';
 import 'package:jw_projekt/common/stores/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as authP;
@@ -12,10 +14,10 @@ import '../../../entities/msg_content.dart';
 import '../../../entities/user.dart';
 import 'index.dart';
 
-class MessagesConroller extends GetxController {
-  MessagesConroller();
+class SpecialistMessagesConroller extends GetxController {
+  SpecialistMessagesConroller();
 
-  final MessagesState state = MessagesState();
+  final SpecialistMessagesState state = SpecialistMessagesState();
   final db = FirebaseFirestore.instance;
   final token = UserStore.to.token;
   var listener;
@@ -97,7 +99,7 @@ class MessagesConroller extends GetxController {
               toFirestore: (Msg msg, options) => msg.toFirestore())
           .add(msgdata)
           .then((value) {
-        Get.toNamed("/chat", parameters: {
+        Get.toNamed(AppRoutes.SpecialistChat, parameters: {
           "doc_id": value.id,
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
@@ -107,7 +109,7 @@ class MessagesConroller extends GetxController {
       });
     } else {
       if (from_messages.docs.isNotEmpty) {
-        Get.toNamed("/chat", parameters: {
+        Get.toNamed(AppRoutes.SpecialistChat, parameters: {
           "doc_id": from_messages.docs.first.id,
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
@@ -115,7 +117,7 @@ class MessagesConroller extends GetxController {
           "from_name": data?.name ?? "",
         });
       } else if (to_messages.docs.isNotEmpty) {
-        Get.toNamed("/chat", parameters: {
+        Get.toNamed(AppRoutes.SpecialistChat, parameters: {
           "doc_id": to_messages.docs.first.id,
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
@@ -163,9 +165,31 @@ class MessagesConroller extends GetxController {
         .where("uid", isNotEqualTo: token)
         .where("isRead", isEqualTo: "False")
         .get();
-    print('Liczba');
-    print(from_messages.docs.length);
+
     return from_messages.docs.length;
+  }
+
+  void sortMessages(SortType sortType) {
+    print("rozpoczęto sortowanie");
+    print(sortType);
+    switch (sortType) {
+      case SortType.timestamp:
+        state.messageList.sort((a, b) {
+          final aTime = a.data().last_time;
+          final bTime = b.data().last_time;
+          return bTime!.compareTo(aTime!);
+        });
+        print('Posortowano po dacie');
+        break;
+      case SortType.alphabetical:
+        state.messageList.sort((a, b) {
+          final aTime = a.data().from_name;
+          final bTime = b.data().from_name;
+          return aTime!.compareTo(bTime!);
+        });
+        print("Posortowano po nazwie");
+        break;
+    }
   }
 
   asyncLoadAllData() async {

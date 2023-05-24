@@ -1,6 +1,7 @@
 import 'package:jw_projekt/Utils/constants.dart';
 
 import 'package:jw_projekt/pages/login/controller.dart';
+import 'package:jw_projekt/pages/specialist/specialist_chat/widgets/chat_list.dart';
 import 'package:jw_projekt/pages/student/chat/widgets/chat_list.dart';
 import 'package:jw_projekt/pages/welcome/controller.dart';
 import 'package:get/get.dart';
@@ -12,8 +13,8 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class ChatPage extends GetView<ChatConroller> {
-  const ChatPage({Key? key}) : super(key: key);
+class SpecialistChatPage extends GetView<SpecialistChatConroller> {
+  const SpecialistChatPage({Key? key}) : super(key: key);
 
 
 
@@ -21,7 +22,7 @@ class ChatPage extends GetView<ChatConroller> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text( controller.topName,
+      appBar: AppBar(title: Text( controller.name,
         overflow: TextOverflow.clip,
         maxLines: 1,),
         backgroundColor: Colors.green,
@@ -34,7 +35,7 @@ class ChatPage extends GetView<ChatConroller> {
 
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: ChatList(),
+              child: SpecialistChatList(),
             ),
 
               Positioned(

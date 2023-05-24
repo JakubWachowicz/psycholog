@@ -5,7 +5,7 @@ import 'index.dart';
 
 class SpecialistApplicationConroller extends GetxController{
 
-  final state = ApplicationState();
+  final state = SpecialistApplicationState();
   SpecialistApplicationConroller();
 
   late final List<String> tabTitles;

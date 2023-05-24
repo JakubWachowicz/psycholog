@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../common/routes/routes.dart';
 import 'index.dart';
+import 'package:uuid/uuid.dart';
 
 class ReportFormConroller extends GetxController{
 
@@ -18,9 +19,15 @@ class ReportFormConroller extends GetxController{
   final user_id = UserStore.to.token;
 
   late final reportType;
+  String generateReportId() {
+    final uuid = Uuid();
+    return uuid.v4();
+  }
+
   Future<void> sendReportToFirebase(String title, String content) async {
     try {
       await FirebaseFirestore.instance.collection('reports').add({
+        'reportId':generateReportId(),
         'title': title,
         'reportType': reportType,
         'content': content,

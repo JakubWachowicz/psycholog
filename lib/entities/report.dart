@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Report {
+  final String? reportId; // New property: reportId
   final String? title;
   final String? content;
   final String? status;
@@ -11,6 +12,7 @@ class Report {
   final Timestamp? timestamp;
 
   Report({
+    this.reportId, // New parameter: reportId
     this.title,
     this.content,
     this.status,
@@ -27,6 +29,7 @@ class Report {
       ) {
     final data = snapshot.data();
     return Report(
+      reportId: data?['reportId'], // Assign reportId from the document id
       title: data?['title'],
       content: data?['content'],
       status: data?['status'],
@@ -41,6 +44,7 @@ class Report {
   Map<String, dynamic> toFirestore() {
     return {
       if (title != null) 'title': title,
+      if (reportId != null) 'reportId': reportId,
       if (content != null) 'content': content,
       if (status != null) 'status': status,
       if (studentId != null) 'studentId': studentId,

@@ -1,9 +1,12 @@
  import 'package:jw_projekt/Utils/constants.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:jw_projekt/pages/specialist/specialist_reports/index.dart';
 
+import '../../admin/admin_settings/index.dart';
 import '../../signin/view.dart';
 
+import '../specialist_messages/index.dart';
 import 'index.dart';
 
 class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> {
@@ -17,6 +20,10 @@ class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> 
         controller: controller.pageController,
         onPageChanged: controller.handlePageChanged,
         children: [
+          SpecialistMessagePage(),
+          AdminSettingsPage(),
+          SpecialistReportsPage(),
+          Center(child: Text('Test'),),
 
         ],
       );
