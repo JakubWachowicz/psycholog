@@ -70,6 +70,7 @@ class MessageList extends GetView<MessagesConroller> {
 
                           item.data().from_uid == controller.token?item.data().to_name??"Student":item.data().from_name??"Student",
                           overflow: TextOverflow.clip,
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18.sp),
                           maxLines: 1,
 
                         ),

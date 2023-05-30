@@ -6,4 +6,6 @@ class ReportState{
 
   final List<String> roles = <String>["student","specialist","admin"];
 
+  var index = 0.obs;
+
 }

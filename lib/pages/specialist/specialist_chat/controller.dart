@@ -33,7 +33,7 @@ class SpecialistChatConroller extends GetxController {
     if( textController.text.trim() == "") return;
     String sendContent = textController.text;
     final content = Msgcontent(
-      sender: name,
+      sender: topName,
       content: sendContent,
       type: "text",
       addtime: Timestamp.now(),
@@ -136,16 +136,9 @@ class SpecialistChatConroller extends GetxController {
     state.to_uid.value = data['to_uid'] ?? "";
     state.to_name.value = data['to_name'] ?? "";
     state.to_avatar.value = data['to_avatar'] ?? "";
-    //name = data['from_name'] ?? "";
+    name = state.to_name.value;
+    topName = data['from_name']?? "MAmy errora w tym miejscu";
 
-    if(state.to_uid.value == user_id){
-      name = state.to_name.value;
-      topName =data['from_name'];
-    }
-    else{
-      name =  data['from_name'];
-      topName = state.to_name.value;
-    }
   }
 
   @override

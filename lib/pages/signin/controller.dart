@@ -54,6 +54,7 @@ class SigninConroller extends GetxController{
     try{
       Get.offAndToNamed(AppRoutes.Login);
       UserStore.to.onLogout();
+
     }
     catch(e){
 

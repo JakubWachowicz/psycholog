@@ -1,5 +1,6 @@
 
 import 'package:get/get.dart';
+import 'package:jw_projekt/pages/student/your_reports/index.dart';
 
 
 import '../../signin/controller.dart';
@@ -17,6 +18,7 @@ class ApplicationBinding implements Bindings{
     Get.lazyPut<ContactConroller>(()=>ContactConroller());
     Get.lazyPut<SigninConroller>(()=>SigninConroller());
     Get.lazyPut<ReportConroller>(()=>ReportConroller());
+    Get.lazyPut<YourReportsConroller>(()=> YourReportsConroller());
 
   }
 

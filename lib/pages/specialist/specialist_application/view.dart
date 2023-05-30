@@ -21,9 +21,11 @@ class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> 
         onPageChanged: controller.handlePageChanged,
         children: [
           SpecialistMessagePage(),
-          AdminSettingsPage(),
+
           SpecialistReportsPage(),
-          Center(child: Text('Test'),),
+
+          AdminSettingsPage(),
+
 
         ],
       );

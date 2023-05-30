@@ -82,6 +82,14 @@ class SpecialistReportsConroller extends GetxController {
               }
               break;
             case DocumentChangeType.modified:
+              if (change.doc.data() != null) {
+                // Find the report in the list and update its priority
+                final modifiedReport = change.doc.data()!;
+                final index = state.reportList.indexWhere((report) => report.reportId == modifiedReport.reportId);
+                if (index != -1) {
+                  state.reportList[index] = modifiedReport;
+                }
+              }
               break;
             case DocumentChangeType.removed:
               break;

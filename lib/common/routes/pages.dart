@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:jw_projekt/common/routes/routes.dart';
 import 'package:jw_projekt/pages/specialist/specialist_application/view.dart';
+import 'package:jw_projekt/pages/student/YourReportInfo/index.dart';
 import '../../pages/admin/admin_application/index.dart';
 import '../../pages/login/bindings.dart';
 import '../../pages/login/view.dart';
@@ -80,7 +81,15 @@ class AppPages{
       name: AppRoutes.SpecialistReportMenagment,
       page:() => SpecialistReportsMenagmentPage(),
       binding: SpecialistReportMenagmentBinding(),
+    ),
+
+
+    GetPage(
+      name: AppRoutes.YourReportInfoPage,
+      page:() => YourReportInfoPage(),
+      binding: YourReportInfoBinding(),
     )
+
 
 
 

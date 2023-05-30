@@ -128,12 +128,48 @@ class MessagesConroller extends GetxController {
 
   late final name;
 
+  void initAsyncChatRefresh() async{
+
+    var data = await db
+        .collection("messages")
+        .withConverter(
+        fromFirestore: Msg.fromFirestore,
+        toFirestore: (Msg msg, options) => msg.toFirestore());
+
+    state.messages.clear();
+
+    listener = data.snapshots().listen(
+          (event) {
+        for (var change in event.docChanges) {
+          switch (change.type) {
+            case DocumentChangeType.added:
+              if (change.doc.data() != null) {
+                state.messages.insert((0), change.doc.data()!);
+              }
+              break;
+            case DocumentChangeType.modified:
+              getUnreadMessageCount(change.doc.id);
+              break;
+            case DocumentChangeType.removed:
+              break;
+          }
+        }
+      },
+      onError: (error) => print("listen failed: ${error}"),
+    );
+
+
+
+  }
+
   @override
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
     UserData? data = await fetchCurrentUser();
     name = data?.name;
+
+   // initAsyncChatRefresh();
   }
 
   void onRefresh() {

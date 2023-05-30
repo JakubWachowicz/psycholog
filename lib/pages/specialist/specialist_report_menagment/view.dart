@@ -50,6 +50,8 @@ class SpecialistReportsMenagmentPage extends GetView<SpecialistReportsMenagmentC
       );
     }
 
+
+
     return Scaffold(
 
         appBar: _buildAppBar(),
@@ -68,7 +70,15 @@ class SpecialistReportsMenagmentPage extends GetView<SpecialistReportsMenagmentC
             ),
             _buildValueWidget('Title', controller.state.title),
             _buildValueWidget('Content', controller.state.content),
-            _buildValueWidget('Priority', controller.state.priority),
+            Row(
+              children: [
+                _buildValueWidget('Priority', controller.state.priority),
+                InkWell(onTap: (){
+                 controller.showPrioritySelection(context,  controller.state.priority);
+                },
+                  child: Icon(Icons.change_circle),)
+              ],
+            ),
             _buildValueWidget('Report Type', controller.state.reportType),
             _buildValueWidget('Status', controller.state.status),
             _buildValueWidget('Timestamp', controller.state.timeStamp),

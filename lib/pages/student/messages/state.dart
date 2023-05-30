@@ -9,6 +9,8 @@ class MessagesState{
   var count = 0.obs;
   //RxList<UserData> messageList = <UserData>[].obs;
   RxList<QueryDocumentSnapshot<Msg>> messageList = <QueryDocumentSnapshot<Msg>>[].obs;
+
+  RxList<Msg> messages = <Msg>[].obs;
   var unreadMsgCounter = RxMap();
 
   var messageLimit = 2.obs;

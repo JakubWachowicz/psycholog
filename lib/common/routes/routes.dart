@@ -9,4 +9,5 @@ class AppRoutes{
   static const Chat = '/chat';
   static const ReportForm = '/reportForm';
   static const SpecialistReportMenagment = '/specialistReportMenagment';
+  static const YourReportInfoPage = '/yourReportInfoPage';
 }

@@ -70,6 +70,7 @@ class SpecialistMessageList extends GetView<SpecialistMessagesConroller> {
                         Text(
 
                           item.data().from_uid == controller.token?item.data().to_name??"Student":item.data().from_name??"Student",
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18.sp),
                           overflow: TextOverflow.clip,
                           maxLines: 1,
 

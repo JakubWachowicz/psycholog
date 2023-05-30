@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_item.dart';
 
+
 import '../../../../Utils/date.dart';
 import '../../../../entities/report.dart';
 import '../controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ReportList extends GetView<SpecialistReportsConroller> {
-  const ReportList({Key? key}) : super(key: key);
+class YourReportList extends GetView<YourReportsConroller> {
+  const YourReportList({Key? key}) : super(key: key);
 
-  Widget ReportItem(Report report) {
+  
+  
+  Widget YourReportItem(Report report) {
     return InkWell(
       onTap: () =>{controller.goReport(report)},
       child: Padding(
@@ -66,24 +69,24 @@ class ReportList extends GetView<SpecialistReportsConroller> {
   Widget build(BuildContext context) {
     return Obx(() => Container(
       alignment: Alignment.topCenter,
-          color: Colors.white,
-          padding: EdgeInsets.only(top: 10.h),
-          child: CustomScrollView(
-            reverse: false,
-            controller: controller.reportScrolling,
-            slivers: [
-              SliverPadding(
-                padding: EdgeInsets.symmetric(vertical: 0.w, horizontal: 0.w),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    var item = controller.state.reportList[index];
-                    print(item.toString());
-                    return ReportItem(item);
-                  }, childCount: controller.state.reportList.length),
-                ),
-              ),
-            ],
+      color: Colors.white,
+      padding: EdgeInsets.only(top: 10.h),
+      child: CustomScrollView(
+        reverse: false,
+        controller: controller.reportScrolling,
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.symmetric(vertical: 0.w, horizontal: 0.w),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                var item = controller.state.reportList[index];
+                print(item.toString());
+                return YourReportItem(item);
+              }, childCount: controller.state.reportList.length),
+            ),
           ),
-        ));
+        ],
+      ),
+    ));
   }
 }

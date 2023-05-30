@@ -17,10 +17,12 @@ class SpecialistApplicationConroller extends GetxController{
     super.onInit();
     tabTitles = ['Chat', 'Contact','Profile'];
     bottomTabs = <BottomNavigationBarItem>[
-      const BottomNavigationBarItem(icon: Icon(Icons.message),label: 'contact'),
-      const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
-      const BottomNavigationBarItem(icon: Icon(Icons.person),label: 'profile'),
-      const BottomNavigationBarItem(icon: Icon(Icons.error),label: 'report'),
+      const BottomNavigationBarItem(icon: Icon(Icons.message),label: 'messages'),
+
+      const BottomNavigationBarItem(icon: Icon(Icons.error),label: 'reports'),
+
+      const BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'settings'),
+
 
     ];
     pageController = PageController(initialPage:state.page);

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Msg {
+  final String? messageId; // New field: messageId
+
   final String? from_uid;
   final String? to_uid;
   final String? from_name;
@@ -14,6 +16,7 @@ class Msg {
   final String? to_lastMessageSeen;
 
   Msg({
+    this.messageId, // New field: messageId
     this.from_uid,
     this.to_uid,
     this.from_name,
@@ -33,6 +36,7 @@ class Msg {
       ) {
     final data = snapshot.data();
     return Msg(
+      messageId: snapshot.id, // Assign the document ID to messageId field
       from_uid: data?['from_uid'],
       to_uid: data?['to_uid'],
       from_name: data?['from_name'],
@@ -49,6 +53,7 @@ class Msg {
 
   Map<String, dynamic> toFirestore() {
     return {
+      if (messageId != null) "messageId": messageId, // Include messageId field
       if (from_uid != null) "from_uid": from_uid,
       if (to_uid != null) "to_uid": to_uid,
       if (from_name != null) "from_name": from_name,

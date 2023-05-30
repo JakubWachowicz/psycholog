@@ -8,7 +8,7 @@ import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_but
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as authP;
-
+import 'package:flutter/material.dart';
 import '../../../entities/messages.dart';
 import '../../../entities/msg_content.dart';
 import '../../../entities/user.dart';
@@ -56,6 +56,8 @@ class SpecialistMessagesConroller extends GetxController {
     return null;
   }
 
+
+
   goChat(UserData to_userdata) async {
     UserData? data = await fetchCurrentUser()!;
     print(to_userdata);
@@ -65,20 +67,10 @@ class SpecialistMessagesConroller extends GetxController {
         .withConverter(
             fromFirestore: Msg.fromFirestore,
             toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("from_uid", isEqualTo: token)
-        .where("to_uid", isEqualTo: to_userdata.id)
-        .get();
-
-    var to_messages = await db
-        .collection("messages")
-        .withConverter(
-            fromFirestore: Msg.fromFirestore,
-            toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("from_uid", isEqualTo: to_userdata.id)
         .where("to_uid", isEqualTo: token)
         .get();
 
-    if (from_messages.docs.isEmpty && to_messages.docs.isEmpty) {
+    if (from_messages.docs.isEmpty ) {
       String profile = await UserStore.to.getProfile();
       UserLoginResponseEntity userdata =
           UserLoginResponseEntity.fromJson(jsonDecode(profile));
@@ -111,19 +103,11 @@ class SpecialistMessagesConroller extends GetxController {
       if (from_messages.docs.isNotEmpty) {
         Get.toNamed(AppRoutes.SpecialistChat, parameters: {
           "doc_id": from_messages.docs.first.id,
-          "to_uid": to_userdata.id ?? "",
-          "to_name": to_userdata.name ?? "",
-          "to_avatar": to_userdata.photourl ?? "",
-          "from_name": data?.name ?? "",
+          "to_uid": from_messages.docs.first.data().to_uid?? "errorName",
+          "to_name": from_messages.docs.first.data().to_name ??"errorToNAme",
+          "from_name": from_messages.docs.first.data().from_uid ?? "errorToNAme2",
         });
-      } else if (to_messages.docs.isNotEmpty) {
-        Get.toNamed(AppRoutes.SpecialistChat, parameters: {
-          "doc_id": to_messages.docs.first.id,
-          "to_uid": to_userdata.id ?? "",
-          "to_name": to_userdata.name ?? "",
-          "to_avatar": to_userdata.photourl ?? "",
-          "from_name": data?.name ?? "",
-        });
+
       }
     }
   }

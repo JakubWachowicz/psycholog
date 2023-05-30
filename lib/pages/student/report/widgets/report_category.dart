@@ -43,9 +43,16 @@ class ReportCategoryList extends GetView<ReportConroller> {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text("Select report category",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22.sp,color: Colors.green),),
+              )),
+          SizedBox(height: 10.w,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
