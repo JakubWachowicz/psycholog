@@ -4,6 +4,7 @@ import 'package:jw_projekt/entities/reportComment.dart';
 
 
 import '../../../../Utils/date.dart';
+import '../../../../Widgets/circular_image.dart';
 import '../controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,20 +16,39 @@ class CommentList extends GetView<YourReportInfoConroller> {
   Widget _buildComment(ReportComment comment){
 
 
-    return Column(
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        children: [
+          CircularImage(
+            imageUrl: 'https://images.unsplash.com/photo-1547721064-da6cfb341d50',
+            size: 50.0,
+          ),
+          SizedBox(width: 10.w  ,),
+          Column(
 
-      children: [
-        Row(
-          children: [
-            Text(comment.uid?? ""),
-            Text( duTimeLineFormat(
-             comment.timestamp!.toDate(),
-            ),),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(comment.userName?? "",style: TextStyle(fontWeight: FontWeight.bold),),
+                  SizedBox(width: 10.w,),
+                  Text( duTimeLineFormat(
+                   comment.timestamp!.toDate(),
+                  ),),
 
-          ],
-        ),
-        Text(comment.content??"")
-      ],
+                ],
+              ),
+              SizedBox(height: 10.w  ,),
+              Container(
+                width: 250.w,
+                child: Text(comment.content??"",
+                  maxLines: 4,overflow: TextOverflow.clip,),
+              )
+            ],
+          ),
+        ],
+      ),
     );
 
   }

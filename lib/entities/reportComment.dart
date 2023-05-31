@@ -5,6 +5,7 @@ class ReportComment {
   final String? reportId;
   final String? content;
   final String? uid;
+  final String? userName; // New property
   final Timestamp? timestamp;
 
   ReportComment({
@@ -12,6 +13,7 @@ class ReportComment {
     this.reportId,
     this.content,
     this.uid,
+    this.userName, // Initialize the new property
     this.timestamp,
   });
 
@@ -25,6 +27,7 @@ class ReportComment {
       reportId: data?['reportId'],
       content: data?['content'],
       uid: data?['uid'],
+      userName: data?['userName'], // Assign the new property from the snapshot data
       timestamp: data?['timestamp'],
     );
   }
@@ -35,6 +38,7 @@ class ReportComment {
       if (reportId != null) 'reportId': reportId,
       if (content != null) 'content': content,
       if (uid != null) 'uid': uid,
+      if (userName != null) 'userName': userName, // Include the new property
       if (timestamp != null) 'timestamp': timestamp,
     };
   }

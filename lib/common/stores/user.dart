@@ -15,6 +15,7 @@ class UserStore extends GetxController {
   String token = '';
   String role = '';
 
+
   final _profile = UserLoginResponseEntity().obs;
 
   bool get isLogin => _isLogin.value;

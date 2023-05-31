@@ -45,7 +45,7 @@ class ReportFormConroller extends GetxController{
       print('Report sent to Firebase successfully');
 
 
-      Get.offAndToNamed(AppRoutes.Application);
+      Get.back(result: "succes");
       Get.snackbar(
         'Success',
         'Report sent successfully',

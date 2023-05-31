@@ -8,9 +8,15 @@ class ReportConroller extends GetxController{
 
 
 
-  goForm(String reportType){
-    Get.offAndToNamed("/reportForm", parameters: {
+  goForm(String reportType)async{
+    final result = await Get.toNamed("/reportForm", parameters: {
     "reportType": reportType});
+    if (result != null) {
+      // Use the returned result from the NewScreen
+      print(result);
+
+      state.index.value = 1;
+    }
 
 
   }

@@ -106,7 +106,7 @@ class ReportFormPage extends GetView<ReportFormConroller> {
         leading: GestureDetector(
           child: Icon(Icons.arrow_back, color: Colors.white,),
           onTap: () {
-            Get.offAndToNamed("/report");
+            Get.back();
           },
         ),
 

@@ -7,7 +7,7 @@ import '../entities/reportComment.dart';
 
 class ReportDbController {
 
-  Future<void> sendComment(String reportId, String content, String uid) async {
+  Future<void> sendComment(String reportId, String content, String uid,String username) async {
     try {
       // Create a reference to the Firestore collection containing the reports
       CollectionReference reportsCollection =
@@ -20,8 +20,9 @@ class ReportDbController {
       DocumentReference commentDoc = await reportDoc.collection('comments').add({
         'content': content,
         'uid': uid,
+        'userName': username,
         'reportId': reportId,
-        'timestamp': FieldValue.serverTimestamp(),
+        'timestamp': Timestamp.now(),
       });
 
       // Optionally, you can update the report document with the comment information
@@ -47,7 +48,7 @@ class ReportDbController {
         .doc(reportId).collection("comments")
         .withConverter(
         fromFirestore: ReportComment.fromFirestore,
-        toFirestore: (ReportComment reportComment, options) => reportComment.toFirestore());
+        toFirestore: (ReportComment reportComment, options) => reportComment.toFirestore()).orderBy("timestamp", descending: false);
 
     return data;
   }

@@ -8,6 +8,7 @@ import 'package:jw_projekt/controller/report_db_controller.dart';
 import '../../../Utils/date.dart';
 import '../../../common/routes/routes.dart';
 import '../../../entities/report.dart';
+import '../../../entities/user.dart';
 import 'index.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,8 +25,21 @@ class YourReportInfoConroller extends GetxController {
   TextEditingController commentContent = TextEditingController();
 
   ReportDbController dbController = ReportDbController();
-  void handleSendComment(String content){
-    dbController.sendComment(report_id, content, user_id);
+  void handleSendComment(String content) async{
+
+
+
+    var userSnapshot = await db
+        .collection("users")
+        .withConverter(
+      fromFirestore: UserData.fromFirestore,
+      toFirestore: (UserData userData, options) => userData.toFirestore(),
+    )
+        .where("id", isEqualTo: user_id)
+        .get();
+    userSnapshot.docs.first.data().name;
+
+    dbController.sendComment(report_id, content, user_id,userSnapshot.docs.first.data().name.toString());
   }
   @override
   Future<void> onInit() async {
@@ -80,6 +94,7 @@ class YourReportInfoConroller extends GetxController {
               if (change.doc.data() != null) {
                 print('Zmiana');
                 state.commentList.insert((0), change.doc.data()!);
+
               }
               break;
             case DocumentChangeType.modified:

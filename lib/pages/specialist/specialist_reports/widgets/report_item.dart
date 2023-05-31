@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget ReportItem(Report report) {
   return InkWell(
-    onTap: (){},
+    onTap: () =>{},
     child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -27,8 +27,10 @@ Widget ReportItem(Report report) {
                 ),
                 Text(report.title ?? "error",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.sp)),
-                Text(report.content ?? "error",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                Container(width: 360.w/1.7,
+                  child: Text(report.content ?? "error",overflow: TextOverflow.clip,maxLines: 1,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                ),
               ],
             ),
             Expanded(
@@ -38,7 +40,7 @@ Widget ReportItem(Report report) {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(report.priority.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
+                    //Text("Priority: " +  report.priority.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
                     SizedBox(height: 10.w,),
                     Text(
                       duTimeLineFormat(
