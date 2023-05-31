@@ -58,13 +58,48 @@ class SpecialistChatConroller extends GetxController {
     await db.collection("messages").doc(doc_id).update({
       "last_msg": sendContent,
       "last_time": Timestamp.now(),
+      "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,UserStore.to.token!),
+      "unreadMessagesCountSpecialist":await getUnreadMessageCount2(doc_id,UserStore.to.token!),
     });
+
+
   }
 
 
+  Future<int> getUnreadMessageCount2(String docId,String uid) async {
+    var from_messages = await db
+        .collection("messages")
+        .doc(docId)
+        .collection("msglist")
+        .withConverter(
+        fromFirestore: Msgcontent.fromFirestore,
+        toFirestore: (Msgcontent msg, options) => msg.toFirestore())
+        .where("uid", isNotEqualTo:uid)
+        .where("isRead", isEqualTo: "False")
+        .get();
+    print('Liczba');
+    print(from_messages.docs.length);
+    return from_messages.docs.length;
+  }
+
+  Future<int> getUnreadMessageCount(String docId,String uid) async {
+    var from_messages = await db
+        .collection("messages")
+        .doc(docId)
+        .collection("msglist")
+        .withConverter(
+        fromFirestore: Msgcontent.fromFirestore,
+        toFirestore: (Msgcontent msg, options) => msg.toFirestore())
+        .where("uid", isEqualTo:uid)
+        .where("isRead", isEqualTo: "False")
+        .get();
+    print('Liczba');
+    print(from_messages.docs.length);
+    return from_messages.docs.length;
+  }
 
 
-  void updateIsRead(DocumentReference documentRef, bool isRead) {
+  Future<void> updateIsRead(DocumentReference documentRef, bool isRead) async {
 
     print("________________________________");
     print(Get.currentRoute);
@@ -76,7 +111,11 @@ class SpecialistChatConroller extends GetxController {
           .catchError((error) {
         print('Failed to update isRead: $error');
       });
+      await db.collection("messages").doc(doc_id).update({
 
+        "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,sender),
+        "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,UserStore.to.token!),
+      });
     }
 
   }

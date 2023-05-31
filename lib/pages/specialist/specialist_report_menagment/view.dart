@@ -114,13 +114,17 @@ class SpecialistReportsMenagmentPage extends GetView<SpecialistReportsMenagmentC
                 style: TextStyle(fontSize: 16.sp,color: Colors.black,fontWeight: FontWeight.bold),
               ),
             ),
+
             Row(
               children: [
-                Text("State: ", style: TextStyle(fontWeight: FontWeight.bold),),
+                Text("Status: "),
                 _buildValueWidget('Status', controller.state.status),
+                InkWell(onTap: (){
+                  controller.showStateSelection(context,  controller.state.status);
+                },
+                  child: Icon(Icons.change_circle),)
               ],
             ),
-
 
             Row(
               children: [

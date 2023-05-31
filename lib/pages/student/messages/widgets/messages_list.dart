@@ -133,29 +133,21 @@ class MessageList extends GetView<MessagesConroller> {
 
 
     return Obx(
-        ()=> SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          controller: controller.refreshController,
-          onLoading: controller.onLoading,
-          onRefresh: controller.onRefresh,
-          header: const WaterDropHeader(),
-          child: CustomScrollView (
-            slivers: [
-              SliverPadding(padding: EdgeInsets.symmetric(vertical: 0.w,horizontal: 0.w),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                          (context,index){
-                        var item = controller.state.messageList[index];
-                        return buildListItem(item);
+        ()=> CustomScrollView (
+          slivers: [
+            SliverPadding(padding: EdgeInsets.symmetric(vertical: 0.w,horizontal: 0.w),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                        (context,index){
+                      var item = controller.state.messageList[index];
+                      return buildListItem(item);
 
-                      },
-                      childCount: controller.state.messageList.length
-                  ),
-                ),),
+                    },
+                    childCount: controller.state.messageList.length
+                ),
+              ),),
 
-            ],
-          ),
+          ],
         )
     );
   }

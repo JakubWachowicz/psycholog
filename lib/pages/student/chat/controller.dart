@@ -57,22 +57,52 @@ class ChatConroller extends GetxController {
     await db.collection("messages").doc(doc_id).update({
       "last_msg": sendContent,
       "last_time": Timestamp.now(),
+      "unreadMessagesCountStudent":0,
+      "unreadMessagesCountSpecialist":0,
+    });
+
+    await db.collection("messages").doc(doc_id).update({
+      "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,UserStore.to.token),
+      "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,state.to_uid.value!),
     });
   }
 
 
-  void updateIsRead(DocumentReference documentRef, bool isRead) {
+  Future<void> updateIsRead(DocumentReference documentRef, bool isRead) async {
 
     if(Get.currentRoute.contains(AppRoutes.Chat)){
       documentRef.update({'isRead': isRead.toString()})
           .then((value) {
         print('isRead updated successfully');
+
       })
           .catchError((error) {
         print('Failed to update isRead: $error');
       });
+
+      await db.collection("messages").doc(doc_id).update({
+        "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,UserStore.to.token),
+        "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,state.to_uid.value!),
+      });
+
     }
 
+  }
+
+  Future<int> getUnreadMessageCount(String docId,String uid) async {
+    var from_messages = await db
+        .collection("messages")
+        .doc(docId)
+        .collection("msglist")
+        .withConverter(
+        fromFirestore: Msgcontent.fromFirestore,
+        toFirestore: (Msgcontent msg, options) => msg.toFirestore())
+        .where("uid", isNotEqualTo: uid)
+        .where("isRead", isEqualTo: "False")
+        .get();
+    print('Liczba');
+    print(from_messages.docs.length);
+    return from_messages.docs.length;
   }
 
 

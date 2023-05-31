@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Msg {
-  final String? messageId; // New field: messageId
-
+  final String? messageId;
   final String? from_uid;
   final String? to_uid;
   final String? from_name;
@@ -14,9 +12,11 @@ class Msg {
   final int? msg_num;
   final String? from_lastMessageSeen;
   final String? to_lastMessageSeen;
+  final int? unreadMessagesCountStudent; // New field: unreadMessagesCountStudent
+  final int? unreadMessagesCountSpecialist; // New field: unreadMessagesCountSpecialist
 
   Msg({
-    this.messageId, // New field: messageId
+    this.messageId,
     this.from_uid,
     this.to_uid,
     this.from_name,
@@ -28,6 +28,8 @@ class Msg {
     this.msg_num,
     this.from_lastMessageSeen,
     this.to_lastMessageSeen,
+    this.unreadMessagesCountStudent,
+    this.unreadMessagesCountSpecialist,
   });
 
   factory Msg.fromFirestore(
@@ -36,7 +38,7 @@ class Msg {
       ) {
     final data = snapshot.data();
     return Msg(
-      messageId: snapshot.id, // Assign the document ID to messageId field
+      messageId: snapshot.id,
       from_uid: data?['from_uid'],
       to_uid: data?['to_uid'],
       from_name: data?['from_name'],
@@ -48,12 +50,14 @@ class Msg {
       msg_num: data?['msg_num'],
       from_lastMessageSeen: data?['from_lastMessageSeen'],
       to_lastMessageSeen: data?['to_lastMessageSeen'],
+      unreadMessagesCountStudent: data?['unreadMessagesCountStudent'],
+      unreadMessagesCountSpecialist: data?['unreadMessagesCountSpecialist'],
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      if (messageId != null) "messageId": messageId, // Include messageId field
+      if (messageId != null) "messageId": messageId,
       if (from_uid != null) "from_uid": from_uid,
       if (to_uid != null) "to_uid": to_uid,
       if (from_name != null) "from_name": from_name,
@@ -67,6 +71,10 @@ class Msg {
         "from_lastMessageSeen": from_lastMessageSeen,
       if (to_lastMessageSeen != null)
         "to_lastMessageSeen": to_lastMessageSeen,
+      if (unreadMessagesCountStudent != null)
+        "unreadMessagesCountStudent": unreadMessagesCountStudent,
+      if (unreadMessagesCountSpecialist != null)
+        "unreadMessagesCountSpecialist": unreadMessagesCountSpecialist,
     };
   }
 }

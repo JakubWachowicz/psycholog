@@ -69,6 +69,7 @@ class MessageListNew extends GetView<MessagesConroller> {
                         Text(
 
                           item.from_uid == controller.token?item.to_name??"Student":item.from_name??"Student",
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18.sp),
                           overflow: TextOverflow.clip,
                           maxLines: 1,
 
@@ -100,13 +101,13 @@ class MessageListNew extends GetView<MessagesConroller> {
                           maxLines: 1,
 
                         ),
-                        controller.state.unreadMsgCounter[item.messageId] != 0 && controller.state.unreadMsgCounter[item.messageId] != null ? Container(
+                        item.unreadMessagesCountStudent != 0  && item.unreadMessagesCountStudent!=null ? Container(
 
                             decoration: BoxDecoration(color: Colors.green,borderRadius: BorderRadius.circular(90)),
 
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(controller.state.unreadMsgCounter[item.messageId].toString()??"erre",style: TextStyle(color: Colors.white),),
+                              child: Text(item.unreadMessagesCountStudent.toString()!,),
                             )):Text("")
                       ],
                     ),
@@ -132,30 +133,22 @@ class MessageListNew extends GetView<MessagesConroller> {
 
 
     return Obx(
-            ()=> SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          controller: controller.refreshController,
-          onLoading: controller.onLoading,
-          onRefresh: controller.onRefresh,
-          header: const WaterDropHeader(),
-          child: CustomScrollView (
-            slivers: [
-              SliverPadding(padding: EdgeInsets.symmetric(vertical: 0.w,horizontal: 0.w),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                          (context,index){
-                        var item = controller.state.messages[index];
-                        return buildListItem(item);
+            ()=> CustomScrollView (
+              slivers: [
+                SliverPadding(padding: EdgeInsets.symmetric(vertical: 0.w,horizontal: 0.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                            (context,index){
+                          var item = controller.state.messages[index];
+                          return buildListItem(item);
 
-                      },
-                      childCount: controller.state.messageList.length
-                  ),
-                ),),
+                        },
+                        childCount: controller.state.messages.length
+                    ),
+                  ),),
 
-            ],
-          ),
-        )
+              ],
+            )
     );
   }
 }

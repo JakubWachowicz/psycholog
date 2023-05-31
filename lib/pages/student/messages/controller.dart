@@ -28,7 +28,8 @@ class MessagesConroller extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    asyncLoadAllData();
+
+    initAsyncChatRefresh();
   }
 
   String? getCurrentUserId() {
@@ -58,6 +59,8 @@ class MessagesConroller extends GetxController {
     UserData? data = await fetchCurrentUser()!;
     print(to_userdata);
 
+
+
     var from_messages = await db
         .collection("messages")
         .withConverter(
@@ -77,6 +80,7 @@ class MessagesConroller extends GetxController {
         .get();
 
     if (from_messages.docs.isEmpty && to_messages.docs.isEmpty) {
+
       String profile = await UserStore.to.getProfile();
       UserLoginResponseEntity userdata =
           UserLoginResponseEntity.fromJson(jsonDecode(profile));
@@ -107,12 +111,16 @@ class MessagesConroller extends GetxController {
       });
     } else {
       if (from_messages.docs.isNotEmpty) {
-        Get.toNamed("/chat", parameters: {
+
+         Get.toNamed("/chat", parameters: {
           "doc_id": from_messages.docs.first.id,
           "to_uid": to_userdata.id ?? "",
           "to_name": to_userdata.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
           "from_name": data?.name ?? "",
+        })?.then((value) async {
+            print (":P:");
+
         });
       } else if (to_messages.docs.isNotEmpty) {
         Get.toNamed("/chat", parameters: {
@@ -134,12 +142,12 @@ class MessagesConroller extends GetxController {
         .collection("messages")
         .withConverter(
         fromFirestore: Msg.fromFirestore,
-        toFirestore: (Msg msg, options) => msg.toFirestore());
+        toFirestore: (Msg msg, options) => msg.toFirestore()).where("from_uid",isEqualTo:token);
 
     state.messages.clear();
 
     listener = data.snapshots().listen(
-          (event) {
+          (event) async {
         for (var change in event.docChanges) {
           switch (change.type) {
             case DocumentChangeType.added:
@@ -148,8 +156,34 @@ class MessagesConroller extends GetxController {
               }
               break;
             case DocumentChangeType.modified:
-              getUnreadMessageCount(change.doc.id);
-              break;
+              var modifiedMessage = change.doc.data();
+              if (modifiedMessage != null) {
+                // Find the index of the modified message in the list
+                print("Tutaj coś nie gra lol");
+                var index = state.messages.indexWhere((msg) => msg.messageId == modifiedMessage.messageId);
+                print(index);
+                print("Tutaj coś nie gra popop");
+                if (index != -1) {
+                  // Replace the old message with the modified message
+                  state.messages[index] = modifiedMessage;
+                  print(state.messages[index].last_msg);
+
+                  state.messages.sort((a, b) {
+                    final aTime = a.last_time;
+
+                    final bTime = b.last_time;
+
+                    return bTime!.compareTo(aTime!);
+                  });
+                  state.messages.refresh();
+
+
+
+
+
+
+                }}
+               break;
             case DocumentChangeType.removed:
               break;
           }
@@ -158,7 +192,13 @@ class MessagesConroller extends GetxController {
       onError: (error) => print("listen failed: ${error}"),
     );
 
+    state.messages.sort((a, b) {
+      final aTime = a.last_time;
 
+      final bTime = b.last_time;
+
+      return bTime!.compareTo(aTime!);
+    });
 
   }
 
@@ -169,87 +209,12 @@ class MessagesConroller extends GetxController {
     UserData? data = await fetchCurrentUser();
     name = data?.name;
 
-   // initAsyncChatRefresh();
-  }
-
-  void onRefresh() {
-
-    asyncLoadAllData().then((_) {
-      refreshController.refreshCompleted(resetFooterState: true);
-    }).catchError((_) {
-      refreshController.refreshFailed();
-    });
-  }
-
-  void onLoading() {
-
-    //state.messageLimit+= 2;
-    print(state.messageLimit);
-    asyncLoadAllData();
 
   }
-  Future<int> getUnreadMessageCount(String docId) async {
-    var from_messages = await db
-        .collection("messages")
-        .doc(docId)
-        .collection("msglist")
-        .withConverter(
-            fromFirestore: Msgcontent.fromFirestore,
-            toFirestore: (Msgcontent msg, options) => msg.toFirestore())
-        .where("uid", isNotEqualTo: token)
-        .where("isRead", isEqualTo: "False")
-        .get();
-    print('Liczba');
-    print(from_messages.docs.length);
-    return from_messages.docs.length;
-  }
 
-  asyncLoadAllData() async {
-    var from_messages = await db
-        .collection("messages")
-        .withConverter(
-            fromFirestore: Msg.fromFirestore,
-            toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("from_uid", isEqualTo: token)
-        .get();
-    var to_messages = await db
-        .collection("messages")
-        .withConverter(
-            fromFirestore: Msg.fromFirestore,
-            toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("to_uid", isEqualTo: token)
-        .get();
-    state.messageList.clear();
 
-    for (var msg in from_messages.docs) {
-      final unreadCount = await getUnreadMessageCount(msg.id);
-      state.unreadMsgCounter[msg.id] = unreadCount;
-      print(unreadCount);
-      print("Toje saa");
-      print(state.unreadMsgCounter[msg.id]);
-      print("Toje poo");
-    }
 
-    for (var msg in to_messages.docs) {
-      final unreadCount = await getUnreadMessageCount(msg.id);
-      state.unreadMsgCounter[msg.id] = unreadCount;
-      print(unreadCount);
-    }
 
-    if (from_messages.docs.isNotEmpty) {
-      state.messageList.assignAll(from_messages.docs);
-    }
-    if (to_messages.docs.isNotEmpty) {
-      state.messageList.assignAll(to_messages.docs);
-    }
-    state.messageList.sort((a, b) {
-      final aTime = a.data().last_time;
-
-      final bTime = b.data().last_time;
-
-      return bTime!.compareTo(aTime!);
-    });
-  }
 
 
 

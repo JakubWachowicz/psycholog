@@ -159,7 +159,7 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 360,
+                          width: 360.w-30.w,
                           child: TextField(
                             maxLines: null,
                             keyboardType: TextInputType.multiline,
@@ -169,10 +169,11 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
                             ),
                           ),
                         ),
+
                         InkWell(
                           onTap: () {
                             final comment =
-                                controller.commentContent.text.trim();
+                            controller.commentContent.text.trim();
                             if (comment.isNotEmpty) {
                               controller.handleSendComment(comment);
                               controller.commentContent.clear();

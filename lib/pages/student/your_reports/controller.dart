@@ -36,7 +36,6 @@ class YourReportsConroller extends GetxController {
             toFirestore: (Report report, options) => report.toFirestore());
 
     state.reportList.clear();
-    state.reportList.clear();
 
 
     listener = data.snapshots().listen(
@@ -46,7 +45,12 @@ class YourReportsConroller extends GetxController {
             case DocumentChangeType.added:
               if (change.doc.data() != null) {
                 state.reportList.insert((0), change.doc.data()!);
-
+                state.reportList.sort((a, b) {
+                  final aTime = a.timestamp;
+                  final bTime = b.timestamp;
+                  return bTime!.compareTo(aTime!);
+                });
+                state.reportList.refresh();
               }
               break;
             case DocumentChangeType.modified:
@@ -58,6 +62,14 @@ class YourReportsConroller extends GetxController {
       },
       onError: (error) => print("listen failed: ${error}"),
     );
+
+
+    state.reportList.sort((a, b) {
+      final aTime = a.timestamp;
+      final bTime = b.timestamp;
+      return bTime!.compareTo(aTime!);
+    });
+    state.reportList.refresh();
   }
 
   @override

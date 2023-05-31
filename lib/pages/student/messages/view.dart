@@ -23,7 +23,7 @@ class MessagePage extends GetView<MessagesConroller> {
         appBar: _buildAppBar(),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: MessageList(),
+          child: MessageListNew(),
         ));
   }
 }
