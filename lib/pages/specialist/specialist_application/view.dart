@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/index.dart';
 
+import '../../../Widgets/nav_bar.dart';
 import '../../admin/admin_settings/index.dart';
 import '../../signin/view.dart';
 
 import '../specialist_messages/index.dart';
+import '../specialist_report_kanban/index.dart';
 import 'index.dart';
 
 class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> {
@@ -23,8 +25,9 @@ class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> 
           SpecialistMessagePage(),
 
           SpecialistReportsPage(),
-
+          SpecialistReportKanbanPage(title: 'Trello',),
           AdminSettingsPage(),
+
 
 
         ],
@@ -49,6 +52,7 @@ class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> 
     }
 
     return Scaffold(
+
 
         body:
         _buildPageView(),

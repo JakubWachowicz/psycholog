@@ -20,10 +20,13 @@ class LoginConroller extends GetxController{
   final TextEditingController passwordController = TextEditingController();
 
   AuthenticationClontroller auth = AuthenticationClontroller();
+
+  final FirebaseAuth authID = FirebaseAuth.instance;
   final state = LoginState();
   LoginConroller();
 
   final db = FirebaseFirestore.instance;
+
 
   final dbDataController = DbDataController();
 
@@ -33,7 +36,7 @@ class LoginConroller extends GetxController{
   final token = UserStore.to.token;
 
   void validateTextFields(String login, String password){
-    
+
     if(login.length == ""){
       state.emailErrorMessage = Rx<String>("Enter email");
     }
@@ -48,11 +51,18 @@ class LoginConroller extends GetxController{
   
   Future<void> handleLogin() async{
       bool isValid = await auth.loginUser(emailController.text, passwordController.text);
+      print("TO jest token:");
+      print(token);
+
 
       if(isValid){
 
+        final User curUser = authID.currentUser!;
+        final uid = curUser.uid;
+        UserStore.to.setToken(uid);
         UserData? user =await dbDataController.fetchCurrentUser();
         if(user?.role == 'admin'){
+
           UserStore.to.setRole('admin');
           Get.offAndToNamed(AppRoutes.AdminApplication);
         }
@@ -73,6 +83,7 @@ class LoginConroller extends GetxController{
 
       }
       //TODO Save profile
+
       //UserStore.to.saveProfile()
 
   }

@@ -28,6 +28,7 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
         backgroundColor: Colors.green,
 
       ),
+      
       body: SafeArea(child:ConstrainedBox(
         constraints: BoxConstraints.expand(),
         child: Stack(
@@ -55,32 +56,34 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
 
                           width: 360.w,
                           height:  80.w,
-                          child: TextField(
-                            expands: true,
-                            keyboardType: TextInputType.multiline,
+                          child: Expanded(
+                            child: TextField(
+                              expands: true,
+                              keyboardType: TextInputType.multiline,
 
-                            maxLines: null,
-                            controller: controller.textController,
-                            autofocus: false,
-                            focusNode: controller.contentNode,
+                              maxLines: null,
+                              controller: controller.textController,
+                              autofocus: false,
+                              focusNode: controller.contentNode,
 
-                            decoration: InputDecoration(
+                              decoration: InputDecoration(
 
-                              filled: true,
-                              hintText: "Send Message",
-                              fillColor: Colors.white,
-                              suffixIcon: IconButton(icon:Icon(Icons.send), onPressed: () {  controller.sendMessage(); },),
-                              labelStyle: const TextStyle(fontSize: 20,color: Colors.black45),
-                              enabledBorder:  OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Colors.black54)),
-                              focusedBorder:  OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: borderColor)),
+                                filled: true,
+                                hintText: "Send Message",
+                                fillColor: Colors.white,
+                                suffixIcon: IconButton(icon:Icon(Icons.send), onPressed: () {  controller.sendMessage(); },),
+                                labelStyle: const TextStyle(fontSize: 20,color: Colors.black45),
+                                enabledBorder:  OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    borderSide: BorderSide(color: Colors.black54)),
+                                focusedBorder:  OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    borderSide: BorderSide(color: borderColor)),
+                              ),
+
+
+
                             ),
-
-
-
                           ),
                         ),
 

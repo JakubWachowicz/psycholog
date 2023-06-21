@@ -22,11 +22,7 @@ class ApplicationPage extends GetView<ApplicationConroller> {
           Center(
             child: MessagePage()
           ),
-          Center(
-            child: Container(
-              child: SigninPage(),
-            ),
-          ),
+
           Center(
             child: Container(
               child: ContactPage(),

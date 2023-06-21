@@ -5,6 +5,7 @@ import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_so
 import 'package:jw_projekt/pages/student/messages/widgets/messages_list.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../../../Widgets/nav_bar.dart';
 import 'controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SpecialistReportsPage extends GetView<SpecialistReportsConroller> {
@@ -32,6 +33,7 @@ class SpecialistReportsPage extends GetView<SpecialistReportsConroller> {
 
     return Scaffold(
 
+        drawer: NavBar(),
         appBar: _buildAppBar(),
         body: Container(
 

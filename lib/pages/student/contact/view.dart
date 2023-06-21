@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:jw_projekt/pages/student/contact/widgets/contact_list.dart';
+import '../../../Widgets/nav_bar.dart';
 import 'controller.dart';
 
 class ContactPage extends GetView<ContactConroller> {
@@ -21,6 +22,8 @@ class ContactPage extends GetView<ContactConroller> {
     return Scaffold(
 
         appBar: _buildAppBar(),
+        drawer: NavBar(),
+
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Center(child: ContactList()),

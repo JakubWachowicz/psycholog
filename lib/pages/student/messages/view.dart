@@ -2,6 +2,7 @@ import 'package:jw_projekt/pages/student/messages/widgets/messages_list.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:jw_projekt/pages/student/messages/widgets/messages_list_new.dart';
+import '../../../Widgets/nav_bar.dart';
 import 'controller.dart';
 
 class MessagePage extends GetView<MessagesConroller> {
@@ -19,11 +20,15 @@ class MessagePage extends GetView<MessagesConroller> {
 
     print(controller.state.messageList.length);
     return Scaffold(
+      drawer: NavBar(),
 
         appBar: _buildAppBar(),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: MessageListNew(),
+        body: Container(
+
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: MessageListNew(),
+          ),
         ));
   }
 }

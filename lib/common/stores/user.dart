@@ -16,6 +16,7 @@ class UserStore extends GetxController {
   String role = '';
 
 
+
   final _profile = UserLoginResponseEntity().obs;
 
   bool get isLogin => _isLogin.value;
@@ -25,14 +26,17 @@ class UserStore extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    token = StorageService.to.getString(STORAGE_USER_TOKEN_KEY);
-    role = StorageService.to.getString(STORAGE_USER_ROLE_KEY);
-
     var profileOffline = StorageService.to.getString(STORAGE_USER_PROFILE_KEY);
     if (profileOffline.isNotEmpty) {
       _isLogin.value = true;
       _profile(UserLoginResponseEntity.fromJson(jsonDecode(profileOffline)));
+    }else{
+      return;
     }
+    token = StorageService.to.getString(STORAGE_USER_TOKEN_KEY);
+    role = StorageService.to.getString(STORAGE_USER_ROLE_KEY);
+
+
   }
 
 
@@ -65,6 +69,9 @@ class UserStore extends GetxController {
     // if (_isLogin.value) await UserAPI.logout();
     await StorageService.to.remove(STORAGE_USER_TOKEN_KEY);
     await StorageService.to.remove(STORAGE_USER_PROFILE_KEY);
+    await StorageService.to.remove(STORAGE_USER_ROLE_KEY);
+
+
     _isLogin.value = false;
     token = '';
     role = '';

@@ -16,6 +16,8 @@ import 'common/routes/pages.dart';
 import 'controller/auth_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'controller/profile_data_controller.dart';
+
 
 void main() async {
 
@@ -28,6 +30,8 @@ void main() async {
   await Firebase.initializeApp().then((value) {
     Get.put(AuthenticationClontroller());
   });
+  ProfileDataController.initialize();
+  ProfileDataController.initProfile();
 
 
   runApp(const MyApp());

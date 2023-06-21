@@ -9,4 +9,7 @@ class SpecialistChatState{
   var to_name="".obs;
   var to_avatar = "".obs;
   late final from_name = "".obs;
+  var from_uid = "".obs;
+
+
 }

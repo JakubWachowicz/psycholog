@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:jw_projekt/common/stores/user.dart';
@@ -9,7 +11,7 @@ import '../../../common/routes/routes.dart';
 import '../../../controller/auth_controller.dart';
 import '../../../entities/msg_content.dart';
 
-
+import 'package:async/async.dart';
 
 
 class SpecialistChatConroller extends GetxController {
@@ -58,8 +60,8 @@ class SpecialistChatConroller extends GetxController {
     await db.collection("messages").doc(doc_id).update({
       "last_msg": sendContent,
       "last_time": Timestamp.now(),
-      "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,UserStore.to.token!),
-      "unreadMessagesCountSpecialist":await getUnreadMessageCount2(doc_id,UserStore.to.token!),
+      "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,user_id ),
+      "unreadMessagesCountSpecialist":await getUnreadMessageCount2(doc_id,user_id),
     });
 
 
@@ -77,7 +79,7 @@ class SpecialistChatConroller extends GetxController {
         .where("uid", isNotEqualTo:uid)
         .where("isRead", isEqualTo: "False")
         .get();
-    print('Liczba');
+    print('Liczba 1');
     print(from_messages.docs.length);
     return from_messages.docs.length;
   }
@@ -93,7 +95,7 @@ class SpecialistChatConroller extends GetxController {
         .where("uid", isEqualTo:uid)
         .where("isRead", isEqualTo: "False")
         .get();
-    print('Liczba');
+    print('Liczba 2');
     print(from_messages.docs.length);
     return from_messages.docs.length;
   }
@@ -113,9 +115,12 @@ class SpecialistChatConroller extends GetxController {
       });
       await db.collection("messages").doc(doc_id).update({
 
-        "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,sender),
-        "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,UserStore.to.token!),
+
+        "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,UserStore.to.token!),
+        "unreadMessagesCountSpecialist":await getUnreadMessageCount2(doc_id,UserStore.to.token!),
       });
+      print('##########!');
+      print(state.to_uid.value);
     }
 
   }
@@ -161,20 +166,23 @@ class SpecialistChatConroller extends GetxController {
 
   late final name;
   late final topName;
-
+  //static const oneSecond = const Duration(seconds: 25);
 
   @override
   void onInit() {
     super.onInit();
 
 
-
+   // new Timer.periodic(oneSecond, (Timer t)  {state.msgcontentList.refresh();
+    //print("Update");});
 
     var data = Get.parameters;
     doc_id = data['doc_id'];
     state.to_uid.value = data['to_uid'] ?? "";
     state.to_name.value = data['to_name'] ?? "";
     state.to_avatar.value = data['to_avatar'] ?? "";
+    state.from_uid.value = data['from_uid'] ?? "";
+
     name = state.to_name.value;
     topName = data['from_name']?? "MAmy errora w tym miejscu";
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Msg {
   final String? messageId;
   final String? from_uid;
@@ -12,8 +13,9 @@ class Msg {
   final int? msg_num;
   final String? from_lastMessageSeen;
   final String? to_lastMessageSeen;
-  final int? unreadMessagesCountStudent; // New field: unreadMessagesCountStudent
-  final int? unreadMessagesCountSpecialist; // New field: unreadMessagesCountSpecialist
+  final int? unreadMessagesCountStudent;
+  final int? unreadMessagesCountSpecialist;
+  final String? message_type; // New field: message_type
 
   Msg({
     this.messageId,
@@ -30,6 +32,7 @@ class Msg {
     this.to_lastMessageSeen,
     this.unreadMessagesCountStudent,
     this.unreadMessagesCountSpecialist,
+    this.message_type,
   });
 
   factory Msg.fromFirestore(
@@ -52,6 +55,7 @@ class Msg {
       to_lastMessageSeen: data?['to_lastMessageSeen'],
       unreadMessagesCountStudent: data?['unreadMessagesCountStudent'],
       unreadMessagesCountSpecialist: data?['unreadMessagesCountSpecialist'],
+      message_type: data?['message_type'],
     );
   }
 
@@ -67,14 +71,11 @@ class Msg {
       if (last_msg != null) "last_msg": last_msg,
       if (last_time != null) "last_time": last_time,
       if (msg_num != null) "msg_num": msg_num,
-      if (from_lastMessageSeen != null)
-        "from_lastMessageSeen": from_lastMessageSeen,
-      if (to_lastMessageSeen != null)
-        "to_lastMessageSeen": to_lastMessageSeen,
-      if (unreadMessagesCountStudent != null)
-        "unreadMessagesCountStudent": unreadMessagesCountStudent,
-      if (unreadMessagesCountSpecialist != null)
-        "unreadMessagesCountSpecialist": unreadMessagesCountSpecialist,
+      if (from_lastMessageSeen != null) "from_lastMessageSeen": from_lastMessageSeen,
+      if (to_lastMessageSeen != null) "to_lastMessageSeen": to_lastMessageSeen,
+      if (unreadMessagesCountStudent != null) "unreadMessagesCountStudent": unreadMessagesCountStudent,
+      if (unreadMessagesCountSpecialist != null) "unreadMessagesCountSpecialist": unreadMessagesCountSpecialist,
+      if (message_type != null) "message_type": message_type,
     };
   }
 }

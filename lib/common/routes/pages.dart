@@ -6,12 +6,16 @@ import 'package:jw_projekt/pages/student/YourReportInfo/index.dart';
 import '../../pages/admin/admin_application/index.dart';
 import '../../pages/login/bindings.dart';
 import '../../pages/login/view.dart';
+
 import '../../pages/specialist/specialist_application/bindings.dart';
 import '../../pages/specialist/specialist_chat/index.dart';
+import '../../pages/specialist/specialist_report_kanban/index.dart';
 import '../../pages/specialist/specialist_report_menagment/index.dart';
 import '../../pages/student/application/index.dart';
 import '../../pages/student/chat/index.dart';
 import '../../pages/student/messages/index.dart';
+import '../../pages/student/profile/index.dart';
+import '../../pages/student/profile/view.dart';
 import '../../pages/student/report_form/index.dart';
 import '../../pages/welcome/index.dart';
 import '../middlewares/router_welcome.dart';
@@ -82,12 +86,23 @@ class AppPages{
       page:() => SpecialistReportsMenagmentPage(),
       binding: SpecialistReportMenagmentBinding(),
     ),
+    GetPage(
+      name: AppRoutes.SpecialistReportCanban,
+      page:() => SpecialistReportKanbanPage(title: 'Trello',),
+      binding: SpecialistReportMenagmentBinding(),
+    ),
 
 
     GetPage(
       name: AppRoutes.YourReportInfoPage,
       page:() => YourReportInfoPage(),
       binding: YourReportInfoBinding(),
+    ),
+
+    GetPage(
+      name: AppRoutes.Profile,
+      page:() => ProfilePage(),
+      binding: ProfileBinding(),
     )
 
 

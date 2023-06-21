@@ -20,8 +20,9 @@ class SpecialistApplicationConroller extends GetxController{
       const BottomNavigationBarItem(icon: Icon(Icons.message),label: 'messages'),
 
       const BottomNavigationBarItem(icon: Icon(Icons.error),label: 'reports'),
-
+      const BottomNavigationBarItem(icon: Icon(Icons.error_sharp), label: 'reportTrello'),
       const BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'settings'),
+
 
 
     ];

@@ -44,9 +44,9 @@ class ChatConroller extends GetxController {
         .doc(doc_id)
         .collection("msglist")
         .withConverter(
-            fromFirestore: Msgcontent.fromFirestore,
-            toFirestore: (Msgcontent msgcontent, options) =>
-                msgcontent.toFirestore())
+        fromFirestore: Msgcontent.fromFirestore,
+        toFirestore: (Msgcontent msgcontent, options) =>
+            msgcontent.toFirestore())
         .add(content)
         .then((DocumentReference doc) {
       print("Document snapshot added with id ${doc.id}");
@@ -114,14 +114,14 @@ class ChatConroller extends GetxController {
         .doc(doc_id)
         .collection("msglist")
         .withConverter(
-            fromFirestore: Msgcontent.fromFirestore,
-            toFirestore: (Msgcontent msgcontent, options) =>
-                msgcontent.toFirestore())
+        fromFirestore: Msgcontent.fromFirestore,
+        toFirestore: (Msgcontent msgcontent, options) =>
+            msgcontent.toFirestore())
         .orderBy("addtime", descending: false);
 
     state.msgcontentList.clear();
     listener = messages.snapshots().listen(
-      (event) {
+          (event) {
         for (var change in event.docChanges) {
           switch (change.type) {
             case DocumentChangeType.added:

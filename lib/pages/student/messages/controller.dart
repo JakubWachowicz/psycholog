@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:jw_projekt/common/stores/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jw_projekt/controller/db_data_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as authP;
@@ -17,6 +19,7 @@ class MessagesConroller extends GetxController {
 
   final MessagesState state = MessagesState();
   final db = FirebaseFirestore.instance;
+  final DbDataController db_controller = DbDataController();
   final token = UserStore.to.token;
   var listener;
 
@@ -25,11 +28,17 @@ class MessagesConroller extends GetxController {
     initialRefresh: true,
   );
 
+  static const oneSecond = const Duration(seconds: 25);
+
   @override
   void onReady() {
     super.onReady();
 
     initAsyncChatRefresh();
+    //TO jest chyba dosyć nie optymalne
+    //TODO: Update tylko czasu a nie wszystkieoo
+    new Timer.periodic(oneSecond, (Timer t)  {state.messages.refresh();
+    print("Update");});
   }
 
   String? getCurrentUserId() {

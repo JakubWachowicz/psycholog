@@ -1,7 +1,10 @@
+import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/search_wideg.dart';
 import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_button.dart';
 import 'package:jw_projekt/pages/student/messages/widgets/messages_list.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../../../Widgets/nav_bar.dart';
+import '../../student/messages/widgets/messages_list_new.dart';
 import 'controller.dart';
 import 'widgets/messages_list.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,11 +26,16 @@ class SpecialistMessagePage extends GetView<SpecialistMessagesConroller> {
         title: Text("Messages"),
         backgroundColor: Colors.green,
         actions: [
-          Container(
+          InkWell(
+            onTap: (){
+              controller.state.isFilterOpen.value = !controller.state.isFilterOpen.value;
+            },
+            child: Container(
 
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: _buildSortButton(),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child:Icon(Icons.search),
+              ),
             ),
           ),
         ],
@@ -37,15 +45,27 @@ class SpecialistMessagePage extends GetView<SpecialistMessagesConroller> {
 
     print(controller.state.messageList.length);
     return Scaffold(
-
+        drawer: NavBar(),
         appBar: _buildAppBar(),
         body: Column(
           children: [
+            
+            Obx(()=>controller.state.isFilterOpen.value?
+            Container(
+              child: Row(
+                children: [
+                  Expanded(child: Container(child: SearchWidget(searchController: controller.searchController,onSearch: controller.searchMessages,))),
+                  SortButton(onPressed: (SortType sortType) {  controller.sortMessages(sortType);},),
+                ],
+              ),
+            ):SizedBox(),),
+            
+            
 
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SpecialistMessageList(),
+                child: SpecialistMessageListNew(),
               ),
             ),
           ],

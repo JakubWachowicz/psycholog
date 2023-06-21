@@ -7,6 +7,7 @@ import 'package:jw_projekt/controller/report_db_controller.dart';
 
 import '../../../Utils/date.dart';
 import '../../../common/routes/routes.dart';
+import '../../../controller/db_data_controller.dart';
 import '../../../entities/report.dart';
 import '../../../entities/user.dart';
 import 'index.dart';
@@ -23,7 +24,7 @@ class YourReportInfoConroller extends GetxController {
   var report_id;
   var docId;
   TextEditingController commentContent = TextEditingController();
-
+  final DbDataController db_controller = DbDataController();
   ReportDbController dbController = ReportDbController();
   void handleSendComment(String content) async{
 

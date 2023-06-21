@@ -18,7 +18,7 @@ class ApplicationConroller extends GetxController{
     tabTitles = ['Chat', 'Contact','Profile'];
     bottomTabs = <BottomNavigationBarItem>[
       const BottomNavigationBarItem(icon: Icon(Icons.message),label: 'contact'),
-      const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
+
       const BottomNavigationBarItem(icon: Icon(Icons.person),label: 'profile'),
       const BottomNavigationBarItem(icon: Icon(Icons.error),label: 'report'),
 

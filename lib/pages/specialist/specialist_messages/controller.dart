@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:jw_projekt/common/routes/routes.dart';
 import 'package:jw_projekt/common/stores/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jw_projekt/controller/db_data_controller.dart';
 import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -13,6 +14,7 @@ import '../../../entities/messages.dart';
 import '../../../entities/msg_content.dart';
 import '../../../entities/user.dart';
 import 'index.dart';
+import 'dart:async';
 
 class SpecialistMessagesConroller extends GetxController {
   SpecialistMessagesConroller();
@@ -21,23 +23,50 @@ class SpecialistMessagesConroller extends GetxController {
   final db = FirebaseFirestore.instance;
   final token = UserStore.to.token;
   var listener;
+  DbDataController db_controller = DbDataController();
+
+
+  final TextEditingController searchController = TextEditingController();
+  String searchKeyword = '';
+
 
 
   final RefreshController refreshController = RefreshController(
     initialRefresh: true,
   );
 
-  @override
-  void onReady() {
-    super.onReady();
-    asyncLoadAllData();
-  }
 
   String? getCurrentUserId() {
     authP.FirebaseAuth auth = authP.FirebaseAuth.instance;
     String? currentUser = auth.currentUser?.uid;
     return currentUser;
   }
+
+  void searchMessages(String keyword) {
+
+
+    print('Testowanie');
+    print(searchController.text);
+    // Update the search keyword and perform the search
+    state.filteredMessages.clear();
+    state.filteredMessages.assignAll(filterMessages(state.messages, searchController.text));
+
+  }
+
+  List<Msg> filterMessages(List<Msg> messages, String searchText) {
+    print(searchText);
+    print(messages[0].from_name);
+    print(messages[0].from_name!.contains(searchText));
+    return messages.where((message) => message.from_name!.contains(searchText)).toList();
+  }
+
+  void updateFilterList(){
+    state.filteredMessages.clear();
+    state.filteredMessages.assignAll(state.messages.value);
+    filterMessages(state.messages, searchController.text);
+
+  }
+
 
   Future<UserData?> fetchCurrentUser() async {
     var userSnapshot = await db
@@ -94,6 +123,7 @@ class SpecialistMessagesConroller extends GetxController {
         Get.toNamed(AppRoutes.SpecialistChat, parameters: {
           "doc_id": value.id,
           "to_uid": to_userdata.id ?? "",
+           "from_uid" : msgdata.from_uid??"",
           "to_name": to_userdata.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
           "from_name": data?.name ?? "",
@@ -113,31 +143,22 @@ class SpecialistMessagesConroller extends GetxController {
   }
 
   late final name;
-
+  static const oneSecond = const Duration(seconds: 25);
   @override
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
     UserData? data = await fetchCurrentUser();
     name = data?.name;
+
+    initAsyncChatRefresh();
+    //TO jest chyba dosyć nie optymalne
+    //TODO: Update tylko czasu a nie wszystkieoo
+    new Timer.periodic(oneSecond, (Timer t)  {state.messages.refresh();
+    print("Update");});
   }
 
-  void onRefresh() {
 
-    asyncLoadAllData().then((_) {
-      refreshController.refreshCompleted(resetFooterState: true);
-    }).catchError((_) {
-      refreshController.refreshFailed();
-    });
-  }
-
-  void onLoading() {
-
-    //state.messageLimit+= 2;
-    print(state.messageLimit);
-    asyncLoadAllData();
-
-  }
   Future<int> getUnreadMessageCount(String docId) async {
     var from_messages = await db
         .collection("messages")
@@ -158,70 +179,103 @@ class SpecialistMessagesConroller extends GetxController {
     print(sortType);
     switch (sortType) {
       case SortType.timestamp:
-        state.messageList.sort((a, b) {
-          final aTime = a.data().last_time;
-          final bTime = b.data().last_time;
+        state.messages.sort((a, b) {
+          final aTime = a.last_time;
+          final bTime = b.last_time;
           return bTime!.compareTo(aTime!);
         });
+        updateFilterList();
         print('Posortowano po dacie');
         break;
       case SortType.alphabetical:
-        state.messageList.sort((a, b) {
-          final aTime = a.data().from_name;
-          final bTime = b.data().from_name;
+        state.messages.sort((a, b) {
+          final aTime = a.from_name;
+          final bTime = b.from_name;
           return aTime!.compareTo(bTime!);
         });
+        updateFilterList();
         print("Posortowano po nazwie");
         break;
     }
+
   }
 
-  asyncLoadAllData() async {
-    var from_messages = await db
+
+
+
+
+  void initAsyncChatRefresh() async{
+
+    var data = await db
         .collection("messages")
         .withConverter(
-            fromFirestore: Msg.fromFirestore,
-            toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("from_uid", isEqualTo: token)
-        .get();
-    var to_messages = await db
-        .collection("messages")
-        .withConverter(
-            fromFirestore: Msg.fromFirestore,
-            toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("to_uid", isEqualTo: token)
-        .get();
-    state.messageList.clear();
+        fromFirestore: Msg.fromFirestore,
+        toFirestore: (Msg msg, options) => msg.toFirestore()).where("to_uid",isEqualTo:token);
 
-    for (var msg in from_messages.docs) {
-      final unreadCount = await getUnreadMessageCount(msg.id);
-      state.unreadMsgCounter[msg.id] = unreadCount;
-      print(unreadCount);
-      print("Toje saa");
-      print(state.unreadMsgCounter[msg.id]);
-      print("Toje poo");
-    }
+    state.messages.clear();
 
-    for (var msg in to_messages.docs) {
-      final unreadCount = await getUnreadMessageCount(msg.id);
-      state.unreadMsgCounter[msg.id] = unreadCount;
-      print(unreadCount);
-    }
+    listener = data.snapshots().listen(
+          (event) async {
+        for (var change in event.docChanges) {
+          switch (change.type) {
+            case DocumentChangeType.added:
+              if (change.doc.data() != null) {
+                state.messages.insert((0), change.doc.data()!);
+                print('dodano');
+                updateFilterList();
 
-    if (from_messages.docs.isNotEmpty) {
-      state.messageList.assignAll(from_messages.docs);
-    }
-    if (to_messages.docs.isNotEmpty) {
-      state.messageList.assignAll(to_messages.docs);
-    }
-    state.messageList.sort((a, b) {
-      final aTime = a.data().last_time;
+              }
+              break;
+            case DocumentChangeType.modified:
+              var modifiedMessage = change.doc.data();
+              if (modifiedMessage != null) {
+                // Find the index of the modified message in the list
+                print("Tutaj coś nie gra lol");
+                var index = state.messages.indexWhere((msg) => msg.messageId == modifiedMessage.messageId);
+                print(index);
+                print("Tutaj coś nie gra popop");
+                if (index != -1) {
+                  // Replace the old message with the modified message
+                  state.messages[index] = modifiedMessage;
+                  print(state.messages[index].last_msg);
 
-      final bTime = b.data().last_time;
+                  state.messages.sort((a, b) {
+                    final aTime = a.last_time;
 
+                    final bTime = b.last_time;
+
+                    return bTime!.compareTo(aTime!);
+                  });
+                  state.messages.refresh();
+                  updateFilterList();
+
+
+
+
+
+
+                }}
+              break;
+            case DocumentChangeType.removed:
+              break;
+          }
+        }
+      },
+      onError: (error) => print("listen failed: ${error}"),
+    );
+
+    state.messages.sort((a, b) {
+      final aTime = a.last_time;
+      final bTime = b.last_time;
       return bTime!.compareTo(aTime!);
     });
+    updateFilterList();
+
+
+
+
   }
+
 
 
 

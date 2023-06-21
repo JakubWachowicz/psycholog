@@ -16,9 +16,9 @@ class ReportPage extends GetView<ReportConroller> {
       height: 50.w,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          color: controller.state.index == itemIndex?Colors.green:Colors.white
+          color: controller.state.index != itemIndex?Colors.green:Colors.white
       ),
-      child: Text(title,style: TextStyle(color: controller.state.index == itemIndex?Colors.white:Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
+      child: Text(title,style: TextStyle(color: controller.state.index != itemIndex?Colors.white:Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
     ));
   }
 

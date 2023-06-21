@@ -259,6 +259,7 @@ class SpecialistReportsMenagmentConroller extends GetxController {
         toFirestore: (Msg msg, options) => msg.toFirestore())
         .where("to_uid", isEqualTo: token)
         .where("from_uid", isEqualTo: to_userdata.id)
+        .where("message_type",isEqualTo:state.reportId.value)
         .get();
 
 
@@ -267,12 +268,13 @@ class SpecialistReportsMenagmentConroller extends GetxController {
       UserLoginResponseEntity userdata =
       UserLoginResponseEntity.fromJson(jsonDecode(profile));
       var msgdata = Msg(
-          from_uid: userdata.accessToken,
-          to_uid: to_userdata.id,
-          from_name: data?.name??"Niepowodzenie",
-          to_name: to_userdata.name,
-          from_avatar: userdata.photoUrl,
-          to_avatar: to_userdata.photourl,
+          from_uid: to_userdata.id,
+          to_uid: token,
+          from_name: to_userData.name,
+          to_name: userdata.displayName,
+          from_avatar: to_userData.photourl,
+          to_avatar: userdata.photoUrl,
+          message_type: state.reportId.value,
           last_msg: "",
           last_time: Timestamp.now(),
           msg_num: 0);
@@ -285,10 +287,10 @@ class SpecialistReportsMenagmentConroller extends GetxController {
           .then((value) {
         Get.toNamed("/chat", parameters: {
           "doc_id": value.id,
-          "to_uid": to_userdata.id ?? "",
-          "to_name": state.title.value ?? "",
+          "to_uid": data!.id?? "",
+          "to_name": data.name ?? "",
           "to_avatar": to_userdata.photourl ?? "",
-          "from_name": state.title.value?? "",
+          "from_name": to_userData.name?? "",
 
         });
       });
