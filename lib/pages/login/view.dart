@@ -9,11 +9,10 @@ import 'package:dots_indicator/dots_indicator.dart';
 import '../../view/widgets/text_input_field.dart';
 
 class LoginPage extends GetView<LoginConroller> {
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
 
 
 
@@ -83,37 +82,38 @@ class LoginPage extends GetView<LoginConroller> {
 
 
     Widget _buildLogo() {
-      return Container(
-        width: 200.w,
-        margin: EdgeInsets.only(top: 0.h),
-        child: Column(
-          children: [
-            Container(
-              width: 200.w,
-              height: 200.w,
-              margin: EdgeInsets.symmetric(horizontal: 15.w),
-              child: Stack(
-                children: [
 
-                  Positioned(child: Container(
-                    width: 300.h,
-                    height: 300.h,
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/logo.jpg"),
-                          fit: BoxFit.cover ,
-                        )),
-                  ))
-                ],
+
+      return AnimatedOpacity(
+        opacity: !controller.state.isKeyboardActive.value ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 500),
+        child: Container(
+          width: 200.w,
+          margin: EdgeInsets.only(top: 0.h),
+          child:  !controller.state.isKeyboardActive.value?Column(
+            children: [
+              Container(
+                width: 200.w,
+                height: 200.w,
+                margin: EdgeInsets.symmetric(horizontal: 15.w),
+                child: Container(
+                  width: 300.h,
+                  height: 300.h,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/logo.jpg"),
+                        fit: BoxFit.cover ,
+                      )),
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top:10.h,bottom: 20.h),
-              child: Text("SchoolCare",style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w800),),)
+              Container(
+                margin: EdgeInsets.only(top:10.h,bottom: 20.h),
+                child: Text("SchoolCare XXX",style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w800),),)
 
-          ],
-        ),
+            ],
+          ):null,
 
+        )
       );
     }
 
@@ -121,20 +121,13 @@ class LoginPage extends GetView<LoginConroller> {
 
         body: Center(
           child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
 
-
-                _buildLogo(),
+                SizedBox(height: 90.w,),
+               _buildLogo(),
                 controller.state.errorMessage.value != ""?Text(controller.state.errorMessage.value,style: TextStyle(color: Colors.red)): Text(""),
                 _buildTextInputs(),
-
-
-
-
-
-
-
               ]
           ),
         )));

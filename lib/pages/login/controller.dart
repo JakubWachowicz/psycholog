@@ -10,8 +10,8 @@ import '../../common/routes/routes.dart';
 import '../../controller/auth_controller.dart';
 import '../../controller/db_data_controller.dart';
 import '../../entities/user.dart';
-
-
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'dart:async';
 
 class LoginConroller extends GetxController{
 
@@ -34,6 +34,28 @@ class LoginConroller extends GetxController{
 
   bool get isPasswordValid => true;
   final token = UserStore.to.token;
+  late StreamSubscription<bool> keyboardSubscription;
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+    var keyboardVisibilityController = KeyboardVisibilityController();
+    // Query
+    print('Keyboard visibility direct query: ${keyboardVisibilityController.isVisible}');
+
+    // Subscribe
+    keyboardSubscription = keyboardVisibilityController.onChange.listen((bool visible) {
+      state.isKeyboardActive.value= visible;
+      print("isKeyboard active update " + state.isKeyboardActive.value.toString());
+    });
+  }
+
+  @override
+  void dispose() {
+    keyboardSubscription.cancel();
+    super.dispose();
+  }
+
 
   void validateTextFields(String login, String password){
 
@@ -84,7 +106,7 @@ class LoginConroller extends GetxController{
       }
       //TODO Save profile
 
-      //UserStore.to.saveProfile()
+      //UserStore.to.saveProfile();
 
   }
 
