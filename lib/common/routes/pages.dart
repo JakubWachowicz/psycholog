@@ -20,94 +20,93 @@ import '../../pages/student/report_form/index.dart';
 import '../../pages/welcome/index.dart';
 import '../middlewares/router_welcome.dart';
 
-
-class AppPages{
-
+class AppPages {
   static const INITIAL = AppRoutes.INITIAL;
   static const Application = AppRoutes.Application;
   static final RouteObserver<Route> observer = RouteObserver();
   static List<String> history = [];
 
-  static final  List<GetPage> routes = [
+  static final List<GetPage> routes = [
     GetPage(
-      name: AppRoutes.INITIAL,
-      page:() => const WelcomePage(),
-      binding: WelcomeBinding(),
-      middlewares: [
-        RouteWelcomeMiddleware(priority:1)
-      ]
-    ),
+        name: AppRoutes.INITIAL,
+        page: () => const WelcomePage(),
+        binding: WelcomeBinding(),
+        middlewares: [RouteWelcomeMiddleware(priority: 1)]),
     GetPage(
       name: AppRoutes.Login,
-      page:() => LoginPage(),
+      page: () => LoginPage(),
       binding: LoginBinding(),
     ),
     GetPage(
       name: AppRoutes.Application,
-      page:() => ApplicationPage(),
+      page: () => ApplicationPage(),
       binding: ApplicationBinding(),
     ),
     GetPage(
       name: AppRoutes.AdminApplication,
-      page:() => AdminApplicationPage(),
+      page: () => AdminApplicationPage(),
       binding: AdminApplicationBinding(),
     ),
-
     GetPage(
       name: AppRoutes.SpecialistApplication,
-      page:() => SpecialistApplicationPage(),
+      page: () => SpecialistApplicationPage(),
       binding: SpecialistApplicationBinding(),
     ),
     GetPage(
       name: AppRoutes.Messages,
-      page:() => MessagePage(),
+      page: () => MessagePage(),
       binding: MessagesBinding(),
     ),
-
     GetPage(
       name: AppRoutes.Chat,
-      page:() => ChatPage(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 200),
+      page: () => ChatPage(),
       binding: ChatBinding(),
     ),
     GetPage(
       name: AppRoutes.SpecialistChat,
-      page:() => SpecialistChatPage(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 200),
+      page: () => SpecialistChatPage(),
       binding: SpecialistChatBinding(),
     ),
-
     GetPage(
       name: AppRoutes.ReportForm,
-      page:() => ReportFormPage(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 200),
+      page: () => ReportFormPage(),
       binding: ReportFormBinding(),
     ),
-
     GetPage(
       name: AppRoutes.SpecialistReportMenagment,
-      page:() => SpecialistReportsMenagmentPage(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 200),
+      page: () => SpecialistReportsMenagmentPage(),
       binding: SpecialistReportMenagmentBinding(),
     ),
     GetPage(
       name: AppRoutes.SpecialistReportCanban,
-      page:() => SpecialistReportKanbanPage(title: 'Trello',),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 200),
+      page: () => SpecialistReportKanbanPage(
+        title: 'Trello',
+      ),
       binding: SpecialistReportMenagmentBinding(),
     ),
-
-
     GetPage(
       name: AppRoutes.YourReportInfoPage,
-      page:() => YourReportInfoPage(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 200),
+      page: () => YourReportInfoPage(),
       binding: YourReportInfoBinding(),
     ),
-
     GetPage(
       name: AppRoutes.Profile,
-      page:() => ProfilePage(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 200),
+      page: () => ProfilePage(),
       binding: ProfileBinding(),
     )
-
-
-
-
   ];
-
 }
