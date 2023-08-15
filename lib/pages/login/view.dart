@@ -16,23 +16,7 @@ class LoginPage extends GetView<LoginConroller> {
 
 
 
-    var emailInputField = TextInputField(
-      controller: controller.emailController,
-      labelText: 'email',
-      icon: Icons.email_outlined,
-      isObscured: false,
-      errorMessage: 'Invalid email',
-      dummyClass: DummyClass(controller.isEmailValid),
-    );
 
-    var passwordInputField = TextInputField(
-      controller: controller.passwordController,
-      labelText: 'password',
-      icon: Icons.lock,
-      isObscured: true,
-      errorMessage: 'Invalid password',
-      dummyClass: DummyClass(controller.isPasswordValid),
-    );
 
 
     Widget _buildTextInputs(){
@@ -43,14 +27,14 @@ class LoginPage extends GetView<LoginConroller> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
 
-              child: emailInputField,
+              child: controller.emailInputField,
             ),
           ),
 
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              child: passwordInputField,
+              child: controller.passwordInputField,
             ),
           ),
 
@@ -63,15 +47,25 @@ class LoginPage extends GetView<LoginConroller> {
                 color: Colors.green,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: InkWell(
-                  onTap: () {
-                      controller.handleLogin();
-                  },
-                  child: const Center(
-                      child: Text(
-                        'Login',
-                        style: TextStyle(color:Colors.white,fontSize: 20, fontWeight: FontWeight.w700),
-                      ))),
+              child: IgnorePointer(
+                ignoring: !controller.state.areAllFieldsEntered.value,
+                child: Container(
+                  foregroundDecoration: !controller.state.areAllFieldsEntered.value
+                      ? BoxDecoration( //this can make disabled effect
+                      color: Colors.grey,
+                      backgroundBlendMode: BlendMode.lighten)
+                      : null,
+                  child: InkWell(
+                      onTap: () {
+                          controller.handleLogin();
+                      },
+                      child: const Center(
+                          child: Text(
+                            'Login',
+                            style: TextStyle(color:Colors.white,fontSize: 20, fontWeight: FontWeight.w700),
+                          ))),
+                ),
+              ),
             ),
           )
 

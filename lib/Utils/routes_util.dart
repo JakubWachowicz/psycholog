@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import 'package:jw_projekt/view/screens/chat_screen.dart';
 
 import '../model/chat.dart';
-import '../view/screens/auth/login_screen.dart';
-import '../view/screens/auth/signup_screen.dart';
+
 import '../view/screens/home_screen.dart';
 
 class RoutesUtil{
@@ -34,8 +33,7 @@ class RoutesUtil{
 
   static List<GetPage> routes = [
     GetPage(name: _home, page: ()=>HomeScreen()),
-    GetPage(name: _login, page: ()=>LoginScreen()),
-    GetPage(name: _signup, page: ()=>SignUpScreen()),
+
     GetPage(name: _chat, page: ()=>ChatScreen(userName: temp,chat: chat,)),
   ];
 }

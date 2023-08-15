@@ -8,7 +8,8 @@ import 'index.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 
 class StudentFormPage extends GetView<StudentFormConroller> {
-  const StudentFormPage({Key? key}) : super(key: key);
+  StudentFormPage({Key? key}) : super(key: key);
+  Rx<bool> isPasswordValid = true.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,6 @@ class StudentFormPage extends GetView<StudentFormConroller> {
       icon: Icons.email_outlined,
       isObscured: false,
       errorMessage: 'Invalid PESEL',
-      dummyClass: DummyClass(controller.isPeselValid),
     );
 
     Widget _buildSubmitButton() {
@@ -45,23 +45,20 @@ class StudentFormPage extends GetView<StudentFormConroller> {
       );
     }
 
-    Widget _buildPage2(){
-
-      return Obx(()=>Container(
-        child: Column(
-          children: [
-            Text(controller.peselController.text),
-            Text(controller.state.password.value),
-
-          ],
-        ),
-      ));
+    Widget _buildPage2() {
+      return Obx(() => Container(
+            child: Column(
+              children: [
+                Text(controller.peselController.text),
+                Text(controller.state.password.value),
+              ],
+            ),
+          ));
     }
 
-    Widget _buildPage3(){
+    Widget _buildPage3() {
       return Container();
     }
-
 
     Widget _buildPeselInput() {
       return Column(
@@ -82,8 +79,7 @@ class StudentFormPage extends GetView<StudentFormConroller> {
       );
     }
 
-
-    Widget _buildPage1(){
+    Widget _buildPage1() {
       return Container(
         child: Column(
           children: [
@@ -92,13 +88,12 @@ class StudentFormPage extends GetView<StudentFormConroller> {
               height: 40.w,
             ),
             _buildSubmitButton(),
-
           ],
         ),
       );
     }
 
-    Widget _buildForm(){
+    Widget _buildForm() {
       return Expanded(
         child: PageView(
           physics: NeverScrollableScrollPhysics(),
@@ -107,7 +102,9 @@ class StudentFormPage extends GetView<StudentFormConroller> {
           children: [
             _buildPage1(),
             _buildPage2(),
-            Center(child: Text('3'),),
+            Center(
+              child: Text('3'),
+            ),
           ],
         ),
       );
@@ -125,7 +122,6 @@ class StudentFormPage extends GetView<StudentFormConroller> {
                 activeSize: Size(30.0, 13.0),
                 activeShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5))),
-
             position: controller.state.index.toDouble(),
             dotsCount: 3,
             reversed: false,
@@ -134,10 +130,6 @@ class StudentFormPage extends GetView<StudentFormConroller> {
         ),
       );
     }
-
-
-
-
 
     return Scaffold(
       body: Center(
@@ -152,7 +144,6 @@ class StudentFormPage extends GetView<StudentFormConroller> {
                   height: 70.h,
                 ),
                 _buildForm(),
-
                 _buildDotsIndicator()
               ],
             ),

@@ -12,6 +12,8 @@ import '../../controller/db_data_controller.dart';
 import '../../entities/user.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
+import '../../view/widgets/text_input_field.dart';
 
 class LoginConroller extends GetxController{
 
@@ -35,9 +37,47 @@ class LoginConroller extends GetxController{
   bool get isPasswordValid => true;
   final token = UserStore.to.token;
   late StreamSubscription<bool> keyboardSubscription;
+
+
+  late TextInputField emailInputField;
+  late TextInputField passwordInputField;
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    passwordInputField = TextInputField(
+      controller: passwordController,
+      labelText: 'password',
+      icon: Icons.lock,
+      isObscured: true,
+      errorMessage: 'Invalid password',
+
+    );
+
+    emailInputField = TextInputField(
+      controller: emailController,
+      labelText: 'email',
+      icon: Icons.email_outlined,
+      isObscured: false,
+      errorMessage: 'Invalid email',
+
+    );
+
+
+
+
+    emailController.addListener(() {
+      state.areAllFieldsEntered.value = checkIfAllFieldsAreEntenred(passwordController.text,emailController.text);
+    });
+    passwordController.addListener(() {
+      state.areAllFieldsEntered.value = checkIfAllFieldsAreEntenred(passwordController.text,emailController.text);
+    });
+
+
+  }
   @override
   void onReady() {
-    // TODO: implement onReady
     super.onReady();
     var keyboardVisibilityController = KeyboardVisibilityController();
     // Query
@@ -53,17 +93,33 @@ class LoginConroller extends GetxController{
   @override
   void dispose() {
     keyboardSubscription.cancel();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
+  bool checkIfAllFieldsAreEntenred(String email,String password){
+    if(email =="" || password == ""){
+      return false;
+    }
+    return true;
+  }
 
   void validateTextFields(String login, String password){
 
-    if(login.length == ""){
+    print("Test "+login);
+    print("null chyba");
+    if(login == null ||login.trim() ==  ""){
       state.emailErrorMessage = Rx<String>("Enter email");
+
+      emailInputField.setIsValid(false);
+      state.isEmailValid.value = false;
+
     }
-    if(password == ""){
+    if(password.trim() == ""){
       state.passwordErrorMessage = Rx<String>("Enter password");
+      passwordInputField.setIsValid(false);
+      state.isPasswordValid.value = false;
     }
 
 
@@ -72,6 +128,9 @@ class LoginConroller extends GetxController{
 
   
   Future<void> handleLogin() async{
+
+      print('lol');
+      validateTextFields(emailController.text, passwordController.text);
       bool isValid = await auth.loginUser(emailController.text, passwordController.text);
       print("TO jest token:");
       print(token);

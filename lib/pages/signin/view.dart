@@ -10,7 +10,7 @@ import '../../view/widgets/text_input_field.dart';
 import 'controller.dart';
 
 class SigninPage extends GetView<SigninConroller> {
-  const SigninPage({Key? key}) : super(key: key);
+   SigninPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class SigninPage extends GetView<SigninConroller> {
       icon: Icons.email_outlined,
       isObscured: false,
       errorMessage: 'Invalid email',
-      dummyClass: DummyClass(controller.isEmailValid),
+
     );
 
     var passwordInputField = TextInputField(
@@ -53,7 +53,7 @@ class SigninPage extends GetView<SigninConroller> {
       icon: Icons.lock,
       isObscured: true,
       errorMessage: 'Invalid password',
-      dummyClass: DummyClass(controller.isPasswordValid),
+
     );
 
 
@@ -63,7 +63,7 @@ class SigninPage extends GetView<SigninConroller> {
       icon: Icons.person,
       isObscured: false,
       errorMessage: 'Invalid name',
-      dummyClass: DummyClass(controller.isPasswordValid),
+
     );
 
     Widget _buildTextInputs() {
