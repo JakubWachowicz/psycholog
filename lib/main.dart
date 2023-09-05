@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
-    return  ScreenUtilInit(builder: (BuildContext context, Widget? child) =>
+    return  ScreenUtilInit(useInheritedMediaQuery: true,builder: (BuildContext context, Widget? child) =>
 
         GetMaterialApp(
           title: 'Flutter Demo',

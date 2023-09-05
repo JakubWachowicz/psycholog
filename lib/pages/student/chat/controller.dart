@@ -6,6 +6,7 @@ import 'package:jw_projekt/pages/student/chat/state.dart';
 
 import '../../../common/routes/routes.dart';
 import '../../../controller/auth_controller.dart';
+import '../../../controller/send_message_controller.dart';
 import '../../../entities/msg_content.dart';
 
 
@@ -15,7 +16,7 @@ class ChatConroller extends GetxController {
   AuthenticationClontroller auth = AuthenticationClontroller();
   final state = ChatState();
 
-  ChatConroller();
+
 
   var doc_id = null;
   final textController = TextEditingController();
@@ -25,86 +26,7 @@ class ChatConroller extends GetxController {
   final db = FirebaseFirestore.instance;
   var listener;
   late final sender;
-
-
-
-  sendMessage() async {
-    if( textController.text.trim() == "") return;
-    String sendContent = textController.text;
-    final content = Msgcontent(
-      sender: name,
-      content: sendContent,
-      type: "text",
-      addtime: Timestamp.now(),
-      uid: user_id,
-      isRead: "False",
-    );
-    await db
-        .collection("messages")
-        .doc(doc_id)
-        .collection("msglist")
-        .withConverter(
-        fromFirestore: Msgcontent.fromFirestore,
-        toFirestore: (Msgcontent msgcontent, options) =>
-            msgcontent.toFirestore())
-        .add(content)
-        .then((DocumentReference doc) {
-      print("Document snapshot added with id ${doc.id}");
-      textController.clear();
-      //TODO:Przetestować czy działa
-      //Get.focusScope?.unfocus();
-    });
-    await db.collection("messages").doc(doc_id).update({
-      "last_msg": sendContent,
-      "last_time": Timestamp.now(),
-      "unreadMessagesCountStudent":0,
-      "unreadMessagesCountSpecialist":0,
-    });
-
-    await db.collection("messages").doc(doc_id).update({
-      "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,UserStore.to.token),
-      "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,state.to_uid.value!),
-    });
-  }
-
-
-  Future<void> updateIsRead(DocumentReference documentRef, bool isRead) async {
-
-    if(Get.currentRoute.contains(AppRoutes.Chat)){
-      documentRef.update({'isRead': isRead.toString()})
-          .then((value) {
-        print('isRead updated successfully');
-
-      })
-          .catchError((error) {
-        print('Failed to update isRead: $error');
-      });
-
-      await db.collection("messages").doc(doc_id).update({
-        "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,UserStore.to.token),
-        "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,state.to_uid.value!),
-      });
-
-    }
-
-  }
-
-  Future<int> getUnreadMessageCount(String docId,String uid) async {
-    var from_messages = await db
-        .collection("messages")
-        .doc(docId)
-        .collection("msglist")
-        .withConverter(
-        fromFirestore: Msgcontent.fromFirestore,
-        toFirestore: (Msgcontent msg, options) => msg.toFirestore())
-        .where("uid", isNotEqualTo: uid)
-        .where("isRead", isEqualTo: "False")
-        .get();
-    print('Liczba');
-    print(from_messages.docs.length);
-    return from_messages.docs.length;
-  }
-
+  late SendMessageController sendMessageController;
 
   @override
   void onReady() {
@@ -120,19 +42,16 @@ class ChatConroller extends GetxController {
         .orderBy("addtime", descending: false);
 
     state.msgcontentList.clear();
+    sendMessageController = SendMessageController(doc_id,user_id,state.to_uid.value,true);
     listener = messages.snapshots().listen(
           (event) {
         for (var change in event.docChanges) {
           switch (change.type) {
             case DocumentChangeType.added:
               if (change.doc.data() != null) {
-                print('Zmiana');
                 state.msgcontentList.insert((0), change.doc.data()!);
                 if(change.doc.data()?.uid != user_id){
-                  print('Ważne info');
-                  print(change.doc.data()?.uid );
-                  print(user_id);
-                  updateIsRead(change.doc.reference, true);
+                  sendMessageController.updateIsRead(change.doc.reference);
                 }
               }
               break;
@@ -150,14 +69,14 @@ class ChatConroller extends GetxController {
   late final name;
   late final topName;
 
+  sendMessage(){
+    sendMessageController.sendMessage(textController.text, name);
+    textController.clear();
+  }
 
   @override
   void onInit() {
     super.onInit();
-
-
-
-
     var data = Get.parameters;
     doc_id = data['doc_id'];
     state.to_uid.value = data['to_uid'] ?? "";
@@ -173,8 +92,6 @@ class ChatConroller extends GetxController {
       name =  data['from_name'];
       topName = state.to_name.value;
     }
-    print("lLAASgas");
-    print(name);
   }
 
   @override

@@ -71,7 +71,6 @@ class UserStore extends GetxController {
     await StorageService.to.remove(STORAGE_USER_PROFILE_KEY);
     await StorageService.to.remove(STORAGE_USER_ROLE_KEY);
 
-
     _isLogin.value = false;
     token = '';
     role = '';

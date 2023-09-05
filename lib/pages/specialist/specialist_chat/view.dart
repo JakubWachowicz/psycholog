@@ -56,7 +56,7 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
 
                           width: 360.w,
                           height:  80.w,
-                          child: Expanded(
+
                             child: TextField(
                               expands: true,
                               keyboardType: TextInputType.multiline,
@@ -84,7 +84,7 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
 
 
                             ),
-                          ),
+                       
                         ),
 
 

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:jw_projekt/common/stores/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jw_projekt/controller/send_message_controller.dart';
 import 'package:jw_projekt/pages/specialist/specialist_chat/state.dart';
 import 'package:jw_projekt/pages/student/chat/state.dart';
 
@@ -29,101 +30,15 @@ class SpecialistChatConroller extends GetxController {
   var listener;
   late final sender;
 
-
+  late SendMessageController sendMessageController;
 
   sendMessage() async {
-    if( textController.text.trim() == "") return;
-    String sendContent = textController.text;
-    final content = Msgcontent(
-      sender: topName,
-      content: sendContent,
-      type: "text",
-      addtime: Timestamp.now(),
-      uid: user_id,
-      isRead: "False",
-    );
-    await db
-        .collection("messages")
-        .doc(doc_id)
-        .collection("msglist")
-        .withConverter(
-            fromFirestore: Msgcontent.fromFirestore,
-            toFirestore: (Msgcontent msgcontent, options) =>
-                msgcontent.toFirestore())
-        .add(content)
-        .then((DocumentReference doc) {
-      print("Document snapshot added with id ${doc.id}");
-      textController.clear();
-      //TODO:Przetestować czy działa
-      //Get.focusScope?.unfocus();
-    });
-    await db.collection("messages").doc(doc_id).update({
-      "last_msg": sendContent,
-      "last_time": Timestamp.now(),
-      "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,user_id ),
-      "unreadMessagesCountSpecialist":await getUnreadMessageCount2(doc_id,user_id),
-    });
-
-
+    sendMessageController.sendMessage(textController.text, name);
+    textController.clear();
   }
 
 
-  Future<int> getUnreadMessageCount2(String docId,String uid) async {
-    var from_messages = await db
-        .collection("messages")
-        .doc(docId)
-        .collection("msglist")
-        .withConverter(
-        fromFirestore: Msgcontent.fromFirestore,
-        toFirestore: (Msgcontent msg, options) => msg.toFirestore())
-        .where("uid", isNotEqualTo:uid)
-        .where("isRead", isEqualTo: "False")
-        .get();
-    print('Liczba 1');
-    print(from_messages.docs.length);
-    return from_messages.docs.length;
-  }
 
-  Future<int> getUnreadMessageCount(String docId,String uid) async {
-    var from_messages = await db
-        .collection("messages")
-        .doc(docId)
-        .collection("msglist")
-        .withConverter(
-        fromFirestore: Msgcontent.fromFirestore,
-        toFirestore: (Msgcontent msg, options) => msg.toFirestore())
-        .where("uid", isEqualTo:uid)
-        .where("isRead", isEqualTo: "False")
-        .get();
-    print('Liczba 2');
-    print(from_messages.docs.length);
-    return from_messages.docs.length;
-  }
-
-
-  Future<void> updateIsRead(DocumentReference documentRef, bool isRead) async {
-
-    print("________________________________");
-    print(Get.currentRoute);
-    if(Get.currentRoute.contains(AppRoutes.SpecialistChat)){
-      documentRef.update({'isRead': isRead.toString()})
-          .then((value) {
-        print('isRead updated successfully');
-      })
-          .catchError((error) {
-        print('Failed to update isRead: $error');
-      });
-      await db.collection("messages").doc(doc_id).update({
-
-
-        "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,UserStore.to.token!),
-        "unreadMessagesCountSpecialist":await getUnreadMessageCount2(doc_id,UserStore.to.token!),
-      });
-      print('##########!');
-      print(state.to_uid.value);
-    }
-
-  }
 
 
   @override
@@ -139,7 +54,9 @@ class SpecialistChatConroller extends GetxController {
                 msgcontent.toFirestore())
         .orderBy("addtime", descending: false);
 
+    sendMessageController = SendMessageController(doc_id, UserStore.to.token!, state.to_uid.value, false);
     state.msgcontentList.clear();
+    //sendMessageController.updateIsRead(doc_id);
     listener = messages.snapshots().listen(
       (event) {
         for (var change in event.docChanges) {
@@ -149,7 +66,7 @@ class SpecialistChatConroller extends GetxController {
                 state.msgcontentList.insert((0), change.doc.data()!);
                 if(change.doc.data()?.uid != user_id){
                   print('Tutaj trzeba się zatrzymać');
-                  updateIsRead(change.doc.reference, true);
+                  sendMessageController.updateIsRead(change.doc.reference);
                 }
               }
               break;
@@ -173,8 +90,7 @@ class SpecialistChatConroller extends GetxController {
     super.onInit();
 
 
-   // new Timer.periodic(oneSecond, (Timer t)  {state.msgcontentList.refresh();
-    //print("Update");});
+
 
     var data = Get.parameters;
     doc_id = data['doc_id'];

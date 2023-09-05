@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 
+import '../../Widgets/logo.dart';
 import '../../view/widgets/text_input_field.dart';
 
 class LoginPage extends GetView<LoginConroller> {
@@ -102,7 +103,7 @@ class LoginPage extends GetView<LoginConroller> {
               ),
               Container(
                 margin: EdgeInsets.only(top:10.h,bottom: 20.h),
-                child: Text("SchoolCare XXX",style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w800),),)
+                child: Logo())
 
             ],
           ):null,
