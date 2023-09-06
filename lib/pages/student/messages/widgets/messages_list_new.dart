@@ -12,12 +12,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class MessageListNew extends GetView<MessagesConroller> {
   MessageListNew({Key? key}) : super(key: key);
 
-  Future<String?> initAvatar(item) async {
+  Future<String?> initAvatar(Msg item) async {
     var avatar;
-    if (item.to_uid == controller.token) {
-      avatar = await controller.db_controller.getAvatar(item.from_uid);
+    if (item.student_uid == controller.token) {
+      avatar = await controller.db_controller.getAvatar(item.specialist_avatar);
     } else {
-      avatar = await controller.db_controller.getAvatar(item.to_uid);
+      avatar = await controller.db_controller.getAvatar(item.student_avatar);
     }
     return avatar;
   }
@@ -40,6 +40,8 @@ class MessageListNew extends GetView<MessagesConroller> {
                         String avatarString = snapshot.data ?? '';
                         return buildListItem(item, avatarString);
                       } else if (snapshot.hasError) {
+                        print("HOLOLOLOLO");
+                        print("Error loading avatar: ${snapshot.error}");
                         return Text('Error loading avatar');
                       } else {
                         return CircularProgressIndicator();
@@ -61,26 +63,7 @@ class MessageListNew extends GetView<MessagesConroller> {
       margin: EdgeInsets.only(top: 10.w),
       child: InkWell(
         onTap: () {
-          var to_uid = "";
-          var to_name = "";
-          var to_avatar = "";
-
-          if (item.from_uid == controller.token) {
-            to_uid = item.to_uid ?? "";
-            to_name = item.to_name ?? "";
-            to_avatar = item.to_avatar ?? "";
-          } else {
-            to_uid = item.from_uid ?? "";
-            to_name = item.from_name ?? "";
-            to_avatar = item.from_avatar ?? "";
-          }
-          Get.toNamed("/chat", parameters: {
-            "doc_id": item.messageId!,
-            "to_uid": to_uid,
-            "to_name": to_name,
-            "to_avatar": to_avatar,
-            "from_name": controller.name,
-          });
+         controller.goChat(item);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -109,7 +92,7 @@ class MessageListNew extends GetView<MessagesConroller> {
                         Text(
                           item.message_type != null
                               ? item.message_type!
-                              : item.to_name!,
+                              : item.specialist_name!,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18.sp,

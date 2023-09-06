@@ -13,17 +13,9 @@ class SendMessageController{
   SendMessageController(String this.doc_id,this.uid,this.to_uid,this.isItStudent);
 
 
-  Future<void> updateIsRead(DocumentReference documentRef) async {
+  Future<void> updateIsRead() async {
 
     if(Get.currentRoute.contains(AppRoutes.Chat)){
-      documentRef.update({'isRead': true})
-          .then((value) {
-        print('isRead updated successfully');
-
-      })
-          .catchError((error) {
-        print('Failed to update isRead: $error');
-      });
 
       if(isItStudent){
         await db.collection("messages").doc(doc_id).update({

@@ -1,6 +1,6 @@
 import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/search_wideg.dart';
 import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_button.dart';
-import 'package:jw_projekt/pages/student/messages/widgets/messages_list.dart';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../../Widgets/nav_bar.dart';

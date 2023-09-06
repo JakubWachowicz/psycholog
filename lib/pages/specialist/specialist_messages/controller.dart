@@ -10,6 +10,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as authP;
 import 'package:flutter/material.dart';
+import '../../../controller/send_message_controller.dart';
 import '../../../entities/messages.dart';
 import '../../../entities/msg_content.dart';
 import '../../../entities/user.dart';
@@ -54,10 +55,8 @@ class SpecialistMessagesConroller extends GetxController {
   }
 
   List<Msg> filterMessages(List<Msg> messages, String searchText) {
-    print(searchText);
-    print(messages[0].from_name);
-    print(messages[0].from_name!.contains(searchText));
-    return messages.where((message) => message.from_name!.contains(searchText)).toList();
+
+    return messages.where((message) => message.student_name!.contains(searchText)).toList();
   }
 
   void updateFilterList(){
@@ -86,60 +85,21 @@ class SpecialistMessagesConroller extends GetxController {
   }
 
 
+  DbDataController dbDataController = DbDataController();
+
 
   goChat(UserData to_userdata) async {
+
+
+
+
     UserData? data = await fetchCurrentUser()!;
     print(to_userdata);
 
-    var from_messages = await db
-        .collection("messages")
-        .withConverter(
-            fromFirestore: Msg.fromFirestore,
-            toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("to_uid", isEqualTo: token)
-        .get();
+    dbDataController.goChat(data!,to_userdata!,false);
 
-    if (from_messages.docs.isEmpty ) {
-      String profile = await UserStore.to.getProfile();
-      UserLoginResponseEntity userdata =
-          UserLoginResponseEntity.fromJson(jsonDecode(profile));
-      var msgdata = Msg(
-          from_uid: userdata.accessToken,
-          to_uid: to_userdata.id,
-          from_name: data?.name ?? "Niepowodzenie",
-          to_name: to_userdata.name,
-          from_avatar: userdata.photoUrl,
-          to_avatar: to_userdata.photourl,
-          last_msg: "",
-          last_time: Timestamp.now(),
-          msg_num: 0);
-      db
-          .collection("messages")
-          .withConverter(
-              fromFirestore: Msg.fromFirestore,
-              toFirestore: (Msg msg, options) => msg.toFirestore())
-          .add(msgdata)
-          .then((value) {
-        Get.toNamed(AppRoutes.SpecialistChat, parameters: {
-          "doc_id": value.id,
-          "to_uid": to_userdata.id ?? "",
-           "from_uid" : msgdata.from_uid??"",
-          "to_name": to_userdata.name ?? "",
-          "to_avatar": to_userdata.photourl ?? "",
-          "from_name": data?.name ?? "",
-        });
-      });
-    } else {
-      if (from_messages.docs.isNotEmpty) {
-        Get.toNamed(AppRoutes.SpecialistChat, parameters: {
-          "doc_id": from_messages.docs.first.id,
-          "to_uid": from_messages.docs.first.data().to_uid?? "errorName",
-          "to_name": from_messages.docs.first.data().to_name ??"errorToNAme",
-          "from_name": from_messages.docs.first.data().from_uid ?? "errorToNAme2",
-        });
 
-      }
-    }
+
   }
 
   late final name;
@@ -189,8 +149,8 @@ class SpecialistMessagesConroller extends GetxController {
         break;
       case SortType.alphabetical:
         state.messages.sort((a, b) {
-          final aTime = a.from_name;
-          final bTime = b.from_name;
+          final aTime = a.student_name;
+          final bTime = b.student_name;
           return aTime!.compareTo(bTime!);
         });
         updateFilterList();
@@ -210,7 +170,7 @@ class SpecialistMessagesConroller extends GetxController {
         .collection("messages")
         .withConverter(
         fromFirestore: Msg.fromFirestore,
-        toFirestore: (Msg msg, options) => msg.toFirestore()).where("to_uid",isEqualTo:token);
+        toFirestore: (Msg msg, options) => msg.toFirestore()).where("specialist_uid",isEqualTo:token);
 
     state.messages.clear();
 

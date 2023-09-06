@@ -9,6 +9,7 @@ import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_so
 
 import '../../../Utils/date.dart';
 import '../../../common/stores/user.dart';
+import '../../../controller/db_data_controller.dart';
 import '../../../controller/report_db_controller.dart';
 import '../../../entities/messages.dart';
 import '../../../entities/report.dart';
@@ -244,67 +245,17 @@ class SpecialistReportsMenagmentConroller extends GetxController {
 
   late UserData to_userData;
 
-  goChat(UserData to_userdata) async {
 
+  DbDataController dbDataController = DbDataController();
+
+  goChat(UserData to_userdata) async {
 
 
 
     UserData? data = await fetchCurrentUser()!;
     print(to_userdata);
 
-    var from_messages = await db
-        .collection("messages")
-        .withConverter(
-        fromFirestore: Msg.fromFirestore,
-        toFirestore: (Msg msg, options) => msg.toFirestore())
-        .where("to_uid", isEqualTo: token)
-        .where("from_uid", isEqualTo: to_userdata.id)
-        .where("message_type",isEqualTo:state.reportId.value)
-        .get();
-
-
-    if (from_messages.docs.isEmpty) {
-      String profile = await UserStore.to.getProfile();
-      UserLoginResponseEntity userdata =
-      UserLoginResponseEntity.fromJson(jsonDecode(profile));
-      var msgdata = Msg(
-          from_uid: to_userdata.id,
-          to_uid: token,
-          from_name: to_userData.name,
-          to_name: userdata.displayName,
-          from_avatar: to_userData.photourl,
-          to_avatar: userdata.photoUrl,
-          message_type: state.reportId.value,
-          last_msg: "",
-          last_time: Timestamp.now(),
-          msg_num: 0);
-      db
-          .collection("messages")
-          .withConverter(
-          fromFirestore: Msg.fromFirestore,
-          toFirestore: (Msg msg, options) => msg.toFirestore())
-          .add(msgdata)
-          .then((value) {
-        Get.toNamed("/chat", parameters: {
-          "doc_id": value.id,
-          "to_uid": data!.id?? "",
-          "to_name": data.name ?? "",
-          "to_avatar": to_userdata.photourl ?? "",
-          "from_name": to_userData.name?? "",
-
-        });
-      });
-    } else {
-      if (from_messages.docs.isNotEmpty) {
-        Get.toNamed("/chat", parameters: {
-          "doc_id": from_messages.docs.first.id,
-          "to_uid": to_userdata.id ?? "",
-          "to_name": state.title.value ?? "",
-          "to_avatar": to_userdata.photourl ?? "",
-          "from_name": state.title.value??"",
-        });
-      }
-    }
+    dbDataController.goChat(data!,to_userdata!,false);
 
 
   }

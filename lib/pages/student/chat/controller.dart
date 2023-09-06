@@ -51,7 +51,7 @@ class ChatConroller extends GetxController {
               if (change.doc.data() != null) {
                 state.msgcontentList.insert((0), change.doc.data()!);
                 if(change.doc.data()?.uid != user_id){
-                  sendMessageController.updateIsRead(change.doc.reference);
+                  sendMessageController.updateIsRead();
                 }
               }
               break;

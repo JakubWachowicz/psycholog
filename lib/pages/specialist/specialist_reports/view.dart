@@ -2,7 +2,7 @@ import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_but
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_filter.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_list.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_sort.dart';
-import 'package:jw_projekt/pages/student/messages/widgets/messages_list.dart';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../../Widgets/nav_bar.dart';

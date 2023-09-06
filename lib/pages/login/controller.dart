@@ -148,10 +148,13 @@ class LoginConroller extends GetxController{
           Get.offAndToNamed(AppRoutes.AdminApplication);
         }
         else if(user?.role == 'specialist'){
+
+          print("Moja rolo to psycholog");
           UserStore.to.setRole('specialist');
           Get.offAndToNamed(AppRoutes.SpecialistApplication);
         }
         else{
+          print("Moja rolo to student");
           UserStore.to.setRole('student');
           Get.offAndToNamed(AppRoutes.Application);
         }

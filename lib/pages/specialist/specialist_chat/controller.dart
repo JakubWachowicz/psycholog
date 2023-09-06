@@ -33,8 +33,10 @@ class SpecialistChatConroller extends GetxController {
   late SendMessageController sendMessageController;
 
   sendMessage() async {
-    sendMessageController.sendMessage(textController.text, name);
+    sendMessageController.sendMessage(textController.text, state.from_name.value);
+    print(state.to_name.value+"LOO");
     textController.clear();
+
   }
 
 
@@ -66,7 +68,7 @@ class SpecialistChatConroller extends GetxController {
                 state.msgcontentList.insert((0), change.doc.data()!);
                 if(change.doc.data()?.uid != user_id){
                   print('Tutaj trzeba się zatrzymać');
-                  sendMessageController.updateIsRead(change.doc.reference);
+                  sendMessageController.updateIsRead();
                 }
               }
               break;
@@ -98,7 +100,7 @@ class SpecialistChatConroller extends GetxController {
     state.to_name.value = data['to_name'] ?? "";
     state.to_avatar.value = data['to_avatar'] ?? "";
     state.from_uid.value = data['from_uid'] ?? "";
-
+    state.from_name.value = data["from_name"]??"";
     name = state.to_name.value;
     topName = data['from_name']?? "MAmy errora w tym miejscu";
 
