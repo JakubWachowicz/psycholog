@@ -22,7 +22,7 @@ class ChatPage extends GetView<ChatConroller> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text( controller.topName,
+      appBar: AppBar(title: Text( controller.state.specialist_name.value,
         overflow: TextOverflow.clip,
         maxLines: 1,),
         backgroundColor: Colors.green,

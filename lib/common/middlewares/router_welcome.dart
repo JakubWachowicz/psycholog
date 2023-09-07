@@ -26,8 +26,6 @@ class RouteWelcomeMiddleware extends GetMiddleware{
     }
     else if(UserStore.to.isLogin == true){
 
-
-
         if(UserStore.to.role == "admin"){
           return const RouteSettings(name:AppRoutes.AdminApplication);
         }
@@ -37,12 +35,6 @@ class RouteWelcomeMiddleware extends GetMiddleware{
         else{
           return const RouteSettings(name:AppRoutes.Application);
         }
-
-
-
-
-
-
 
     }
     else{

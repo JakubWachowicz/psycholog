@@ -5,8 +5,8 @@ import '../../../entities/msg_content.dart';
 class ChatState{
 
   RxList<Msgcontent> msgcontentList = <Msgcontent>[].obs;
-  var to_uid="".obs;
-  var to_name="".obs;
-  var to_avatar = "".obs;
-  late final from_name = "".obs;
+  var specialist_uid="".obs;
+  var specialist_name="".obs;
+  var specialist_avatar = "".obs;
+  late final student_name = "".obs;
 }

@@ -111,14 +111,30 @@ class DbDataController {
   }
 
   void goChatByMsg(Msg item){
-    Get.toNamed(AppRoutes.SpecialistChat, parameters: {
-      "doc_id": item.messageId!,
-      "specialist_uid": item.specialist_uid,
-      "student_uid":item.student_uid,
-      "student_name": item.student_name,
-      "student_avatar": item.student_avatar??"Brak",
-      "student_name": item.student_name,
-    });
+   if(UserStore.to.role == "student"){
+     Get.toNamed(AppRoutes.Chat, parameters: {
+       "doc_id": item.messageId!,
+       "specialist_uid": item.specialist_uid,
+       "specialist_name":item.specialist_name,
+       "student_uid":item.student_uid,
+       "student_name": item.student_name,
+       "student_avatar": item.student_avatar??"Brak",
+       "specialist_avatar":item.specialist_avatar??"Brak",
+       "student_name": item.student_name,
+     });
+   }else{
+     Get.toNamed(AppRoutes.SpecialistChat, parameters: {
+       "doc_id": item.messageId!,
+       "specialist_uid": item.specialist_uid,
+       "specialist_name":item.specialist_name,
+       "student_uid":item.student_uid,
+       "student_name": item.student_name,
+       "student_avatar": item.student_avatar??"Brak",
+       "specialist_avatar":item.specialist_avatar??"Brak",
+       "student_name": item.student_name,
+     });
+   }
+
   }
 
 

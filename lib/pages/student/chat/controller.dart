@@ -42,7 +42,7 @@ class ChatConroller extends GetxController {
         .orderBy("addtime", descending: false);
 
     state.msgcontentList.clear();
-    sendMessageController = SendMessageController(doc_id,user_id,state.to_uid.value,true);
+    sendMessageController = SendMessageController(doc_id,user_id,state.specialist_uid.value,true);
     listener = messages.snapshots().listen(
           (event) {
         for (var change in event.docChanges) {
@@ -66,11 +66,9 @@ class ChatConroller extends GetxController {
     );
   }
 
-  late final name;
-  late final topName;
 
   sendMessage(){
-    sendMessageController.sendMessage(textController.text, name);
+    sendMessageController.sendMessage(textController.text, state.student_name.value);
     textController.clear();
   }
 
@@ -79,19 +77,13 @@ class ChatConroller extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
-    state.to_uid.value = data['to_uid'] ?? "";
-    state.to_name.value = data['to_name'] ?? "";
-    state.to_avatar.value = data['to_avatar'] ?? "";
+    state.specialist_uid.value = data['specialist_uid'] ?? "";
+    state.specialist_name.value = data['specialist_name'] ?? "";
+    state.specialist_avatar.value = data['specialist_avatar'] ?? "";
+    state.student_name.value = data['student_name']??"";
     //name = data['from_name'] ?? "";
 
-    if(state.to_uid.value == user_id){
-      name = state.to_name.value;
-      topName =data['from_name'];
-    }
-    else{
-      name =  data['from_name'];
-      topName = state.to_name.value;
-    }
+
   }
 
   @override

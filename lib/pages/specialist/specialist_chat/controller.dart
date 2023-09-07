@@ -33,8 +33,8 @@ class SpecialistChatConroller extends GetxController {
   late SendMessageController sendMessageController;
 
   sendMessage() async {
-    sendMessageController.sendMessage(textController.text, state.from_name.value);
-    print(state.to_name.value+"LOO");
+    sendMessageController.sendMessage(textController.text, name);
+    print(state.specialist_name.value+"LOO");
     textController.clear();
 
   }
@@ -56,7 +56,7 @@ class SpecialistChatConroller extends GetxController {
                 msgcontent.toFirestore())
         .orderBy("addtime", descending: false);
 
-    sendMessageController = SendMessageController(doc_id, UserStore.to.token!, state.to_uid.value, false);
+    sendMessageController = SendMessageController(doc_id, UserStore.to.token!, state.student_uid.value, false);
     state.msgcontentList.clear();
     //sendMessageController.updateIsRead(doc_id);
     listener = messages.snapshots().listen(
@@ -96,13 +96,13 @@ class SpecialistChatConroller extends GetxController {
 
     var data = Get.parameters;
     doc_id = data['doc_id'];
-    state.to_uid.value = data['to_uid'] ?? "";
-    state.to_name.value = data['to_name'] ?? "";
-    state.to_avatar.value = data['to_avatar'] ?? "";
-    state.from_uid.value = data['from_uid'] ?? "";
-    state.from_name.value = data["from_name"]??"";
-    name = state.to_name.value;
-    topName = data['from_name']?? "MAmy errora w tym miejscu";
+    state.spcialist_uid.value = data['specialist_uid'] ?? "";
+    state.specialist_name.value = data['specialist_name'] ?? "";
+    state.specialist_avatar.value = data['specialist_avatar'] ?? "";
+    state.student_uid.value = data['student_uid'] ?? "";
+    state.student_name.value = data["student_name"]??"";
+    name = state.specialist_name.value;
+    topName = data['student_name']?? "MAmy errora w tym miejscu";
 
   }
 
