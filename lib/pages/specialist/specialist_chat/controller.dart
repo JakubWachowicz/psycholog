@@ -44,7 +44,7 @@ class SpecialistChatConroller extends GetxController {
 
 
   @override
-  void onReady() {
+  Future<void> onReady() async {
     super.onReady();
     var messages = db
         .collection("messages")
@@ -58,6 +58,11 @@ class SpecialistChatConroller extends GetxController {
 
     sendMessageController = SendMessageController(doc_id, UserStore.to.token!, state.student_uid.value, false);
     state.msgcontentList.clear();
+    int numberOfUnreadMessages = await sendMessageController.getUnreadMessageCount(doc_id,user_id);
+    sendMessageController.readAllMessages(numberOfUnreadMessages);
+
+
+
     //sendMessageController.updateIsRead(doc_id);
     listener = messages.snapshots().listen(
       (event) {

@@ -94,14 +94,13 @@ class MessagesConroller extends GetxController {
               var modifiedMessage = change.doc.data();
               if (modifiedMessage != null) {
                 // Find the index of the modified message in the list
-                print("Tutaj coś nie gra lol");
+
                 var index = state.messages.indexWhere((msg) => msg.messageId == modifiedMessage.messageId);
-                print(index);
-                print("Tutaj coś nie gra popop");
+
                 if (index != -1) {
                   // Replace the old message with the modified message
                   state.messages[index] = modifiedMessage;
-                  print(state.messages[index].last_msg);
+
 
                   state.messages.sort((a, b) {
                     final aTime = a.last_time;
@@ -111,11 +110,6 @@ class MessagesConroller extends GetxController {
                     return bTime!.compareTo(aTime!);
                   });
                   state.messages.refresh();
-
-
-
-
-
 
                 }}
                break;

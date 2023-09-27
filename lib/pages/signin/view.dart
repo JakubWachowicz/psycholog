@@ -9,6 +9,8 @@ import 'package:dots_indicator/dots_indicator.dart';
 import '../../view/widgets/text_input_field.dart';
 import 'controller.dart';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class SigninPage extends GetView<SigninConroller> {
    SigninPage({Key? key}) : super(key: key);
 
@@ -19,10 +21,10 @@ class SigninPage extends GetView<SigninConroller> {
         value: controller.state.currentRole.value,
         icon: const Icon(Icons.arrow_downward),
         elevation: 16,
-        style: const TextStyle(color: Colors.deepPurple),
+        style: const TextStyle(color: Colors.green),
         underline: Container(
           height: 2,
-          color: Colors.deepPurpleAccent,
+          color: Colors.green,
         ),
         onChanged: (String? newRole) {
 
@@ -70,15 +72,24 @@ class SigninPage extends GetView<SigninConroller> {
       return Column(
         children: [
 
-          Container(
-            child: nameInputField,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              child: nameInputField,
+            ),
           ),
 
-          Container(
-            child: emailInputField,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              child: emailInputField,
+            ),
           ),
-          Container(
-            child: passwordInputField,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              child: passwordInputField,
+            ),
           )
         ],
       );
@@ -125,32 +136,70 @@ class SigninPage extends GetView<SigninConroller> {
       );
     }
 
-    return Scaffold(
-        body: Center(
-      child: Column(
-        children: [
-          _buildLogo(),
-          _buildTextInputs(),
-          _builDropDow(),
-          ElevatedButton(
-              onPressed: () {
-                controller.handleSignIn();
-              },
-              child: Text(
-                'Login',
-                style: TextStyle(color: Colors.white70),
-              )),
 
-          ElevatedButton(
-              onPressed: () {
-                controller.hangleLogout();
-              },
+    Widget _buildCreateUserButton() {
+      return InkWell(
+        onTap: () => {
+          controller.handleSignIn()
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(10.w)),
+            color: Colors.green,
+          ),
+          width: double.infinity,
+          height: 60.w,
+          child: Center(
               child: Text(
-                'Logout',
-                style: TextStyle(color: Colors.white70),
-              ))
-        ],
-      ),
-    ));
+                "Create account",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.sp),
+              )),
+        ),
+      );
+    }
+
+
+
+    return Scaffold(
+        body: Column(
+          children: [
+            //_buildLogo(),
+            SizedBox(height: 90.h,),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Create new account",style: TextStyle(fontSize: 32), textAlign: TextAlign.left,),
+            ),
+            _buildTextInputs(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  SizedBox(width: 10.w,),
+                  Text("Role: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.grey),),
+                  SizedBox(width: 10.w,),
+                  _builDropDow(),
+                ],
+              ),
+            ),
+            _buildCreateUserButton(),
+
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                    onTap: () {
+                      controller.hangleLogout();
+                    },
+                    child: Text(
+                      'Logout',
+                      style: TextStyle(color: Colors.black),
+                    )),
+              ),
+            )
+          ],
+        ));
   }
 }

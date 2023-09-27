@@ -7,6 +7,8 @@ import '../../pages/admin/admin_application/index.dart';
 import '../../pages/login/bindings.dart';
 import '../../pages/login/view.dart';
 
+import '../../pages/signin/bindings.dart';
+import '../../pages/signin/view.dart';
 import '../../pages/specialist/specialist_application/bindings.dart';
 import '../../pages/specialist/specialist_chat/index.dart';
 import '../../pages/specialist/specialist_report_kanban/index.dart';
@@ -44,8 +46,8 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.AdminApplication,
-      page: () => AdminApplicationPage(),
-      binding: AdminApplicationBinding(),
+      page: () => SigninPage(),
+      binding: SiginBinding(),
     ),
     GetPage(
       name: AppRoutes.SpecialistApplication,

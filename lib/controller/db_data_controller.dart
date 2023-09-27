@@ -110,8 +110,16 @@ class DbDataController {
     }
   }
 
-  void goChatByMsg(Msg item){
+  Future<void> goChatByMsg(Msg item) async {
    if(UserStore.to.role == "student"){
+
+
+       await db.collection("messages").doc(item.messageId).update({
+         "unreadMessagesCountStudent":0,
+       });
+
+
+
      Get.toNamed(AppRoutes.Chat, parameters: {
        "doc_id": item.messageId!,
        "specialist_uid": item.specialist_uid,
@@ -123,6 +131,10 @@ class DbDataController {
        "student_name": item.student_name,
      });
    }else{
+     await db.collection("messages").doc(item.messageId).update({
+       "unreadMessagesCountSpecialist":0,
+     });
+
      Get.toNamed(AppRoutes.SpecialistChat, parameters: {
        "doc_id": item.messageId!,
        "specialist_uid": item.specialist_uid,
@@ -177,7 +189,7 @@ class DbDataController {
       var user = userSnapshot.docs[0].data();
       return user.photourl;
     }
-    return 'assets/logo.png';
+    return 'assets/logo.jpg';
   }
 
   UserData getUSerData() {

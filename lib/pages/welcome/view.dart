@@ -34,6 +34,7 @@ class WelcomePage extends GetView<WelcomeController> {
                 Container(
                   width: double.infinity,
                   height: double.infinity,
+                  child: Text("On boarding in development"),
                   decoration: const BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.fill,

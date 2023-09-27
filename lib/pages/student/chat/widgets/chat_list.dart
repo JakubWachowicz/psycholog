@@ -23,11 +23,10 @@ class ChatList extends GetView<ChatConroller> {
               SliverPadding(padding: EdgeInsets.symmetric(vertical: 0.w,horizontal: 0.w),sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                         (context,index){
-                          print("Coś tu nie działą");
-                          print(controller.user_id);
+
 
                       var item = controller.state.msgcontentList[index];
-                          print(item.uid);
+
                       if(controller.user_id == item.uid){
                         print("yep");
                         return ChatRightItem(item);

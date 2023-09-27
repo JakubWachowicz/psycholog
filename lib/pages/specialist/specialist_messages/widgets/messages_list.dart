@@ -20,6 +20,7 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
     } else {
       avatar = await controller.db_controller.getAvatar(item.specialist_avatar);
     }
+    print(avatar);
     return avatar;
   }
 

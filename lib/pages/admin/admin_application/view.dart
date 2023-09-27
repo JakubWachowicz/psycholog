@@ -21,8 +21,7 @@ class AdminApplicationPage extends GetView<AdminApplicationConroller> {
         children: [
           CreateAccountPage(),
           AdminSettingsPage(),
-          Center(child: Text('Test'),),
-          Center(child: Text('Test'),),
+
         ],
       );
     }

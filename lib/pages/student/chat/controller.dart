@@ -29,7 +29,7 @@ class ChatConroller extends GetxController {
   late SendMessageController sendMessageController;
 
   @override
-  void onReady() {
+  Future<void> onReady() async {
     super.onReady();
     var messages = db
         .collection("messages")
@@ -43,6 +43,8 @@ class ChatConroller extends GetxController {
 
     state.msgcontentList.clear();
     sendMessageController = SendMessageController(doc_id,user_id,state.specialist_uid.value,true);
+    int numberOfUnreadMessages = await sendMessageController.getUnreadMessageCount(doc_id,user_id);
+    sendMessageController.readAllMessages(10);
     listener = messages.snapshots().listen(
           (event) {
         for (var change in event.docChanges) {
@@ -64,6 +66,7 @@ class ChatConroller extends GetxController {
       },
       onError: (error) => print("listen failed: ${error}"),
     );
+    sendMessageController.readAllMessages(10);
   }
 
 
@@ -81,7 +84,9 @@ class ChatConroller extends GetxController {
     state.specialist_name.value = data['specialist_name'] ?? "";
     state.specialist_avatar.value = data['specialist_avatar'] ?? "";
     state.student_name.value = data['student_name']??"";
+
     //name = data['from_name'] ?? "";
+
 
 
   }

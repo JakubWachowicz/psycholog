@@ -23,17 +23,40 @@ class SendMessageController{
           "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,to_uid),
         });
       }
-      else{
+
+    }else {
+      if(Get.currentRoute.contains(AppRoutes.SpecialistChat)){
         await db.collection("messages").doc(doc_id).update({
           "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,to_uid),
           "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,uid),
         });
       }
+      }}
 
 
-    }
 
-  }
+  readAllMessages(int unreadMessages) async {
+
+
+    QuerySnapshot unreadMessagesQuery = await db
+        .collection("messages")
+        .doc(doc_id)
+        .collection("msglist").where('sender',isNotEqualTo: uid).where('isRead',isEqualTo: "False")
+        .get();
+    print(unreadMessagesQuery);
+
+    print("Jestem tutaj");
+    int i = 68;
+    for (QueryDocumentSnapshot messageSnapshot in unreadMessagesQuery.docs) {
+      // Update the 'isRead' field to true
+      print(i);
+      await db.collection("messages")
+        .doc(doc_id)
+        .collection("msglist").doc(messageSnapshot.id).update({
+        'isRead': "True",
+      });
+
+  }}
 
 
 

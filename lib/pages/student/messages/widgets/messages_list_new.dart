@@ -15,9 +15,9 @@ class MessageListNew extends GetView<MessagesConroller> {
   Future<String?> initAvatar(Msg item) async {
     var avatar;
     if (item.student_uid == controller.token) {
-      avatar = await controller.db_controller.getAvatar(item.specialist_avatar);
+      avatar = await controller.db_controller.getAvatar(item.specialist_uid);
     } else {
-      avatar = await controller.db_controller.getAvatar(item.student_avatar);
+      avatar = await controller.db_controller.getAvatar(item.student_uid);
     }
     return avatar;
   }
