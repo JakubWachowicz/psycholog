@@ -1,17 +1,6 @@
-# jw_projekt
+## Bloom! Application designed for anonymous communication between students and school psychologists
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+With Bloom!, students can easily message specialists for support or send anonymous reports,
+fostering a safe and supportive environment for seeking help and guidance. Enhance mental well-being and academic success with Bloom! – 
+bridging the gap between students and the support they need.
 "# psycholog" 
