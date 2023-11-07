@@ -36,11 +36,11 @@ Widget ChatRightItem(Msgcontent item){
             ),
               child: Container(
 
-                  margin: EdgeInsets.only(right: 10.w,top: 10.w,left: 10,bottom: 10),
-                  padding: EdgeInsets.only(top:10.w,left: 10.w,right: 10.w,bottom: 10),
+                  margin: EdgeInsets.only(right: 10.w,left: 10,),
+                  padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
                     color: Colors.greenAccent,
-                    borderRadius: BorderRadius.all(Radius.circular(10.w)),
+                    borderRadius: BorderRadius.only(topLeft:Radius.circular(10.w),topRight: const Radius.circular(0),bottomLeft:Radius.circular(10.w),bottomRight: Radius.circular(10.w) ),
                   ),
                   child: item.type =="text"? Text("${item.content}",style: TextStyle(color: Colors.white),):ConstrainedBox(constraints: BoxConstraints(
                     maxWidth: 230.w,

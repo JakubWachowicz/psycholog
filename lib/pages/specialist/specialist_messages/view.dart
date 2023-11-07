@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/search_wideg.dart';
 import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_button.dart';
 
@@ -47,28 +48,35 @@ class SpecialistMessagePage extends GetView<SpecialistMessagesConroller> {
     return Scaffold(
         drawer: NavBar(),
         appBar: _buildAppBar(),
-        body: Column(
-          children: [
-            
-            Obx(()=>controller.state.isFilterOpen.value?
-            Container(
-              child: Row(
-                children: [
-                  Expanded(child: Container(child: SearchWidget(searchController: controller.searchController,onSearch: controller.searchMessages,))),
-                  SortButton(onPressed: (SortType sortType) {  controller.sortMessages(sortType);},),
-                ],
-              ),
-            ):SizedBox(),),
-            
-            
+        body: Container(
+          color: CupertinoColors.lightBackgroundGray,
+          child: Column(
+            children: [
 
-            Expanded(
-              child: Padding(
+              Obx(()=>controller.state.isFilterOpen.value?
+              Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SpecialistMessageListNew(),
+                child: Container(
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Expanded(child: Container(child: SearchWidget(searchController: controller.searchController,onSearch: controller.searchMessages,))),
+                      SortButton(onPressed: (SortType sortType) {  controller.sortMessages(sortType);},),
+                    ],
+                  ),
+                ),
+              ):SizedBox(),),
+
+
+
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SpecialistMessageListNew(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ));
   }
 }

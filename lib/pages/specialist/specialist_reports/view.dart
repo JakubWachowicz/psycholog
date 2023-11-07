@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_button.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_filter.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_list.dart';
@@ -36,7 +37,7 @@ class SpecialistReportsPage extends GetView<SpecialistReportsConroller> {
         drawer: NavBar(),
         appBar: _buildAppBar(),
         body: Container(
-
+              color: CupertinoColors.lightBackgroundGray,
             alignment: Alignment.center,
             child: Column(
               children: [

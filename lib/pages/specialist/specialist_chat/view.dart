@@ -45,7 +45,7 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
 
                   child: Container(
 
-                    color: Colors.white70,
+                    color: Colors.red,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,7 +84,7 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
 
 
                             ),
-                       
+
                         ),
 
 

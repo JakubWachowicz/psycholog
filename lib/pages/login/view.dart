@@ -15,11 +15,6 @@ class LoginPage extends GetView<LoginConroller> {
   @override
   Widget build(BuildContext context) {
 
-
-
-
-
-
     Widget _buildTextInputs(){
       return Column(
         children: [

@@ -69,37 +69,52 @@ class CommentList extends GetView<YourReportInfoConroller> {
   Widget build(BuildContext context) {
     return Obx(
           () => Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(bottom: 50.h),
-        child: CustomScrollView(
-          reverse: true,
-          controller: controller.msgScrolling,
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(vertical: 0.w, horizontal: 0.w),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                    var item = controller.state.commentList[index];
-                    return FutureBuilder<String?>(
-                      future: initAvatar(item.uid!),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          string_avatar = snapshot.data;
-                          return _buildComment(item);
-                        } else {
-                          return SizedBox();
-                        }
-                      },
-                    );
-                  },
-                  childCount: controller.state.commentList.length,
-                ),
-              ),
+
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+
             ),
-          ],
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+
+                maxHeight: 300.0,
+              ),
+              child: Container(
+
+
+        color: Colors.white,
+
+        child: CustomScrollView(
+              reverse: true,
+              controller: controller.msgScrolling,
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(vertical: 0.w, horizontal: 0.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                        var item = controller.state.commentList[index];
+                        return FutureBuilder<String?>(
+                          future: initAvatar(item.uid!),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              string_avatar = snapshot.data;
+                              return _buildComment(item);
+                            } else {
+                              return SizedBox();
+                            }
+                          },
+                        );
+                      },
+                      childCount: controller.state.commentList.length,
+                    ),
+                  ),
+                ),
+              ],
         ),
       ),
+            ),
+          ),
     );
   }
 }

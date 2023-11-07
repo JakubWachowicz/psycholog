@@ -3,6 +3,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../entities/report.dart';
 import '../entities/reportComment.dart';
 
 class ReportDbController {
@@ -52,6 +53,68 @@ class ReportDbController {
 
     return data;
   }
+
+
+  fetchAllReports(){
+    var reports = db
+        .collection("reports")
+        .withConverter(
+        fromFirestore: Report.fromFirestore,
+        toFirestore: (Report report, options) => report.toFirestore())
+        .orderBy("timestamp", descending: false);
+
+    return reports;
+  }
+
+
+
+
+  Future<Map<String, List<Report>>?> fetchReportsByStatus() async {
+    final firestore = FirebaseFirestore.instance;
+    final reportsCollection = firestore.collection('reports'); // Replace with your Firestore collection name
+
+    final notAssignedReports = <Report>[];
+    final inProgressReports = <Report>[];
+    final doneReports = <Report>[];
+
+    try {
+      final querySnapshot = await reportsCollection.get();
+      querySnapshot.docs.forEach((doc) {
+        final report = Report.fromFirestore(doc, null);
+
+        // Categorize reports based on status
+        switch (report.status) {
+          case 'not assign':
+            notAssignedReports.add(report);
+            break;
+          case 'in progress':
+            inProgressReports.add(report);
+            break;
+          case 'done':
+            doneReports.add(report);
+            break;
+        }
+      });
+
+      // Create a map to store the categorized reports
+      final reportsMap = {
+        'notAssign': notAssignedReports,
+        'inProgress': inProgressReports,
+        'done': doneReports,
+      };
+
+      return reportsMap;
+    } catch (e) {
+      // Handle any errors (e.g., Firestore read error)
+      print('Error fetching reports: $e');
+      return null;// You might want to handle this differently
+    }
+  }
+
+
+
+
+
 
 
 }

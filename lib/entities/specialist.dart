@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class SpecialistData {
-  final String? id;
+  final String id;
   final String? description;
-  final String? role;
+  final String role;
 
   SpecialistData({
-    this.id,
+    required this.id,
     this.description,
 
 
-    this.role,
+    required this.role,
   });
 
   factory SpecialistData.fromFirestore(

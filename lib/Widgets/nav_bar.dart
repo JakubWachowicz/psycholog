@@ -59,12 +59,19 @@ class NavBar extends StatelessWidget {
             leading: Icon(Icons.person),
             title: Text('Profile'),
             onTap: () {
-              Get.offAndToNamed(AppRoutes.Profile);
+
+              UserStore.to.role == "student" ? Get.offAndToNamed(AppRoutes.Profile): Get.offAndToNamed(AppRoutes.SpecialistProfile);
+
+
+
             },
           ),
-          const ListTile(
+          ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
+            onTap: (){
+                Get.offAndToNamed(AppRoutes.Settings);
+            },
           ),
           const ListTile(
             leading: Icon(Icons.document_scanner),

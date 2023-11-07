@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jw_projekt/entities/report.dart';
 import 'package:kanban_board/custom/board.dart';
@@ -12,6 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../common/routes/routes.dart';
 import 'controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:scroll_snap_list/scroll_snap_list.dart';
 class SpecialistReportKanbanPage extends StatefulWidget {
    SpecialistReportKanbanPage({super.key, required this.title});
 
@@ -154,31 +156,116 @@ class _SpecialistReportKanbanPage extends State<SpecialistReportKanbanPage> {
       );
     }
 
+    buildList(reportList){
+      return Container(
 
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: DragAndDropLists(
-        children: lists,
-        onItemReorder: onReorderListItem,
-        onListReorder: (int oldListIndex, int newListIndex) {  },
-        axis: Axis.horizontal,
-        listWidth: 350,
-        listDraggingWidth: 150,
-        listDecoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(7.0)),
-          boxShadow: const <BoxShadow>[
+        width: 30.sw,
+        decoration:  BoxDecoration(
+          boxShadow: [
             BoxShadow(
-              color: Colors.black45,
-              spreadRadius: 3.0,
-              blurRadius: 6.0,
-              offset: Offset(2, 3),
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
             ),
           ],
         ),
-        listPadding: const EdgeInsets.all(8.0),
-      ),
-    );
+        child: Column(
+          children: [
+            Container(
+
+              width: double.infinity,
+              height: 50,
+              decoration: const BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5)
+                )
+              ),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.all(10.0,),
+                child: Text("Head",style: TextStyle(fontWeight: FontWeight.w600,color: Colors.white,fontSize: 22),),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                Card(child:Text("LOL")),
+                Card(child:Text("LOL")),
+
+              ],),
+            )
+          ],
+        ),
+      );
+    }
+
+
+
+    Widget buildList2(DraggableList list) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Container(
+
+          color: CupertinoColors.extraLightBackgroundGray,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(7.0)),
+                    color: Colors.green,
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  child: Text(
+                    'Header ${list.header}',
+                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: list.items.length,
+                  itemBuilder: (context, index) {
+                    return ReportItem(list.items[index]);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+
+
+    int _index = 0;
+    buildTrello(){
+      return  PageView.builder(
+        itemCount: 3,
+        controller: PageController(viewportFraction: 0.8),
+        onPageChanged: (index) => setState(() => _index = index),
+        itemBuilder: (context, index) {
+          return AnimatedPadding(
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.fastOutSlowIn,
+            padding: const EdgeInsets.all( 8.0),
+            child: buildList2(allLists[_index])
+          );
+        },
+      );
+    }
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body:buildTrello()
+      );
   }
 
   void onReorderListItem(
@@ -244,6 +331,7 @@ class _SpecialistReportKanbanPage extends State<SpecialistReportKanbanPage> {
       child: Container(
         alignment: Alignment.topLeft,
         decoration: BoxDecoration(
+          color: Colors.white,
             border: Border.all(color: Colors.green),
             borderRadius: BorderRadius.circular(10)),
         padding: EdgeInsets.only(top: 10.w, left: 15.w, right: 15.w, bottom: 10.w),
@@ -263,6 +351,18 @@ class _SpecialistReportKanbanPage extends State<SpecialistReportKanbanPage> {
                   child: Text(report.content ?? "error",overflow: TextOverflow.clip,maxLines: 1,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp)),
                 ),
+                Text(
+                  duTimeLineFormat(
+                    report.timestamp!.toDate(),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+
+                    Text(report.priority == "notAssigned"?"new":report.priority??""),
+                  ],
+                )
               ],
             ),
             Expanded(
@@ -274,18 +374,8 @@ class _SpecialistReportKanbanPage extends State<SpecialistReportKanbanPage> {
                   children: [
                     //Text("Priority: " +  report.priority.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
                     SizedBox(height: 10.w,),
-                    Text(
-                      duTimeLineFormat(
-                        report.timestamp!.toDate(),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
 
-                        Text(report.priority == "notAssigned"?"new":report.priority??""),
-                      ],
-                    )
+
                   ],
                 ),
               ),

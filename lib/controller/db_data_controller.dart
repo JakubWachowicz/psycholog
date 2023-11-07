@@ -192,9 +192,9 @@ class DbDataController {
     return 'assets/logo.jpg';
   }
 
-  UserData getUSerData() {
-    UserData user = fetchCurrentUser() as UserData;
-    return user;
+  Future<UserData> getUSerData() async {
+    UserData? user = await fetchCurrentUser();
+    return user!;
   }
 
   Future<String> getPhoto() async {

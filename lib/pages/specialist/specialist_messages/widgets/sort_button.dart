@@ -22,18 +22,19 @@ class SortButton extends StatelessWidget {
           ),
         ];
       },
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
 
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: Colors.green,  // Change border color here
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
 
           ),
-        ),
 
-          child: Icon(Icons.sort)
+            child: Icon(Icons.sort)
+        ),
       ),
     );
   }

@@ -74,6 +74,49 @@ class SpecialistReportKanbanConroller extends GetxController {
   void onInit() {
     super.onInit();
     lists = allLists.map(buildList).toList().obs;
+
+
+    var reports = db
+        .collection("reports")
+        .withConverter(
+        fromFirestore: Report.fromFirestore,
+        toFirestore: (Report report, options) => report.toFirestore())
+        .orderBy("timestamp", descending: false);
+
+    state.reportList.clear();
+    listener = reports.snapshots().listen(
+          (event) {
+        for (var change in event.docChanges) {
+          switch (change.type) {
+            case DocumentChangeType.added:
+              if (change.doc.data() != null) {
+                state.reportList.insert((0), change.doc.data()!);
+              }
+              break;
+            case DocumentChangeType.modified:
+              if (change.doc.data() != null) {
+                // Find the report in the list and update its priority
+                final modifiedReport = change.doc.data()!;
+                final index = state.reportList.indexWhere((report) => report.reportId == modifiedReport.reportId);
+                if (index != -1) {
+                  state.reportList[index] = modifiedReport;
+                }
+              }
+              break;
+            case DocumentChangeType.removed:
+              break;
+          }
+        }
+      },
+      onError: (error) => print("listen failed: ${error}"),
+    );
+
+
+
+
+
+
+
   }
 
   @override

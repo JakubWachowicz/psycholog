@@ -12,4 +12,6 @@ class AppRoutes{
   static const SpecialistReportMenagment = '/specialistReportMenagment';
   static const YourReportInfoPage = '/yourReportInfoPage';
   static const SpecialistReportCanban = '/specialistReportCanban';
+  static const SpecialistProfile = "/specialistProfile";
+  static const Settings = "/settings";
 }
