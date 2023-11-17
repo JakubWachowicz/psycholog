@@ -6,6 +6,7 @@ import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_so
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:jw_projekt/styles/specialist_styles.dart';
 import '../../../Widgets/nav_bar.dart';
 import 'controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +20,7 @@ class SpecialistReportsPage extends GetView<SpecialistReportsConroller> {
     AppBar _buildAppBar(){
       return AppBar(
         title: Text("Reports"),
-        backgroundColor: Colors.green,
+        backgroundColor: SpecialistStyles.primaryColor,
         actions: [
           Container(
             child: Padding(

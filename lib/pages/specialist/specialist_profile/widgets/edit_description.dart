@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jw_projekt/controller/specialist_db_controller.dart';
+import 'package:get/get.dart';
+import 'package:jw_projekt/styles/specialist_styles.dart';
 
 class EditDescription extends StatefulWidget {
   EditDescription({super.key,required this.descritpion,required this.specialistController});
-  String descritpion;
+  Rx<String> descritpion;
   SpecialistDbController specialistController;
 
   @override
@@ -16,7 +18,7 @@ class _EditDescriptionState extends State<EditDescription> {
 
   @override
   void initState(){
-    controller.text = widget.descritpion;
+    controller.text = widget.descritpion.value;
   }
   Widget build(BuildContext context) {
 
@@ -24,7 +26,7 @@ class _EditDescriptionState extends State<EditDescription> {
     AppBar _buildAppBar() {
       return AppBar(
         title: const Text("Edit description"),
-        backgroundColor: Colors.green,
+        backgroundColor: SpecialistStyles.primaryColor,
       );
     }
 
@@ -51,7 +53,11 @@ class _EditDescriptionState extends State<EditDescription> {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: InkWell(
-          onTap: () => widget.specialistController.setDescription(controller.text),
+          onTap: () {
+            widget.specialistController.setDescription(controller.text);
+          },
+
+
 
           child: Container(
             decoration: BoxDecoration(
@@ -65,9 +71,9 @@ class _EditDescriptionState extends State<EditDescription> {
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 20.sp),)),
-          ),
+          )
 
-        ),
+        )
       );
     }
 

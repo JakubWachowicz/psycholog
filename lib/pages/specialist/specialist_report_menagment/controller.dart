@@ -15,6 +15,7 @@ import '../../../entities/messages.dart';
 import '../../../entities/report.dart';
 import 'package:firebase_auth/firebase_auth.dart' as authP;
 import '../../../entities/user.dart';
+import  'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SpecialistReportsMenagmentConroller extends GetxController {
   SpecialistReportsMenagmentConroller();
@@ -41,7 +42,7 @@ class SpecialistReportsMenagmentConroller extends GetxController {
 
 
 
-
+  FocusNode focus = FocusNode();
   final token = UserStore.to.token;
 
 
@@ -153,7 +154,7 @@ class SpecialistReportsMenagmentConroller extends GetxController {
 
     final RenderBox overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
     final menuWidth = 200.0;
-    final menuHeight = 220.0;
+    final menuHeight = 70.h;
 
     final position = RelativeRect.fromRect(
       Rect.fromCenter(
@@ -185,20 +186,23 @@ class SpecialistReportsMenagmentConroller extends GetxController {
 
     final popupMenuItems = <PopupMenuEntry<dynamic>>[
       PopupMenuItem<String>(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(
-                'Set Priority',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0,
+        child: Container(
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Text(
+                  'Set Priority',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         enabled: false,
       ),
@@ -255,7 +259,7 @@ class SpecialistReportsMenagmentConroller extends GetxController {
     UserData? data = await fetchCurrentUser()!;
     print(to_userdata);
 
-    dbDataController.goChat(data!,to_userdata!,false);
+    dbDataController.goChat(to_userdata!,data!,false);
 
 
   }
@@ -280,10 +284,12 @@ class SpecialistReportsMenagmentConroller extends GetxController {
     dbController.sendComment(report_id, content, UserStore.to.token,userSnapshot.docs.first.data().name.toString());
   }
 
+  final ScrollController scrollController = ScrollController();
 
 
   @override
   Future<void> onInit() async {
+    //focus.addListener(_onFocusChange);
     super.onInit();
     var data = Get.parameters;
     state.reportId.value = data['reportId'] ?? "";

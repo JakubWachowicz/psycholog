@@ -30,6 +30,23 @@ class DbDataController {
     return null;
   }
 
+  Future<UserData?> fetchUser(id) async {
+    var userSnapshot = await db
+        .collection("users")
+        .withConverter(
+      fromFirestore: UserData.fromFirestore,
+      toFirestore: (UserData userData, options) => userData.toFirestore(),
+    )
+        .where("id", isEqualTo: id)
+        .get();
+
+    if (userSnapshot.docs.isNotEmpty) {
+      return userSnapshot.docs[0].data();
+    }
+
+    return null;
+  }
+
   final token = UserStore.to.token;
  void  goChat(
 
@@ -47,16 +64,16 @@ class DbDataController {
         fromFirestore: Msg.fromFirestore,
         toFirestore: (Msg msg, options) => msg.toFirestore(),
       )
-          .where("student_uid", isEqualTo: token)
+          .where("student_uid", isEqualTo: token).where("specialist_uid", isEqualTo: specialistData.id)
           .get();
-    } {
+    } else{
       messages = await db
           .collection("messages")
           .withConverter(
         fromFirestore: Msg.fromFirestore,
         toFirestore: (Msg msg, options) => msg.toFirestore(),
       )
-          .where("specialist_uid", isEqualTo: token)
+          .where("specialist_uid", isEqualTo: token).where("student_uid", isEqualTo: studentData.id)
           .get();
     }
 
@@ -83,7 +100,7 @@ class DbDataController {
       )
           .add(msgdata)
           .then((value) {
-        Get.toNamed(AppRoutes.SpecialistChat, parameters: {
+        Get.toNamed(isStudent?AppRoutes.Chat:AppRoutes.SpecialistChat, parameters: {
           "doc_id": value.id,
           "specialist_uid": specialistData.id ?? "",
           "student_uid": studentData.id ?? "",
@@ -94,7 +111,7 @@ class DbDataController {
       });
     } else {
       if (messages.docs.isNotEmpty) {
-        Get.toNamed(AppRoutes.SpecialistChat, parameters: {
+        Get.toNamed(isStudent?AppRoutes.Chat:AppRoutes.SpecialistChat, parameters: {
           "doc_id": messages.docs.first.id,
           "student_uid": messages.docs.first.data().student_uid ?? "error",
           "specialist_uid": messages.docs.first.data().specialist_uid ?? "errorName",
@@ -175,6 +192,7 @@ class DbDataController {
     var user = await fetchCurrentUser();
     return user?.name;
   }
+
 
   Future<String?> getAvatar(id) async {
     var userSnapshot = await db

@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jw_projekt/pages/specialist/specialist_report_menagment/widgets/priority_dropdown.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_item.dart';
 
 import '../../../../Utils/date.dart';
+import '../../../../Widgets/caretaker_widget.dart';
 import '../../../../entities/report.dart';
 import '../controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,51 +31,89 @@ class ReportList extends GetView<SpecialistReportsConroller> {
               ],
               color: Colors.white,
               borderRadius: BorderRadius.circular(5)),
-          padding: EdgeInsets.only(top: 10.w, left: 15.w, right: 15.w, bottom: 10.w),
-          child: Row(
+
+          child: Column(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    report.reportType ?? "error",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.sp),
-                  ),
-                  Text(report.title ?? "error",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.sp)),
-                  Container(width: 360.w/1.7,
-                    child: Text(report.content ?? "error",overflow: TextOverflow.clip,maxLines: 1,
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp)),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.topRight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      //Text("Priority: " +  report.priority.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                      SizedBox(height: 10.w,),
-                      Text(
-                        duTimeLineFormat(
-                          report.timestamp!.toDate(),
+              Padding(
+                padding:EdgeInsets.only(top: 10.w, left: 15.w, right: 15.w, bottom: 10.w),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          report.reportType ?? "error",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.sp),
                         ),
+                        Text(report.title ?? "error",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.sp)),
+                        Container(width: 360.w/1.7,
+                          child: Text(report.content ?? "error",overflow: TextOverflow.clip,maxLines: 1,
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                        ),
+                        Row(
+                          children: [
+                            report.caretaker == "notAssigned"
+                                ? SizedBox()
+                                : FutureBuilder(
+                              future: controller.getProfile(report.caretaker!),
+                              builder: (BuildContext context,  snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.deepPurpleAccent,
+                                    ),
+                                  );
+                                }
+                                else{
+                                  return buildCaretakerWidget(snapshot.data!);
+                                }
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.topRight,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            //Text("Priority: " +  report.priority.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
+                            SizedBox(height: 10.w,),
+                            Text(
+                              duTimeLineFormat(
+                                report.timestamp!.toDate(),
+                              ),
+                            ),
+
+
+
+
+                          ],
+                        ),
+
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text("Priority: "),
-                          Text(report.priority == "notAssigned"?"new":report.priority??""),
-                        ],
-                      )
-                    ],
-                  ),
+
+                    ),
+
+                  ],
                 ),
-              )
+              ),
+              Container(
+                width: 360.w,
+
+                color: ValueColorMapper.priorityToColorString(report.priority!),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(report.priority!),
+                ),)
             ],
+
           ),
         ),
       ),

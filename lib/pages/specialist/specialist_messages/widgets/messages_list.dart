@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:jw_projekt/styles/specialist_styles.dart';
 import '../../../../Utils/date.dart';
 import '../../../../Widgets/user_avatar.dart';
 import '../../../../common/routes/routes.dart';
@@ -15,12 +16,10 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
 
   Future<String?> initAvatar(Msg item) async {
     var avatar;
-    if (item.specialist_uid == controller.token) {
-      avatar = await controller.db_controller.getAvatar(item.student_avatar);
-    } else {
-      avatar = await controller.db_controller.getAvatar(item.specialist_avatar);
-    }
-    print(avatar);
+
+    avatar = await controller.db_controller.getAvatar(item.student_uid);
+
+    print(avatar + "HAHAH");
     return avatar;
   }
 
@@ -59,13 +58,13 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
   }
 
   Widget buildListItem(Msg item, String avatarString) {
+    print(avatarString + "UWAGA!!!");
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.grey.withOpacity(0.5),
             spreadRadius: 5,
             blurRadius: 7,
             offset: Offset(0, 3), // changes position of shadow
@@ -73,12 +72,12 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
         ],
       ),
       margin: EdgeInsets.only(top: 10.w),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: InkWell(
-          onTap: () {
-            controller.dbDataController.goChatByMsg(item);
-          },
+      child: InkWell(
+        onTap: () {
+          controller.dbDataController.goChatByMsg(item);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,9 +91,10 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
                         : 'assets/logo.jpg',
                 size: 54.w,
               ),
+              SizedBox(width: 5.w,),
               Container(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
                       width: 200.w,
@@ -123,8 +123,7 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
                       ),
                     ),
                     SizedBox(
-                      width: 60.w,
-                      height: 54.w,
+
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -140,7 +139,7 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
                                   item.unreadMessagesCountSpecialist != null
                               ? Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.green,
+                                    color: SpecialistStyles.primaryColor,
                                     borderRadius: BorderRadius.circular(90),
                                   ),
                                   child: Padding(

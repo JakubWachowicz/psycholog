@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jw_projekt/common/stores/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jw_projekt/controller/db_data_controller.dart';
 import 'package:jw_projekt/pages/specialist/specialist_chat/state.dart';
 import 'package:jw_projekt/pages/specialist/specialist_report_kanban/state.dart';
 import 'package:jw_projekt/pages/student/chat/state.dart';
@@ -15,6 +16,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 
 import '../../../entities/report.dart';
+import '../../../entities/user.dart';
 
 class SpecialistReportKanbanConroller extends GetxController {
   AuthenticationClontroller auth = AuthenticationClontroller();
@@ -33,34 +35,12 @@ class SpecialistReportKanbanConroller extends GetxController {
 
   late RxList<DragAndDropList> lists;
 
-  RxList<DraggableList> allLists = [
-    DraggableList(header: 'TODO', items: [
-      Report(
-        reportId: 'R123',
-        title: 'Example Report',
-        content: 'This is an example report',
-        status: 'Pending',
-        studentId: 'S456',
-        caretaker: 'John Doe',
-        priority: 'High',
-        reportType: 'General',
-        timestamp: Timestamp.now(),
-      )
-    ]),
-    DraggableList(header: 'IN PROGRESS', items: [
-      Report(
-        reportId: 'R123',
-        title: 'Example Report',
-        content: 'This is an example report',
-        status: 'Pending',
-        studentId: 'S456',
-        caretaker: 'John Doe',
-        priority: 'High',
-        reportType: 'General',
-        timestamp: Timestamp.now(),
-      )
-    ]),
-  ].obs;
+  DbDataController _dbDataController = DbDataController();
+
+
+
+
+  RxList allLists = [].obs;
 
   @override
   void onReady() {
@@ -70,20 +50,40 @@ class SpecialistReportKanbanConroller extends GetxController {
   late final name;
   late final topName;
 
-  @override
+
+  Future<String?> getAvatar(String id) async {
+    return await _dbDataController.getAvatar(id);
+  }
+
+  Future<UserData?> getProfile(String id) async {
+    return await _dbDataController.fetchUser(id);
+  }
+
+
+
+
+  void goReport(Report report){
+    print(report.reportId);
+    Get.toNamed(AppRoutes.SpecialistReportMenagment,parameters: {
+      "reportId": report.reportId!,
+    });
+  }
+
+
   void onInit() {
     super.onInit();
-    lists = allLists.map(buildList).toList().obs;
-
 
     var reports = db
         .collection("reports")
         .withConverter(
-        fromFirestore: Report.fromFirestore,
-        toFirestore: (Report report, options) => report.toFirestore())
+      fromFirestore: Report.fromFirestore,
+      toFirestore: (Report report, options) => report.toFirestore(),
+    )
         .orderBy("timestamp", descending: false);
 
     state.reportList.clear();
+
+
     listener = reports.snapshots().listen(
           (event) {
         for (var change in event.docChanges) {
@@ -106,19 +106,61 @@ class SpecialistReportKanbanConroller extends GetxController {
             case DocumentChangeType.removed:
               break;
           }
+          _reorder();
         }
+
+        // Now that we have the updated reportList, build the DraggableList items
+        allLists.assignAll(buildDraggableLists(state.reportList));
       },
       onError: (error) => print("listen failed: ${error}"),
     );
-
-
-
-
-
-
+    allLists.assignAll(buildDraggableLists(state.reportList));
 
   }
+  final PageController pageController = PageController(viewportFraction: 0.8);
 
+// Function to build DraggableList items from the reportList
+  RxList<DraggableList> buildDraggableLists(List<Report> reportList) {
+    // Create DraggableList items based on the status or any other criteria
+    RxList<DraggableList> lists = [
+      DraggableList(header: 'Not assign', items: []),
+      DraggableList(header: 'Assign', items: []),
+      DraggableList(header: 'In progress', items: []),
+      DraggableList(header: 'Done', items: []),
+    ].obs;
+
+    for (var report in reportList) {
+
+      print("Ja działam");
+      // Add the report to the corresponding DraggableList based on its status
+      switch (report.status) {
+        case 'not assigned':
+          lists[0].items.add(report);
+          print("Ja yeppp!1");
+          print(report);
+          break;
+        case 'assigned':
+          lists[1].items.add(report);
+          break;
+        case 'in progress':
+          lists[2].items.add(report);
+          break;
+        case 'done':
+          lists[3].items.add(report);
+          break;
+      // Add more cases if you have additional status categories
+      }
+    }
+
+
+    print(lists[0].items);
+    return lists;
+  }
+
+// Function to update the order of DraggableList items
+  void _reorder() {
+    allLists.assignAll(buildDraggableLists(state.reportList));
+  }
   @override
   void onClose() {
     msgScrolling.dispose();

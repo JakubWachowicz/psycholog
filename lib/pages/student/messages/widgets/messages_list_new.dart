@@ -14,11 +14,9 @@ class MessageListNew extends GetView<MessagesConroller> {
 
   Future<String?> initAvatar(Msg item) async {
     var avatar;
-    if (item.student_uid == controller.token) {
-      avatar = await controller.db_controller.getAvatar(item.specialist_uid);
-    } else {
-      avatar = await controller.db_controller.getAvatar(item.student_uid);
-    }
+
+    avatar = await controller.db_controller.getAvatar(item.specialist_uid);
+
     return avatar;
   }
 
@@ -59,91 +57,105 @@ class MessageListNew extends GetView<MessagesConroller> {
   }
 
   Widget buildListItem(Msg item, String avatarString) {
+    print(avatarString + "UWAGA!!!");
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
       margin: EdgeInsets.only(top: 10.w),
       child: InkWell(
         onTap: () {
          controller.goChat(item);
         },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            UserAvatarWidget(
-              role: 'student',
-              path: avatarString == null
-                  ? 'assets/logo.jpg'
-                  : avatarString.contains('assets')
-                  ? avatarString
-                  : 'assets/logo.jpg',
-              size: 54.w,
-            ),
-            Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 200.w,
-                    height: 42.w,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.message_type != null
-                              ? item.message_type!
-                              : item.specialist_name!,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
-                          ),
-                          overflow: TextOverflow.clip,
-                          maxLines: 1,
-                        ),
-                        Text(
-                          item.last_msg ?? "",
-                          overflow: TextOverflow.clip,
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 60.w,
-                    height: 54.w,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          duTimeLineFormat(
-                            (item.last_time as Timestamp).toDate(),
-                          ),
-                          overflow: TextOverflow.clip,
-                          maxLines: 1,
-                        ),
-                        item.unreadMessagesCountStudent != 0 &&
-                            item.unreadMessagesCountStudent != null
-                            ? Container(
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(90),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              item.unreadMessagesCountStudent.toString()!,
-                            ),
-                          ),
-                        )
-                            : Text(""),
-                      ],
-                    ),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              UserAvatarWidget(
+                role: 'student',
+                path: avatarString == null
+                    ? 'assets/logo.jpg': avatarString,
+
+                size: 54.w,
               ),
-            ),
-          ],
+              SizedBox(width: 5.w,),
+              Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+                    SizedBox(
+                      width: 200.w,
+                      height: 42.w,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.message_type != null
+                                ? item.message_type!
+                                : item.specialist_name!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
+                            ),
+                            overflow: TextOverflow.clip,
+                            maxLines: 1,
+                          ),
+                          Text(
+                            item.last_msg ?? "",
+                            overflow: TextOverflow.clip,
+                            maxLines: 1,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            duTimeLineFormat(
+                              (item.last_time as Timestamp).toDate(),
+                            ),
+                            overflow: TextOverflow.clip,
+                            maxLines: 1,
+                          ),
+                          item.unreadMessagesCountStudent != 0 &&
+                              item.unreadMessagesCountStudent != null
+                              ? Container(
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(180),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                item.unreadMessagesCountStudent.toString()!,
+                              ),
+                            ),
+                          )
+                              : Text(""),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

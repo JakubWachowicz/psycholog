@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:jw_projekt/pages/student/report/widgets/report_category.dart';
@@ -16,7 +17,7 @@ class ReportPage extends GetView<ReportConroller> {
       height: 50.w,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          color: controller.state.index != itemIndex?Colors.green:Colors.white
+          color: controller.state.index != itemIndex?Colors.green:Colors.white,
       ),
       child: Text(title,style: TextStyle(color: controller.state.index != itemIndex?Colors.white:Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
     ));
@@ -30,6 +31,7 @@ class ReportPage extends GetView<ReportConroller> {
       return Container(
         alignment: Alignment.topCenter,
         width: 360.w,
+        color: Colors.white,
         child: Column(
           children: [
             SizedBox(height: 35.w,child: Container(color: Colors.green,),),

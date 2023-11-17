@@ -17,11 +17,15 @@ class ReportCategoryList extends GetView<ReportConroller> {
           height: 150.w,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Colors.white70,
-            border: Border.all(
-              color: Colors.green,
-              width: 2,
-            ),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -46,13 +50,13 @@ class ReportCategoryList extends GetView<ReportConroller> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          /*Container(
             alignment: Alignment.topLeft,
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text("Select report category",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22.sp,color: Colors.green),),
-              )),
-          SizedBox(height: 10.w,),
+              )),*/
+          SizedBox(height: 30.w,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

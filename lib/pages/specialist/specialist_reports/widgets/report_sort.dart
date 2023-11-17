@@ -34,12 +34,7 @@ class SortReportsButton extends StatelessWidget {
       child: InkWell(
 
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.green
-            )
-          ),
+
             child: Icon(Icons.sort)),
       ),
     );

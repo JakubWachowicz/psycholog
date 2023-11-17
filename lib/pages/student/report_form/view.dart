@@ -41,26 +41,29 @@ class ReportFormPage extends GetView<ReportFormConroller> {
     }
 
     Widget _buildSubmitButton() {
-      return InkWell(
-        onTap: () =>
-        {
-          controller.sendReportToFirebase(
-              controller.reportTitle.text, controller.reportContent.text)
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10.w)),
-            color: Colors.green,
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: InkWell(
+          onTap: () =>
+          {
+            controller.sendReportToFirebase(
+                controller.reportTitle.text, controller.reportContent.text)
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10.w)),
+              color: Colors.green,
+            ),
+            width: double.infinity,
+            height: 60.w,
+
+            child: Center(child: Text("Send report", style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20.sp),)),
           ),
-          width: double.infinity,
-          height: 60.w,
 
-          child: Center(child: Text("Send report", style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20.sp),)),
         ),
-
       );
     }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,20 +41,25 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 8.0),
         child: Container(
-
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-                Text('Report: ',style: TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 5.w,),
-              Obx(
-                    () => Text(
-                  value.value,
-                  maxLines: null,
-                  style: TextStyle(fontSize: 18.0),
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(5))),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                  const Text('Report: ',style: TextStyle(fontWeight: FontWeight.bold),),
+                SizedBox(height: 5.w,),
+                Obx(
+                      () => Text(
+                    value.value,
+                    maxLines: null,
+                    style: TextStyle(fontSize: 18.0),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
@@ -98,7 +104,7 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
             SizedBox(height: 10.w,),
             _buildContent( controller.state.content),
             SizedBox(height: 10.w,),
-            Text("Comments: "),
+
 
 
           ],
@@ -134,57 +140,75 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
 
     return Scaffold(
       appBar: _buildAppBar(),
-      body: SafeArea(
-        child: ConstrainedBox(
-          constraints: BoxConstraints.expand(),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Container(
-                        child: _buildReportBody(),
-                    alignment: Alignment.topLeft,),
-                    Expanded(child: CommentList()),
-                  ],
+      body: Container(
+        decoration: BoxDecoration(
+          color: CupertinoColors.lightBackgroundGray,
+        ),
+
+        child: SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints.expand(),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Container(
+                                  child: _buildReportBody(),
+                              alignment: Alignment.topLeft,),
+
+
+                            ],
+                          ),
+
+                        ),
+                      ),
+                      SizedBox(height: 50,)
+
+                    ],
+                  ),
                 ),
-              ),
-              Positioned(
-                  bottom: 0.h,
-                  child: Container(
-                    color: Colors.white70,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 360.w-30.w,
-                          child: TextField(
-                            maxLines: null,
-                            keyboardType: TextInputType.multiline,
-                            controller: controller.commentContent,
-                            decoration: InputDecoration(
-                              hintText: 'Add a comment...',
+                Positioned(
+                    bottom: 0.h,
+                    child: Container(
+                      color: Colors.white70,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 360.w-30.w,
+                            child: TextField(
+                              maxLines: null,
+                              keyboardType: TextInputType.multiline,
+                              controller: controller.commentContent,
+                              decoration: InputDecoration(
+                                hintText: 'Add a comment...',
+                              ),
                             ),
                           ),
-                        ),
 
-                        InkWell(
-                          onTap: () {
-                            final comment =
-                            controller.commentContent.text.trim();
-                            if (comment.isNotEmpty) {
-                              controller.handleSendComment(comment);
-                              controller.commentContent.clear();
-                            }
-                          },
-                          child: Icon(Icons.send),
-                        )
-                      ],
-                    ),
-                  ))
-            ],
+                          InkWell(
+                            onTap: () {
+                              final comment =
+                              controller.commentContent.text.trim();
+                              if (comment.isNotEmpty) {
+                                controller.handleSendComment(comment);
+                                controller.commentContent.clear();
+                              }
+                            },
+                            child: Icon(Icons.send),
+                          )
+                        ],
+                      ),
+                    ))
+              ],
+            ),
           ),
         ),
       ),

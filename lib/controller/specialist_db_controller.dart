@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:jw_projekt/common/routes/routes.dart';
 
 import '../entities/msg_content.dart';
@@ -41,8 +42,20 @@ class SpecialistDbController{
         {"description":description}
       );
 
-    }
 
+      Get.dialog(
+        AlertDialog(
+          title: const Text('Succes'),
+          content: const Text('Your new description is saved!'),
+          actions: [
+            TextButton(
+              child: const Text("Close"),
+              onPressed: () => Get.back(),
+            ),
+          ],
+        ),
+      );
+    }
 
   }
   Future<String> getDescritpion() async{

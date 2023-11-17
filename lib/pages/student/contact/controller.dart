@@ -64,7 +64,7 @@ class ContactConroller extends GetxController {
   goChat(UserData to_userdata) async {
 
     UserData? data = await fetchCurrentUser()!;
-    dbDataController.goChat(data!, to_userdata, true);
+    dbDataController.goChat(data!, to_userdata, true  );
     print(to_userdata);
 
   }

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:jw_projekt/styles/specialist_styles.dart';
 
 
 import 'controller.dart';
@@ -25,7 +26,7 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
       appBar: AppBar(title: Text( controller.state.student_name.value!,
         overflow: TextOverflow.clip,
         maxLines: 1,),
-        backgroundColor: Colors.green,
+        backgroundColor: SpecialistStyles.primaryColor,
 
       ),
       
@@ -39,59 +40,37 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
               child: SpecialistChatList(),
             ),
 
-              Positioned(
-                bottom:  0.h,
-
-
+            Positioned(
+                bottom: 0.h,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Container(
-
-                    color: Colors.red,
+                    color: SpecialistStyles.backgroundColor,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-
-                        //Text input field
-                        SizedBox(
-
-                          width: 360.w,
-                          height:  80.w,
-
-                            child: TextField(
-                              expands: true,
-                              keyboardType: TextInputType.multiline,
-
-                              maxLines: null,
-                              controller: controller.textController,
-                              autofocus: false,
-                              focusNode: controller.contentNode,
-
-                              decoration: InputDecoration(
-
-                                filled: true,
-                                hintText: "Send Message",
-                                fillColor: Colors.white,
-                                suffixIcon: IconButton(icon:Icon(Icons.send), onPressed: () {  controller.sendMessage(); },),
-                                labelStyle: const TextStyle(fontSize: 20,color: Colors.black45),
-                                enabledBorder:  OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                                    borderSide: BorderSide(color: Colors.black54)),
-                                focusedBorder:  OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                                    borderSide: BorderSide(color: borderColor)),
-                              ),
-
-
-
+                        Container(
+                          width: 360,
+                          child: TextField(
+                            maxLines: null,
+                            keyboardType: TextInputType.multiline,
+                            controller: controller.textController,
+                            decoration: InputDecoration(
+                              hintText: 'Send message',
                             ),
-
+                          ),
                         ),
-
-
-
+                        InkWell(
+                          onTap: () {
+                            controller.sendMessage();
+                          },
+                          child: Icon(Icons.send),
+                        )
                       ],
                     ),
-              ))
+                  ),
+                ))
           ],
         ),
       ),

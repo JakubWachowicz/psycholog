@@ -21,7 +21,15 @@ class YourReportList extends GetView<YourReportsConroller> {
         child: Container(
           alignment: Alignment.topLeft,
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.green),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+             color: Colors.white,
               borderRadius: BorderRadius.circular(10)),
           padding: EdgeInsets.only(top: 10.w, left: 15.w, right: 15.w, bottom: 10.w),
           child: Row(

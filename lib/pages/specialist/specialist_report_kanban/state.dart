@@ -11,4 +11,10 @@ class SpecialistReportKanbanState{
   var to_avatar = "".obs;
   late final from_name = "".obs;
   RxList<Report> reportList = <Report>[].obs;
+
+  RxList<Report> notAssignReport = <Report>[].obs;
+  RxList<Report> inProgressReport = <Report>[].obs;
+  RxList<Report> doneReport = <Report>[].obs;
+  Rx<int> index = 0.obs;
+
 }

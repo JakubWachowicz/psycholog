@@ -83,12 +83,12 @@ class LoginPage extends GetView<LoginConroller> {
           child:  !controller.state.isKeyboardActive.value?Column(
             children: [
               Container(
-                width: 200.w,
-                height: 200.w,
-                margin: EdgeInsets.symmetric(horizontal: 15.w),
+                width: 250.w,
+                height: 250.w,
+
                 child: Container(
-                  width: 300.h,
-                  height: 300.h,
+                  width: 250.h,
+                  height: 250.h,
                   decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage("assets/logo.jpg"),
@@ -96,9 +96,7 @@ class LoginPage extends GetView<LoginConroller> {
                       )),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top:10.h,bottom: 20.h),
-                child: Logo())
+
 
             ],
           ):null,

@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/index.dart';
+import 'package:jw_projekt/styles/specialist_styles.dart';
 
 import '../../../Widgets/nav_bar.dart';
 import '../../admin/admin_settings/index.dart';
@@ -9,6 +10,7 @@ import '../../signin/view.dart';
 
 import '../specialist_messages/index.dart';
 import '../specialist_report_kanban/index.dart';
+import '../specialist_report_kanban/view.dart';
 import 'index.dart';
 
 class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> {
@@ -23,13 +25,8 @@ class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> 
         onPageChanged: controller.handlePageChanged,
         children: [
           SpecialistMessagePage(),
-
           SpecialistReportsPage(),
-          SpecialistReportKanbanPage(title: 'Trello',),
-          AdminSettingsPage(),
-
-
-
+          SpecialistReportKanbanPage(),
         ],
       );
     }
@@ -44,7 +41,7 @@ class SpecialistApplicationPage extends GetView<SpecialistApplicationConroller> 
               showSelectedLabels: true,
               showUnselectedLabels: true,
               unselectedItemColor: borderColor,
-              selectedItemColor: buttonColor,
+              selectedItemColor: SpecialistStyles.primaryColor,
             ),
 
 

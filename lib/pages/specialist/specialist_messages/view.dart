@@ -4,6 +4,7 @@ import 'package:jw_projekt/pages/specialist/specialist_messages/widgets/sort_but
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:jw_projekt/styles/specialist_styles.dart';
 import '../../../Widgets/nav_bar.dart';
 import '../../student/messages/widgets/messages_list_new.dart';
 import 'controller.dart';
@@ -25,7 +26,7 @@ class SpecialistMessagePage extends GetView<SpecialistMessagesConroller> {
     AppBar _buildAppBar(){
       return AppBar(
         title: Text("Messages"),
-        backgroundColor: Colors.green,
+        backgroundColor: SpecialistStyles.primaryColor,
         actions: [
           InkWell(
             onTap: (){
@@ -49,7 +50,7 @@ class SpecialistMessagePage extends GetView<SpecialistMessagesConroller> {
         drawer: NavBar(),
         appBar: _buildAppBar(),
         body: Container(
-          color: CupertinoColors.lightBackgroundGray,
+          color: SpecialistStyles.backgroundColor,
           child: Column(
             children: [
 

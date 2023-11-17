@@ -6,6 +6,7 @@ class ProfileDataController extends GetxController {
   static ProfileDataController get to => Get.find();
   static DbDataController _dbDataController =  DbDataController();
   static Rx<String> profileAvatar = "assets/logo.jpg".obs;
+  static Rx<String?> profileName = "".obs;
 
   static void initialize() {
     Get.put(ProfileDataController());
@@ -24,5 +25,7 @@ class ProfileDataController extends GetxController {
 
   static Future<void> initProfile() async {
     profileAvatar.value = await _dbDataController.getPhoto();
+    profileName.value = await _dbDataController.getName();
   }
+
 }

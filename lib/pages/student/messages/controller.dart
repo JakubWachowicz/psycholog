@@ -34,11 +34,11 @@ class MessagesConroller extends GetxController {
   void onReady() {
     super.onReady();
 
-    initAsyncChatRefresh();
+   initAsyncChatRefresh();
     //TO jest chyba dosyć nie optymalne
     //TODO: Update tylko czasu a nie wszystkieoo
-    new Timer.periodic(oneSecond, (Timer t)  {state.messages.refresh();
-    print("Update");});
+    //new Timer.periodic(oneSecond, (Timer t)  {state.messages.refresh();
+    //print("Update");});
   }
 
   String? getCurrentUserId() {

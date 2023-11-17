@@ -5,6 +5,7 @@ import 'package:jw_projekt/pages/specialist/specialist_profile/widgets/avatar_ga
 import 'package:jw_projekt/pages/specialist/specialist_profile/widgets/edit_description.dart';
 import 'package:jw_projekt/pages/student/messages/widgets/messages_list_new.dart';
 import 'package:jw_projekt/pages/student/profile/widgets/edit_user_avatar.dart';
+import 'package:jw_projekt/styles/specialist_styles.dart';
 import '../../../Widgets/nav_bar.dart';
 import '../../../controller/profile_data_controller.dart';
 import 'controller.dart';
@@ -18,7 +19,7 @@ class SpecialistProfilePage extends GetView<SpecialistProfileConroller> {
     AppBar _buildAppBar() {
       return AppBar(
         title: Text("Profile"),
-        backgroundColor: Colors.green,
+        backgroundColor: SpecialistStyles.primaryColor,
       );
     }
 
@@ -87,32 +88,54 @@ class SpecialistProfilePage extends GetView<SpecialistProfileConroller> {
 
               ),
               SizedBox(height: 30,),
-              Stack(
-                children: [
-                  Obx(() => Text(controller.state.description.value),),
-                  Positioned(bottom:0,right:0,child: InkWell(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>EditDescription(descritpion: controller.state.description.value,specialistController: controller.specialistDbController,)),
-                      );
+              Container(
+                height: 200,
 
-
-
-                    },
-                    child: Container(
-                      width: 40.w,
-                      height: 40.w,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 4,color: Colors.green),
-                          color: Colors.green
-                      ),
-                      //color:Colors.white,
-                      child: Icon(Icons.edit,color: Colors.white,),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10)
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
                     ),
-                  )),
-                ],
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    Obx(() => Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(controller.state.description.value),
+                    ),),
+                    Positioned(bottom:5,right:5,child: InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>EditDescription(descritpion: controller.state.description,specialistController: controller.specialistDbController,)),
+                        );
+
+                      },
+                      child: Container(
+                        width: 40.w,
+                        height: 40.w,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 4,color: Colors.green),
+                            color: Colors.green
+                        ),
+                        //color:Colors.white,
+                        child: Icon(Icons.edit,color: Colors.white,),
+                      ),
+                    )),
+                  ],
+                ),
               )
 
             ],

@@ -14,6 +14,7 @@ import '../../pages/signin/view.dart';
 import '../../pages/specialist/specialist_application/bindings.dart';
 import '../../pages/specialist/specialist_chat/index.dart';
 import '../../pages/specialist/specialist_report_kanban/index.dart';
+import '../../pages/specialist/specialist_report_kanban/view.dart';
 import '../../pages/specialist/specialist_report_menagment/index.dart';
 import '../../pages/student/application/index.dart';
 import '../../pages/student/chat/index.dart';
@@ -93,9 +94,7 @@ class AppPages {
       name: AppRoutes.SpecialistReportCanban,
       transition: Transition.rightToLeft,
       transitionDuration: Duration(milliseconds: 200),
-      page: () => SpecialistReportKanbanPage(
-        title: 'Trello',
-      ),
+      page: () => const SpecialistReportKanbanPage(),
       binding: SpecialistReportMenagmentBinding(),
     ),
     GetPage(

@@ -7,7 +7,9 @@ import 'package:jw_projekt/pages/specialist/specialist_reports/index.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_sort.dart';
 
 import '../../../common/routes/routes.dart';
+import '../../../controller/db_data_controller.dart';
 import '../../../entities/report.dart';
+import '../../../entities/user.dart';
 
 
 class SpecialistReportsConroller extends GetxController {
@@ -16,6 +18,12 @@ class SpecialistReportsConroller extends GetxController {
   var listener;
   var state = SpecialistReportsState();
   ScrollController reportScrolling = ScrollController();
+
+  DbDataController _dbDataController = DbDataController();
+  Future<UserData?> getProfile(String id) async {
+
+    return await _dbDataController.fetchUser(id);
+  }
 
   void goReport(Report report){
     print(report.reportId);
@@ -44,7 +52,7 @@ class SpecialistReportsConroller extends GetxController {
           }if(b.priority == "notAssigned"){
             return 1;
           }
-          return aTime!.compareTo(bTime!);
+          return bTime!.compareTo(aTime!);
         });
         print("Posortowano po nazwie");
         break;

@@ -10,15 +10,25 @@ import '../entities/user.dart';
 class NavBar extends StatelessWidget {
   DbDataController dbDataController = DbDataController();
   Rx<String> name = "Name".obs;
-
+  Rx<String> avatar = "assets/logo.jpg".obs;
+  final user_id = UserStore.to.token;
   void updateName() async {
 
     name.value = (await dbDataController.getName())!;
 
   }
+  void initAvatar(id) async {
+
+    avatar.value  = (await controller.getAvatar(id))!;
+
+
+  }
+
+  var controller = DbDataController();
 
   @override
   Widget build(BuildContext context) {
+    initAvatar(user_id);
     updateName();
     return Drawer(
       child: ListView(
@@ -41,10 +51,10 @@ class NavBar extends StatelessWidget {
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: ClipOval(
-                child: Image.asset(
-                  ProfileDataController.profileAvatar.value,
+                child: Obx(()=>Image.asset(
+                  avatar.value,
                   fit: BoxFit.cover,
-                ),
+                ),)
               ),
             ),
             decoration: const BoxDecoration(

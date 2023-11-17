@@ -4,7 +4,6 @@ import 'package:jw_projekt/common/stores/user.dart';
 import 'package:jw_projekt/pages/login/state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../common/routes/routes.dart';
 import '../../controller/auth_controller.dart';
@@ -106,7 +105,8 @@ class LoginConroller extends GetxController{
   }
 
   void validateTextFields(String login, String password){
-
+    login = login.trim();
+    password = password.trim();
     print("Test "+login);
     print("null chyba");
     if(login == null ||login.trim() ==  ""){
