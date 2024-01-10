@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 class MenuTile extends StatelessWidget {
-  const MenuTile({super.key, required this.child, required this.icon});
+  const MenuTile({super.key, required this.child, required this.icon,this.iconColor = Colors.black54});
   final Widget child;
   final IconData icon;
+  final iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class MenuTile extends StatelessWidget {
       child: Row(
           children: [
             SizedBox(width: 10,),
-            Icon(icon,size: 30,),
+            Icon(icon,size: 30,color: iconColor,),
             SizedBox(width: 10,),
             child,
           ],

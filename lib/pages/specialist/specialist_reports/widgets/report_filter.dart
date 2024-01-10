@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../entities/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 class FilterButton extends StatelessWidget {
   final Function(FilterOptions) onPressed;
 
@@ -22,14 +24,20 @@ class FilterButton extends StatelessWidget {
 class FilterSheet extends StatefulWidget {
   final Function(FilterOptions) onPressed;
 
-  const FilterSheet({required this.onPressed});
+   FilterSheet({required this.onPressed});
 
   @override
   _FilterSheetState createState() => _FilterSheetState();
+
+
+
+
 }
 
 class _FilterSheetState extends State<FilterSheet> {
   FilterOptions _filterOptions = FilterOptions();
+
+
 
   @override
   Widget build(BuildContext context) {

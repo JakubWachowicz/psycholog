@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Report {
-  final String? reportId; // New property: reportId
+  final String? reportId;
   final String? title;
   final String? content;
   final String? status;
@@ -10,9 +10,11 @@ class Report {
   final String? priority;
   final String? reportType;
   final Timestamp? timestamp;
+  final int? unreadMessagesCountStudent; // New property
+  final int? unreadMessagesCountSpecialist; // New property
 
   Report({
-    this.reportId, // New parameter: reportId
+    this.reportId,
     this.title,
     this.content,
     this.status,
@@ -21,6 +23,8 @@ class Report {
     this.priority,
     this.reportType,
     this.timestamp,
+    this.unreadMessagesCountStudent, // Initialize the new properties
+    this.unreadMessagesCountSpecialist,
   });
 
   factory Report.fromFirestore(
@@ -29,7 +33,7 @@ class Report {
       ) {
     final data = snapshot.data();
     return Report(
-      reportId: data?['reportId'], // Assign reportId from the document id
+      reportId: data?['reportId'],
       title: data?['title'],
       content: data?['content'],
       status: data?['status'],
@@ -38,6 +42,8 @@ class Report {
       priority: data?['priority'],
       reportType: data?['reportType'],
       timestamp: data?['timestamp'],
+      unreadMessagesCountStudent: data?['unreadMessagesCountStudent'],
+      unreadMessagesCountSpecialist: data?['unreadMessagesCountSpecialist'],
     );
   }
 
@@ -52,6 +58,10 @@ class Report {
       if (priority != null) 'priority': priority,
       if (reportType != null) 'reportType': reportType,
       if (timestamp != null) 'timestamp': timestamp,
+      if (unreadMessagesCountStudent != null)
+        'unreadMessagesCountStudent': unreadMessagesCountStudent,
+      if (unreadMessagesCountSpecialist != null)
+        'unreadMessagesCountSpecialist': unreadMessagesCountSpecialist,
     };
   }
 }

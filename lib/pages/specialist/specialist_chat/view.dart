@@ -64,6 +64,8 @@ class SpecialistChatPage extends GetView<SpecialistChatConroller> {
                         InkWell(
                           onTap: () {
                             controller.sendMessage();
+                            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            print(" test"+ controller.state.msgcontentList.length.toString() + "ilość wiadomości");
                           },
                           child: Icon(Icons.send),
                         )

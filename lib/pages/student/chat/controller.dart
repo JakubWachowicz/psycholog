@@ -30,7 +30,12 @@ class ChatConroller extends GetxController {
 
   @override
   Future<void> onReady() async {
+
+
     super.onReady();
+    DocumentReference documentReference = db
+        .collection("messages")
+        .doc(doc_id);
     var messages = db
         .collection("messages")
         .doc(doc_id)
@@ -42,18 +47,20 @@ class ChatConroller extends GetxController {
         .orderBy("addtime", descending: false);
 
     state.msgcontentList.clear();
-    sendMessageController = SendMessageController(doc_id,user_id,state.specialist_uid.value,true);
-    int numberOfUnreadMessages = await sendMessageController.getUnreadMessageCount(doc_id,user_id);
-    sendMessageController.readAllMessages(10);
+    sendMessageController = SendMessageController(doc_id,user_id,state.specialist_uid.value,true, messagesDocRef: documentReference,);
+    sendMessageController.setMessageCountStudent();
+
+
     listener = messages.snapshots().listen(
           (event) {
         for (var change in event.docChanges) {
           switch (change.type) {
+
             case DocumentChangeType.added:
               if (change.doc.data() != null) {
                 state.msgcontentList.insert((0), change.doc.data()!);
                 if(change.doc.data()?.uid != user_id){
-                  sendMessageController.updateIsRead();
+                  sendMessageController.read();
                 }
               }
               break;
@@ -62,11 +69,12 @@ class ChatConroller extends GetxController {
             case DocumentChangeType.removed:
               break;
           }
+          sendMessageController.setMessageCountStudent();
         }
       },
       onError: (error) => print("listen failed: ${error}"),
     );
-    sendMessageController.readAllMessages(10);
+
   }
 
 

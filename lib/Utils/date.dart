@@ -1,14 +1,17 @@
 import 'package:intl/intl.dart';
 
-
+String fullDateFormat(DateTime dt){
+  final dtFormat = new DateFormat('dd.MM.yyyy');
+  return dtFormat.format(dt);
+}
 String duTimeLineFormat(DateTime dt) {
   var now = DateTime.now();
   var difference = now.difference(dt);
   if(difference.inHours>24){
-    final dtFormat = new DateFormat('hh:mm dd.MM');
+    final dtFormat = new DateFormat('HH:mm dd.MM');
     return dtFormat.format(dt);
   }
-  final dtFormat = new DateFormat('hh-mm');
+  final dtFormat = new DateFormat.Hm();
   return dtFormat.format(dt);
  /*
   var now = DateTime.now();

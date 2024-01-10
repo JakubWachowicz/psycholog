@@ -28,23 +28,30 @@ class MessagesConroller extends GetxController {
     initialRefresh: true,
   );
 
-  static const oneSecond = const Duration(seconds: 25);
 
   @override
   void onReady() {
     super.onReady();
 
    initAsyncChatRefresh();
-    //TO jest chyba dosyć nie optymalne
-    //TODO: Update tylko czasu a nie wszystkieoo
-    //new Timer.periodic(oneSecond, (Timer t)  {state.messages.refresh();
-    //print("Update");});
+
+
+
+    state.messages.sort((a, b) {
+      final aTime = a.last_time;
+
+      final bTime = b.last_time;
+
+      return bTime!.compareTo(aTime!);
+    });
+    state.messages.refresh();
   }
 
   String? getCurrentUserId() {
     authP.FirebaseAuth auth = authP.FirebaseAuth.instance;
     String? currentUser = auth.currentUser?.uid;
     return currentUser;
+
   }
 
   Future<UserData?> fetchCurrentUser() async {

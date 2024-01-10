@@ -19,6 +19,8 @@ class SpecialistReportMenagmentState{
   var title = "".obs;
   late final from_name = "".obs;
 
+  RxList<Msg> messages = <Msg>[].obs;
+
   RxList<ReportComment> commentList = <ReportComment>[].obs;
 
 }

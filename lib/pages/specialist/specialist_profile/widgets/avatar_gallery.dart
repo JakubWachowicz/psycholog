@@ -9,10 +9,9 @@ const List<String> imageList = [
   'assets/avatars/cat_avatar.jpg',
   'assets/avatars/cat_avatar.jpg',
   'assets/avatars/cat_avatar.jpg',
+  'assets/avatars/paniPsycholog.jpeg',
   'assets/avatars/cat_avatar.jpg',
   'assets/avatars/cat_avatar.jpg',
-  'assets/avatars/cat_avatar.jpg',
-
   'assets/avatars/tiger_avatar.png',
 
   // Add more image URLs as needed

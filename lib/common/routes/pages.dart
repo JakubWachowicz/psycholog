@@ -4,6 +4,8 @@ import 'package:jw_projekt/common/routes/routes.dart';
 import 'package:jw_projekt/pages/settings/index.dart';
 import 'package:jw_projekt/pages/specialist/specialist_application/view.dart';
 import 'package:jw_projekt/pages/specialist/specialist_profile/index.dart';
+import 'package:jw_projekt/pages/specialist/specialist_report_chat/bindings.dart';
+import 'package:jw_projekt/pages/specialist/specialist_report_chat/index.dart';
 import 'package:jw_projekt/pages/student/YourReportInfo/index.dart';
 import '../../pages/admin/admin_application/index.dart';
 import '../../pages/login/bindings.dart';
@@ -118,6 +120,14 @@ class AppPages {
       page: () => SpecialistProfilePage(),
       binding: SpecialistProfileBinding(),
     ),
+    GetPage(
+      name: AppRoutes.SpecialistReportChat,
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 200),
+      page: () => const SpecialistReportChatPage(),
+      binding: SpecialistReportChatBinding(),
+    ),
+
 
     GetPage(
       name: AppRoutes.Settings,

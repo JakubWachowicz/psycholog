@@ -13,20 +13,30 @@ class ContactPage extends GetView<ContactConroller> {
 
     AppBar _buildAppBar(){
       return AppBar(
-        title: Text("Messages"),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.transparent,
+        bottomOpacity: 0.0,
+        elevation: 0.0,
+        //title: Text( "Nasi specialiści", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold,color: Colors.green),),
+        leading: Builder(
+          builder:(context){
+
+            return IconButton(
+              icon: Icon(Icons.menu,color: Colors.black,),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            );
+          }
+
+        ),
+
       );
     }
 
     print(controller.state.messageList.length);
     return Scaffold(
 
-        appBar: _buildAppBar(),
+        //appBar: _buildAppBar(),
         drawer: NavBar(),
 
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(child: ContactList()),
-        ));
+        body: Center(child: ContactList()));
   }
 }

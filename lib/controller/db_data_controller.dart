@@ -10,6 +10,8 @@ import '../common/stores/user.dart';
 import '../entities/messages.dart';
 import 'package:get/get.dart';
 
+import '../entities/report.dart';
+
 class DbDataController {
   final db = FirebaseFirestore.instance;
 
@@ -17,9 +19,9 @@ class DbDataController {
     var userSnapshot = await db
         .collection("users")
         .withConverter(
-      fromFirestore: UserData.fromFirestore,
-      toFirestore: (UserData userData, options) => userData.toFirestore(),
-    )
+          fromFirestore: UserData.fromFirestore,
+          toFirestore: (UserData userData, options) => userData.toFirestore(),
+        )
         .where("id", isEqualTo: getCurrentUserId())
         .get();
 
@@ -34,9 +36,9 @@ class DbDataController {
     var userSnapshot = await db
         .collection("users")
         .withConverter(
-      fromFirestore: UserData.fromFirestore,
-      toFirestore: (UserData userData, options) => userData.toFirestore(),
-    )
+          fromFirestore: UserData.fromFirestore,
+          toFirestore: (UserData userData, options) => userData.toFirestore(),
+        )
         .where("id", isEqualTo: id)
         .get();
 
@@ -48,39 +50,44 @@ class DbDataController {
   }
 
   final token = UserStore.to.token;
- void  goChat(
 
-      UserData studentData,
-      UserData specialistData,
-      bool isStudent,
-      ) async {
-    UserData? data = await fetchCurrentUser()!;
+  void goChat(
+    UserData studentData,
+    UserData specialistData,
+    bool isStudent,
+  ) async {
+
 
     var messages;
     if (isStudent) {
       messages = await db
           .collection("messages")
           .withConverter(
-        fromFirestore: Msg.fromFirestore,
-        toFirestore: (Msg msg, options) => msg.toFirestore(),
-      )
-          .where("student_uid", isEqualTo: token).where("specialist_uid", isEqualTo: specialistData.id)
+            fromFirestore: Msg.fromFirestore,
+            toFirestore: (Msg msg, options) => msg.toFirestore(),
+          )
+          .where("student_uid", isEqualTo: token)
+          .where("specialist_uid", isEqualTo: specialistData.id)
           .get();
-    } else{
+    } else {
       messages = await db
           .collection("messages")
           .withConverter(
-        fromFirestore: Msg.fromFirestore,
-        toFirestore: (Msg msg, options) => msg.toFirestore(),
-      )
-          .where("specialist_uid", isEqualTo: token).where("student_uid", isEqualTo: studentData.id)
+            fromFirestore: Msg.fromFirestore,
+            toFirestore: (Msg msg, options) => msg.toFirestore(),
+          )
+          .where("specialist_uid", isEqualTo: token)
+          .where("student_uid", isEqualTo: studentData.id)
           .get();
     }
 
     if (messages.docs.isEmpty) {
       String profile = await UserStore.to.getProfile();
       UserLoginResponseEntity userdata =
-      UserLoginResponseEntity.fromJson(jsonDecode(profile));
+          UserLoginResponseEntity.fromJson(jsonDecode(profile));
+
+
+
       var msgdata = Msg(
         student_uid: studentData.id!,
         specialist_uid: specialistData.id!,
@@ -95,77 +102,79 @@ class DbDataController {
       db
           .collection("messages")
           .withConverter(
-        fromFirestore: Msg.fromFirestore,
-        toFirestore: (Msg msg, options) => msg.toFirestore(),
-      )
+            fromFirestore: Msg.fromFirestore,
+            toFirestore: (Msg msg, options) => msg.toFirestore(),
+          )
           .add(msgdata)
           .then((value) {
-        Get.toNamed(isStudent?AppRoutes.Chat:AppRoutes.SpecialistChat, parameters: {
-          "doc_id": value.id,
-          "specialist_uid": specialistData.id ?? "",
-          "student_uid": studentData.id ?? "",
-          "specialist_name": specialistData.name ?? "",
-          "specialist_avatar": specialistData.photourl ?? "",
-          "student_name":studentData.name ?? "",
-        });
+        Get.toNamed(isStudent ? AppRoutes.Chat : AppRoutes.SpecialistChat,
+            parameters: {
+              "doc_id": value.id,
+              "specialist_uid": specialistData.id ?? "",
+              "student_uid": studentData.id ?? "",
+              "specialist_name": specialistData.name ?? "",
+              "specialist_avatar": specialistData.photourl ?? "",
+              "student_name": studentData.name ?? "",
+            });
       });
     } else {
       if (messages.docs.isNotEmpty) {
-        Get.toNamed(isStudent?AppRoutes.Chat:AppRoutes.SpecialistChat, parameters: {
-          "doc_id": messages.docs.first.id,
-          "student_uid": messages.docs.first.data().student_uid ?? "error",
-          "specialist_uid": messages.docs.first.data().specialist_uid ?? "errorName",
-          "specialist_name": messages.docs.first.data().specialist_name ?? "errorToName",
-          "student_name": messages.docs.first.data().student_name ?? "errorToName2",
-        });
+        Get.toNamed(isStudent ? AppRoutes.Chat : AppRoutes.SpecialistChat,
+            parameters: {
+              "doc_id": messages.docs.first.id,
+              "student_uid": messages.docs.first.data().student_uid ?? "error",
+              "specialist_uid":
+                  messages.docs.first.data().specialist_uid ?? "errorName",
+              "specialist_name":
+                  messages.docs.first.data().specialist_name ?? "errorToName",
+              "student_name":
+                  messages.docs.first.data().student_name ?? "errorToName2",
+            });
 
-        SendMessageController sendMessageController =
-        SendMessageController(messages.docs.first.id,
-            messages.docs.first.data().student_uid!, specialistData.id!, false);
-        sendMessageController.updateIsRead();
+        DocumentReference documentReference = db.collection("messages").doc(messages.docs.first);
+        SendMessageController sendMessageController = SendMessageController(
+            messages.docs.first.id,
+            messages.docs.first.data().student_uid!,
+            specialistData.id!,
+            false, messagesDocRef: documentReference);
+        sendMessageController.read();
       }
     }
   }
 
   Future<void> goChatByMsg(Msg item) async {
-   if(UserStore.to.role == "student"){
+    if (UserStore.to.role == "student") {
+      await db.collection("messages").doc(item.messageId).update({
+        "unreadMessagesCountStudent": 0,
+      });
 
+      Get.toNamed(AppRoutes.Chat, parameters: {
+        "doc_id": item.messageId!,
+        "specialist_uid": item.specialist_uid,
+        "specialist_name": item.specialist_name,
+        "student_uid": item.student_uid,
+        "student_name": item.student_name,
+        "student_avatar": item.student_avatar ?? "Brak",
+        "specialist_avatar": item.specialist_avatar ?? "Brak",
+        "student_name": item.student_name,
+      });
+    } else {
+      await db.collection("messages").doc(item.messageId).update({
+        "unreadMessagesCountSpecialist": 0,
+      });
 
-       await db.collection("messages").doc(item.messageId).update({
-         "unreadMessagesCountStudent":0,
-       });
-
-
-
-     Get.toNamed(AppRoutes.Chat, parameters: {
-       "doc_id": item.messageId!,
-       "specialist_uid": item.specialist_uid,
-       "specialist_name":item.specialist_name,
-       "student_uid":item.student_uid,
-       "student_name": item.student_name,
-       "student_avatar": item.student_avatar??"Brak",
-       "specialist_avatar":item.specialist_avatar??"Brak",
-       "student_name": item.student_name,
-     });
-   }else{
-     await db.collection("messages").doc(item.messageId).update({
-       "unreadMessagesCountSpecialist":0,
-     });
-
-     Get.toNamed(AppRoutes.SpecialistChat, parameters: {
-       "doc_id": item.messageId!,
-       "specialist_uid": item.specialist_uid,
-       "specialist_name":item.specialist_name,
-       "student_uid":item.student_uid,
-       "student_name": item.student_name,
-       "student_avatar": item.student_avatar??"Brak",
-       "specialist_avatar":item.specialist_avatar??"Brak",
-       "student_name": item.student_name,
-     });
-   }
-
+      Get.toNamed(AppRoutes.SpecialistChat, parameters: {
+        "doc_id": item.messageId!,
+        "specialist_uid": item.specialist_uid,
+        "specialist_name": item.specialist_name,
+        "student_uid": item.student_uid,
+        "student_name": item.student_name,
+        "student_avatar": item.student_avatar ?? "Brak",
+        "specialist_avatar": item.specialist_avatar ?? "Brak",
+        "student_name": item.student_name,
+      });
+    }
   }
-
 
   final _database = FirebaseDatabase.instance;
 
@@ -193,14 +202,13 @@ class DbDataController {
     return user?.name;
   }
 
-
   Future<String?> getAvatar(id) async {
     var userSnapshot = await db
         .collection("users")
         .withConverter(
-      fromFirestore: UserData.fromFirestore,
-      toFirestore: (UserData userData, options) => userData.toFirestore(),
-    )
+          fromFirestore: UserData.fromFirestore,
+          toFirestore: (UserData userData, options) => userData.toFirestore(),
+        )
         .where("id", isEqualTo: id)
         .get();
     if (userSnapshot.docs.isNotEmpty) {
@@ -226,4 +234,7 @@ class DbDataController {
     print(currentUser);
     return currentUser;
   }
+
+
+
 }

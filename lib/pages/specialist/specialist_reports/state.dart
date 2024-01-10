@@ -9,5 +9,6 @@ class SpecialistReportsState{
 
   //RxList<QueryDocumentSnapshot<Report>> reportList = <QueryDocumentSnapshot<Report>>[].obs;
   RxList<Report> reportList = <Report>[].obs;
-
+  RxList<Report> reportFilteredList = <Report>[].obs;
+  Rx<bool> areFiltersOpen = false.obs;
 }

@@ -40,12 +40,14 @@ class SpecialistChatConroller extends GetxController {
   }
 
 
-
-
-
   @override
   Future<void> onReady() async {
+
     super.onReady();
+    DocumentReference docRef = db
+        .collection("messages")
+        .doc(doc_id);
+
     var messages = db
         .collection("messages")
         .doc(doc_id)
@@ -56,10 +58,11 @@ class SpecialistChatConroller extends GetxController {
                 msgcontent.toFirestore())
         .orderBy("addtime", descending: false);
 
-    sendMessageController = SendMessageController(doc_id, UserStore.to.token!, state.student_uid.value, false);
+    sendMessageController = SendMessageController(doc_id, UserStore.to.token!, state.student_uid.value, false,messagesDocRef: docRef);
+    sendMessageController.setMessageCountSpecialist();
     state.msgcontentList.clear();
-    int numberOfUnreadMessages = await sendMessageController.getUnreadMessageCount(doc_id,user_id);
-    sendMessageController.readAllMessages(numberOfUnreadMessages);
+
+
 
 
 
@@ -71,9 +74,10 @@ class SpecialistChatConroller extends GetxController {
             case DocumentChangeType.added:
               if (change.doc.data() != null) {
                 state.msgcontentList.insert((0), change.doc.data()!);
+
                 if(change.doc.data()?.uid != user_id){
                   print('Tutaj trzeba się zatrzymać');
-                  sendMessageController.updateIsRead();
+                  sendMessageController.read();
                 }
               }
               break;
@@ -82,6 +86,7 @@ class SpecialistChatConroller extends GetxController {
             case DocumentChangeType.removed:
               break;
           }
+          sendMessageController.setMessageCountSpecialist();
         }
       },
       onError: (error) => print("listen failed: ${error}"),

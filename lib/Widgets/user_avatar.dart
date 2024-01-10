@@ -27,6 +27,7 @@ class UserAvatarWidget extends StatelessWidget{
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
+
         image: DecorationImage(
           fit: BoxFit.cover,
           image:AssetImage(path),

@@ -4,11 +4,18 @@ import 'package:jw_projekt/Widgets/menu_tile.dart';
 import 'package:jw_projekt/common/stores/user.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:jw_projekt/pages/specialist/specialist_report_menagment/widgets/lastMsgList.dart';
 import 'package:jw_projekt/pages/specialist/specialist_report_menagment/widgets/priority_dropdown.dart';
+import 'package:jw_projekt/pages/specialist/specialist_report_menagment/widgets/set_caretaker_widget.dart';
 import 'package:jw_projekt/styles/specialist_styles.dart';
+import '../../../Utils/date.dart';
+import '../../../Widgets/user_avatar.dart';
+import '../../../entities/messages.dart';
 import '../../student/YourReportInfo/widgets/commentList.dart';
 import 'controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SpecialistReportsMenagmentPage
     extends GetView<SpecialistReportsMenagmentConroller> {
@@ -20,7 +27,7 @@ class SpecialistReportsMenagmentPage
     AppBar _buildAppBar() {
       return AppBar(
         title: Obx(() => (Text(controller.state.title.value ?? ""))),
-        backgroundColor: SpecialistStyles.primaryColor,
+        backgroundColor: Color.fromRGBO(92, 129, 73, 1, ),
       );
     }
 
@@ -75,7 +82,7 @@ class SpecialistReportsMenagmentPage
     Widget _buildGoChatButton() {
       return InkWell(
         onTap: () {
-          controller.goChat(controller.to_userData);
+          controller.goChat();
         },
         child: Container(
           alignment: Alignment.center,
@@ -94,6 +101,117 @@ class SpecialistReportsMenagmentPage
           ),
         ),
       );
+    }
+
+
+
+
+    Widget buildListItem(Msg item, String avatarString) {
+      return FutureBuilder(
+        future: controller.initLastMsg(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            margin: EdgeInsets.only(top: 10.w),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  UserAvatarWidget(
+                    role: 'student',
+                    path: avatarString == null
+                        ? 'assets/logo.jpg'
+                        : avatarString.contains('assets')
+                        ? avatarString
+                        : 'assets/logo.jpg',
+                    size: 54.w,
+                  ),
+                  SizedBox(width: 5.w,),
+                  Container(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 200.w,
+                          height: 42.w,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.message_type != null
+                                    ? item.message_type!
+                                    : item.student_name!,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.sp,
+                                ),
+                                overflow: TextOverflow.clip,
+                                maxLines: 1,
+                              ),
+                              Text(
+                                item.last_msg ?? "",
+                                overflow: TextOverflow.clip,
+                                maxLines: 1,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                duTimeLineFormat(
+                                  (item.last_time as Timestamp).toDate(),
+                                ),
+                                overflow: TextOverflow.clip,
+                                maxLines: 1,
+                              ),
+                              item.unreadMessagesCountSpecialist != 0 &&
+                                  item.unreadMessagesCountSpecialist != null
+                                  ? Container(
+                                decoration: BoxDecoration(
+                                  color: SpecialistStyles.primaryColor,
+                                  borderRadius: BorderRadius.circular(90),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    item.unreadMessagesCountSpecialist
+                                        .toString()!,
+                                  ),
+                                ),
+                              )
+                                  : Text(""),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+      },
+
+      );
+
     }
 
     Widget _buildReportBody() {
@@ -119,13 +237,16 @@ class SpecialistReportsMenagmentPage
                         Row(
                           children: [
                             Obx(
-                                  () => Text(
+                                  () => Expanded(
+                                    child: Text(
                                 controller.state.title.value,
+                                
                                 style: TextStyle(
-                                    fontSize: 22.sp,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
+                                      fontSize: 22.sp,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold),
                               ),
+                                  ),
                             ),
 
 
@@ -161,22 +282,7 @@ class SpecialistReportsMenagmentPage
                       child: Row(
                         children: [
                           const Text("Status: "),
-                          InkWell(
-                            onTap: () {
-                              controller.showStateSelection(
-                                  context, controller.state.status);
-                            },
-                            child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 5, right: 5),
-                                  child: _buildValueWidget(
-                                      'Status', controller.state.status),
-                                )),
-                          ),
+                          PriorityDropdown(reportId:controller.report_id,currentValue: controller.state.status.value, dropdownType: DropdownType.Status,),
                         ],
                       )),
                   MenuTile(
@@ -184,28 +290,35 @@ class SpecialistReportsMenagmentPage
                       child: Row(
                         children: [
                           const Text("Caretaker: "),
-                          _buildValueWidget('Caretaker', controller.state.caretaker),
-                          InkWell(
-                            onTap: () {
-                              controller.updateCaretaker(controller.report_id,
-                                  UserStore.to.token ?? "error");
+
+                          FutureBuilder(
+                            future: controller.onInit(),
+                            builder: (BuildContext context,  snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.deepPurpleAccent,
+                                  ),
+                                );
+                              }
+                              else{
+                                return   SetCaretakerWidget(reportRef: controller.report_id,caretakerId: controller.state.caretaker.value,);
+                              }
                             },
-                            child: Icon(Icons.sync),
-                          )
+                          ),
                         ],
                       )),
+
+
                   MenuTile(
                       icon: Icons.sort,
                       child: Row(
                         children: [
                           const Text("Priority: "),
-                          PriorityDropdown(reportId:controller.report_id,currentValue: controller.state.priority.value,),
+                          PriorityDropdown(reportId:controller.report_id,currentValue: controller.state.priority.value, dropdownType: DropdownType.Priority,),
                         ],
                       )),
-
-
-
-
 
                   SizedBox(
                     height: 10.w,
@@ -214,8 +327,13 @@ class SpecialistReportsMenagmentPage
                   SizedBox(
                     height: 10.w,
                   ),
-                  _buildGoChatButton(),
 
+
+
+                    SpecialistReportMessageListNew(),
+
+
+                  _buildGoChatButton(),
 
                 ],
               ),

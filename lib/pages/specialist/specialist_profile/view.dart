@@ -8,6 +8,7 @@ import 'package:jw_projekt/pages/student/profile/widgets/edit_user_avatar.dart';
 import 'package:jw_projekt/styles/specialist_styles.dart';
 import '../../../Widgets/nav_bar.dart';
 import '../../../controller/profile_data_controller.dart';
+import '../../../controller/upload_image_controller.dart';
 import 'controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -62,10 +63,12 @@ class SpecialistProfilePage extends GetView<SpecialistProfileConroller> {
                     onTap: (){
                       print('lol');
 
-                      Navigator.push(
+                      /*Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) =>AvatarGallery(avatar: controller.image.value ,)),
-                      );
+                      );*/
+                      UploadImageController().uploadImage(StorageCollections.profileImage, controller.token);
+
 
 
 

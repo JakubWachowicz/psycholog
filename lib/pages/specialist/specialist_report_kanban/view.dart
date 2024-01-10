@@ -20,7 +20,7 @@ class SpecialistReportKanbanPage
   Widget build(BuildContext context) {
     AppBar _buildAppBar() {
       return AppBar(
-        title: Text("Trello"),
+        title: Text("Report board"),
         backgroundColor: SpecialistStyles.primaryColor,
         actions: [],
       );
@@ -71,14 +71,21 @@ class SpecialistReportKanbanPage
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            report.reportType ?? "error",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 12.sp),
+                          Row(
+                            children: [
+                              Text(
+                                report.reportType ?? "error",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12.sp),
+                              ),
+
+                            ],
                           ),
-                          Text(report.title ?? "error",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                          Container(width: 200.w,
+                            child: Text(report.title ?? "error",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                          ),
                           Container(
                             width: 360.w / 1.7,
                             child: Text(report.content ?? "error",
@@ -177,7 +184,7 @@ class SpecialistReportKanbanPage
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
                   child: Text(
-                    'Header ${list.header}',
+                    ' ${list.header}',
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                 ),
@@ -207,10 +214,10 @@ class SpecialistReportKanbanPage
               controller: pageController,
               onPageChanged: (index) => controller.state.index.value = index,
               children: [
-                buildList2(controller.allLists[0]),
-                buildList2(controller.allLists[1]),
-                buildList2(controller.allLists[2]),
-                buildList2(controller.allLists[3]),
+                SingleChildScrollView(child: buildList2(controller.allLists[0])),
+                SingleChildScrollView(child: buildList2(controller.allLists[1])),
+                SingleChildScrollView(child: buildList2(controller.allLists[2])),
+
               ],
             ),
           ));

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,13 +13,15 @@ class ValueColorMapper{
       case Priority.High:
         return Colors.orange;
       case Priority.Medium:
-        return Colors.yellow;
+        return Color.fromRGBO(180, 165, 27, 1.0);
       case Priority.Low:
         return Colors.grey;
       case Priority.notAssign:
         return Colors.black;
     }
   }
+
+
 
   static Color priorityToColorString(String priority){
 
@@ -29,22 +33,51 @@ class ValueColorMapper{
       priorityEnum = Priority.Low;
     }
 
-
-
-
     switch(priorityEnum){
       case Priority.Critical:
         return Colors.red;
       case Priority.High:
         return Colors.orange;
       case Priority.Medium:
-        return Colors.yellow;
+        return Color.fromRGBO(180, 165, 27, 1.0);
       case Priority.Low:
         return Colors.grey;
       case Priority.notAssign:
         return Colors.black;
     }
 
+  }
+  static Color statusToColor(Status status){
+    switch(status){
+      case Status.Done:
+        return Colors.green;
+      case Status.ToDo:
+        return Colors.grey;
+      case Status.InProgress:
+        return Colors.orange;
+      default:
+        return Colors.grey;
+    }
+  }
+  static Color statusToColorString(String status){
+    Status statusEnum;
+    try{
+      statusEnum = Status.values.firstWhere((e) => e.toString() == status);
+    }
+    catch(e){
+      statusEnum = Status.ToDo;
+    }
+
+    switch(statusEnum){
+      case Status.Done:
+        return Colors.green;
+      case Status.ToDo:
+        return Colors.grey;
+      case Status.InProgress:
+        return Colors.orange;
+      default:
+       return Colors.grey;
+    }
   }
 
 }
@@ -55,14 +88,24 @@ enum Priority{
   Low,
   notAssign,
 }
+enum Status{
+  ToDo,
+  InProgress,
+  Done,
+}
 
+
+enum DropdownType{
+  Priority,
+  Status
+}
 
 class PriorityDropdown extends StatefulWidget {
 
 
-   PriorityDropdown({super.key,required this.reportId,required this.currentValue});
+   PriorityDropdown({super.key,required this.reportId,required this.currentValue,required this.dropdownType});
    var reportId;
-
+   DropdownType dropdownType;
    Future<void> updatePriority(priority) async {
 
      try {
@@ -78,8 +121,26 @@ class PriorityDropdown extends StatefulWidget {
      }
    }
 
+   Future<void> updateStatus(status) async {
 
-   String text = "Yep";
+     try {
+       final reportRef =
+       FirebaseFirestore.instance.collection('reports').doc(reportId);
+       print("LOL");
+
+       await reportRef.update({'status': status.toString()});
+
+       print('Caretaker updated successfully');
+     } catch (e) {
+       print('Error updating caretaker: $e');
+     }
+   }
+
+
+
+
+
+  String text = "Yep";
   String currentValue;
   @override
   State<PriorityDropdown> createState() => _PriorityDropdownState();
@@ -138,23 +199,30 @@ class _PriorityDropdownState extends State<PriorityDropdown> {
                 Container(
                   width: width,
 
-                    color:Colors.white, child: Padding(
+                    color: Color.fromRGBO(255, 255, 255, 0.8), child: Padding(
                       padding: const EdgeInsets.only(top:8.0,bottom: 8.0,right: 8.0,left: 11),
-                      child: Text("Set priority",style: TextStyle(fontSize: 18,color: Colors.black,decoration: TextDecoration.none,fontFamily: "Arial",),textAlign: TextAlign.left,),
+                      child: Text(widget.dropdownType == DropdownType.Priority?"Set priority":"Set status",style: TextStyle(fontSize: 18,fontWeight: FontWeight.normal,color: Colors.black,decoration: TextDecoration.none,fontFamily: "Arial",),textAlign: TextAlign.left,),
                     )),
 
                 Container(
-                  color: Colors.white,
+                  color: Color.fromRGBO(255, 255, 255, 0.8),
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0,left: 8.0,right: 8.0),
-                    child: Column(
+                    child: widget.dropdownType == DropdownType.Priority? Column(
                       children: [
-                        _buildSelectorEntry(Priority.Critical,Icons.ac_unit,Colors.red),
-                        _buildSelectorEntry(Priority.High,Icons.ac_unit,Colors.orange),
-                        _buildSelectorEntry(Priority.Medium,Icons.ac_unit,Colors.yellow),
-                        _buildSelectorEntry(Priority.Low,Icons.ac_unit,Colors.grey),
+                        _buildSelectorEntry(Priority.Critical.toString(),Icons.ac_unit,Colors.red),
+                        _buildSelectorEntry(Priority.High.toString(),Icons.ac_unit,Colors.orange),
+                        _buildSelectorEntry(Priority.Medium.toString(),Icons.ac_unit,Color.fromRGBO(180, 165, 27, 1.0)),
+                        _buildSelectorEntry(Priority.Low.toString(),Icons.ac_unit,Colors.grey),
                       ],
-                    ),
+                    ):Column(
+                      children: [
+                        _buildSelectorEntry(Status.Done.toString(),Icons.ac_unit,Colors.green),
+                        _buildSelectorEntry(Status.InProgress.toString(),Icons.ac_unit,Colors.orange),
+                        _buildSelectorEntry(Status.ToDo.toString(),Icons.ac_unit,Colors.grey),
+
+                      ],
+                    )
                   ),
                 )
 
@@ -167,7 +235,7 @@ class _PriorityDropdownState extends State<PriorityDropdown> {
     });
   }
 
-  Widget _buildSelectorEntry(Priority priority,Icons,Color color){
+  Widget _buildSelectorEntry(String priority,Icons,Color color){
 
 
       return Padding(
@@ -177,8 +245,16 @@ class _PriorityDropdownState extends State<PriorityDropdown> {
             setState(() {
                 widget.currentValue = priority.toString();
 
-                widget.updatePriority(priority.toString());
-                currenValueColor = ValueColorMapper.priorityToColor(priority);
+
+                if(widget.dropdownType == DropdownType.Priority){
+                  currenValueColor = ValueColorMapper.priorityToColorString(priority);
+                  widget.updatePriority(priority.toString());
+                }
+                else{
+                  currenValueColor = ValueColorMapper.statusToColorString(priority);
+                  widget.updateStatus(priority.toString());
+                }
+
 
                 widget.isDropDownOpened = false;
                 selector.remove();
@@ -194,7 +270,7 @@ class _PriorityDropdownState extends State<PriorityDropdown> {
             child: Row(
               children: [Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(priority.toString(),style: TextStyle(fontSize: 18,color: Colors.white,decoration: TextDecoration.none,fontFamily: "Arial"),),
+                child: Text(priority.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.normal,color: Colors.white,decoration: TextDecoration.none,fontFamily: "Arial"),),
               )],
             ),
           ),
@@ -211,8 +287,15 @@ class _PriorityDropdownState extends State<PriorityDropdown> {
   @override
   Widget build(BuildContext context) {
     try{
-      var prio = Priority.values.firstWhere((e) => e.toString() == widget.currentValue);
-      currenValueColor = ValueColorMapper.priorityToColor(prio);
+      if(widget.dropdownType == DropdownType.Priority){
+        var prio = Priority.values.firstWhere((e) => e.toString() == widget.currentValue);
+        currenValueColor = ValueColorMapper.priorityToColor(prio);
+      }
+      else{
+        var prio = Status.values.firstWhere((e) => e.toString() == widget.currentValue);
+        currenValueColor = ValueColorMapper.statusToColor(prio);
+      }
+
     }catch(e){
       currenValueColor = Colors.black;
     }

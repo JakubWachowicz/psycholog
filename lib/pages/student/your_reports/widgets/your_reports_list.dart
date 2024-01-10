@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jw_projekt/pages/specialist/specialist_report_menagment/widgets/priority_dropdown.dart';
 import 'package:jw_projekt/pages/specialist/specialist_reports/widgets/report_item.dart';
 
 
@@ -11,8 +12,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class YourReportList extends GetView<YourReportsConroller> {
   const YourReportList({Key? key}) : super(key: key);
 
-  
-  
+
+
   Widget YourReportItem(Report report) {
     return InkWell(
       onTap: () =>{controller.goReport(report)},
@@ -37,37 +38,55 @@ class YourReportList extends GetView<YourReportsConroller> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
+
                 children: [
-                  Text(
-                    report.reportType ?? "error",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.sp),
+
+                  Container(
+              width: 270.w,
+                    child: Row(
+
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          report.reportType ?? "error",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.sp),
+                          overflow: TextOverflow.clip,
+                        ),
+                        Spacer(),
+                        Row(
+                          children: [
+                            const Icon(Icons.calendar_month),
+                            const SizedBox(width: 5,),
+                            Text( overflow: TextOverflow.clip,
+                              fullDateFormat(
+                                report.timestamp!.toDate(),
+
+                              ),style: const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        )
+
+                      ],
+                    ),
                   ),
-                  Text(report.title ?? "error",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.sp)),
+
+                  Container(width: 260.w,
+                    child: Text(report.title ?? "error",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.sp)),
+                  ),
                   Container(width: 360.w/1.7,
                     child: Text(report.content ?? "error",overflow: TextOverflow.clip,maxLines: 1,
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp,)),
                   ),
+                  Row(children: [
+                    Text(report.status!),
+                    SizedBox(width: 5,),
+                    Icon(Icons.circle,size: 14,color: ValueColorMapper.statusToColorString(report.status!),)
+                  ],)
                 ],
               ),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.topRight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      //Text("Priority: " +  report.priority.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                      SizedBox(height: 10.w,),
-                      Text(
-                        duTimeLineFormat(
-                          report.timestamp!.toDate(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
+
             ],
           ),
         ),

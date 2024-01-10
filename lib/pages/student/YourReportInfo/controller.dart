@@ -26,7 +26,26 @@ class YourReportInfoConroller extends GetxController {
   TextEditingController commentContent = TextEditingController();
   final DbDataController db_controller = DbDataController();
   ReportDbController dbController = ReportDbController();
+  var to_userData;
+
+
+  goChat() async{
+
+    UserData? data = await db_controller.fetchCurrentUser()!;
+
+
+
+    to_userData = await db_controller.fetchUser(state.caretaker.value);
+
+    bool isStudent = false;
+    //dbDataController.goChat(to_userdata!,data!,false);
+    dbController.goToReportChat(report_id,to_userData,data!,isStudent,state.title.value);
+  }
+
+
+
   void handleSendComment(String content) async{
+
 
 
 
@@ -73,7 +92,7 @@ class YourReportInfoConroller extends GetxController {
     state.reportType.value = report.data().reportType!;
     state.status.value = report.data().status!;
     state.caretaker.value = report.data().caretaker!;
-    state.timeStamp.value = duTimeLineFormat(
+    state.timeStamp.value = fullDateFormat(
       report.data().timestamp!.toDate(),
     );
     state.title.value = report.data().title!;

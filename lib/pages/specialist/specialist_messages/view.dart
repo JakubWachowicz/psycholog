@@ -26,12 +26,13 @@ class SpecialistMessagePage extends GetView<SpecialistMessagesConroller> {
     AppBar _buildAppBar(){
       return AppBar(
         title: Text("Messages"),
-        backgroundColor: SpecialistStyles.primaryColor,
+        backgroundColor:  Color.fromRGBO(92, 129, 73, 1.0),
         actions: [
           InkWell(
             onTap: (){
               controller.state.isFilterOpen.value = !controller.state.isFilterOpen.value;
             },
+            splashColor: Colors.grey,
             child: Container(
 
               child: Padding(
@@ -45,7 +46,7 @@ class SpecialistMessagePage extends GetView<SpecialistMessagesConroller> {
     }
 
 
-    print(controller.state.messageList.length);
+
     return Scaffold(
         drawer: NavBar(),
         appBar: _buildAppBar(),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -35,7 +36,7 @@ Widget ChatLeftItem(Msgcontent item) {
                   margin: EdgeInsets.only(right: 10.w, top: 0.w),
                   padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
-                    color: Colors.grey,
+                    color: CupertinoColors.opaqueSeparator,
                     borderRadius: BorderRadius.only(topLeft:const  Radius.circular(0),topRight: Radius.circular(10.w),bottomLeft:Radius.circular(10.w),bottomRight: Radius.circular(10.w) ),
                   ),
                   child: item.type == "text"

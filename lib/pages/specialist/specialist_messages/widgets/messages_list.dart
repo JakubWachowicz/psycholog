@@ -73,6 +73,7 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
       ),
       margin: EdgeInsets.only(top: 10.w),
       child: InkWell(
+        splashColor: Colors.grey,
         onTap: () {
           controller.dbDataController.goChatByMsg(item);
         },
@@ -139,8 +140,8 @@ class SpecialistMessageListNew extends GetView<SpecialistMessagesConroller> {
                                   item.unreadMessagesCountSpecialist != null
                               ? Container(
                                   decoration: BoxDecoration(
-                                    color: SpecialistStyles.primaryColor,
-                                    borderRadius: BorderRadius.circular(90),
+                                    color: Colors.deepOrange,
+                                    borderRadius: BorderRadius.circular(360),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),

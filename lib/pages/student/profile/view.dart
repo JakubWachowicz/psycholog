@@ -5,6 +5,7 @@ import 'package:jw_projekt/pages/student/messages/widgets/messages_list_new.dart
 import 'package:jw_projekt/pages/student/profile/widgets/edit_user_avatar.dart';
 import '../../../Widgets/nav_bar.dart';
 import '../../../controller/profile_data_controller.dart';
+import '../../specialist/specialist_profile/widgets/avatar_gallery.dart';
 import 'controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -56,10 +57,9 @@ class ProfilePage extends GetView<ProfileConroller> {
               Positioned(bottom:0,right:0,child: InkWell(
                 onTap: (){
                   print('lol');
-
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>ImageSlider()),
+                    MaterialPageRoute(builder: (context) =>AvatarGallery(avatar: controller.image.value ,)),
                   );
 
 

@@ -15,7 +15,7 @@ class Msg {
   final String? specialist_lastMessageSeen;
   final int? unreadMessagesCountStudent;
   final int? unreadMessagesCountSpecialist;
-  final String? message_type; // New field: message_type
+  final String? message_type;
 
   Msg({
     this.messageId,

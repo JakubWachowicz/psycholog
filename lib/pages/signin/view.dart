@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:jw_projekt/Utils/constants.dart';
+import 'package:jw_projekt/common/services/pdf_geerator.dart';
 import 'package:jw_projekt/pages/login/controller.dart';
 import 'package:jw_projekt/pages/welcome/controller.dart';
 import 'package:get/get.dart';
@@ -10,12 +13,20 @@ import '../../view/widgets/text_input_field.dart';
 import 'controller.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'dart:io';
+
 
 class SigninPage extends GetView<SigninConroller> {
    SigninPage({Key? key}) : super(key: key);
 
+   PdfGeneratorService service = PdfGeneratorService();
+
   @override
   Widget build(BuildContext context) {
+
+
     Widget _builDropDow() {
       return Obx((){return DropdownButton<String>(
         value: controller.state.currentRole.value,
@@ -137,29 +148,48 @@ class SigninPage extends GetView<SigninConroller> {
     }
 
 
+
+
+
+
+
+
     Widget _buildCreateUserButton() {
-      return InkWell(
-        onTap: () => {
-          controller.handleSignIn()
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10.w)),
-            color: Colors.green,
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: InkWell (
+          onTap: ()  async {
+
+            final data = await service.createLoginDataList();
+            service.savePdf("LoginData", data);
+            controller.handleSignIn();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10.w)),
+              color: Colors.green,
+            ),
+            width: double.infinity,
+            height: 60.w,
+            child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Create account",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.sp),
+                  ),
+                )),
           ),
-          width: double.infinity,
-          height: 60.w,
-          child: Center(
-              child: Text(
-                "Create account",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.sp),
-              )),
         ),
       );
     }
+
+
+
+
 
 
 

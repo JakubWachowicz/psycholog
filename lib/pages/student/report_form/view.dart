@@ -59,7 +59,7 @@ class ReportFormPage extends GetView<ReportFormConroller> {
 
             child: Center(child: Text("Send report", style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
+
                 fontSize: 20.sp),)),
           ),
 
@@ -79,7 +79,7 @@ class ReportFormPage extends GetView<ReportFormConroller> {
                    padding: const EdgeInsets.all(8.0),
                    child: Text('Report Title', style: TextStyle(color: Colors.black,
                        fontSize: 22.sp,
-                       fontWeight: FontWeight.bold),),
+                      ),),
                  ),
                  _buildTitleEditor(),
                  Padding(
@@ -87,7 +87,7 @@ class ReportFormPage extends GetView<ReportFormConroller> {
                    child: Text('Report Content', style: TextStyle(
                        color: Colors.black,
                        fontSize: 18.sp,
-                       fontWeight: FontWeight.bold)),
+                      )),
                  ),
                  _buildContentEditor(),
                  SizedBox(height: 30.w,),

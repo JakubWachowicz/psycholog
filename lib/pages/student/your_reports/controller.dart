@@ -32,38 +32,53 @@ class YourReportsConroller extends GetxController {
         .collection("reports")
         .where("studentId", isEqualTo: user_id)
         .withConverter(
-            fromFirestore: Report.fromFirestore,
-            toFirestore: (Report report, options) => report.toFirestore());
+        fromFirestore: Report.fromFirestore,
+        toFirestore: (Report report, options) => report.toFirestore());
 
     state.reportList.clear();
 
-
     listener = data.snapshots().listen(
-      (event) {
+          (event) {
         for (var change in event.docChanges) {
           switch (change.type) {
             case DocumentChangeType.added:
               if (change.doc.data() != null) {
-                state.reportList.insert((0), change.doc.data()!);
-                state.reportList.sort((a, b) {
-                  final aTime = a.timestamp;
-                  final bTime = b.timestamp;
-                  return bTime!.compareTo(aTime!);
-                });
-                state.reportList.refresh();
+                state.reportList.insert(0, change.doc.data()!);
               }
               break;
             case DocumentChangeType.modified:
+              if (change.doc.data() != null) {
+                // Find the index of the modified report in the list
+                int index = state.reportList.indexWhere(
+                      (report) => report.reportId == change.doc.data()!.reportId,
+                );
+
+                if (index != -1) {
+                  // Update the report in the list
+                  state.reportList[index] = change.doc.data()!;
+                }
+              }
               break;
             case DocumentChangeType.removed:
+            // Handle removal if needed
               break;
           }
         }
+
+        // Sort the list based on timestamp
+        state.reportList.sort((a, b) {
+          final aTime = a.timestamp;
+          final bTime = b.timestamp;
+          return bTime!.compareTo(aTime!);
+        });
+
+        // Refresh the UI
+        state.reportList.refresh();
       },
       onError: (error) => print("listen failed: ${error}"),
     );
 
-
+    // Initial sorting and refresh
     state.reportList.sort((a, b) {
       final aTime = a.timestamp;
       final bTime = b.timestamp;
@@ -71,7 +86,6 @@ class YourReportsConroller extends GetxController {
     });
     state.reportList.refresh();
   }
-
   @override
   void onInit() {
     // TODO: implement onInit

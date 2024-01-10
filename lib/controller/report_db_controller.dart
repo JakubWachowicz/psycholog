@@ -1,24 +1,57 @@
-
-
+import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jw_projekt/entities/msg_content.dart';
+import 'package:jw_projekt/entities/user.dart';
 
+import '../common/routes/routes.dart';
+import '../entities/messages.dart';
 import '../entities/report.dart';
 import '../entities/reportComment.dart';
+import 'package:get/get.dart';
 
 class ReportDbController {
 
-  Future<void> sendComment(String reportId, String content, String uid,String username) async {
+  Stream<QueryDocumentSnapshot<Report>> fetchReportWithListener(String reportId) {
+    // Create a stream controller to handle the stream of report snapshots
+    StreamController<QueryDocumentSnapshot<Report>> controller =
+    StreamController<QueryDocumentSnapshot<Report>>();
+
+    // Fetch the initial report snapshot
+    db
+        .collection("reports")
+        .withConverter(
+      fromFirestore: Report.fromFirestore,
+      toFirestore: (Report report, options) => report.toFirestore(),
+    )
+        .where("reportId", isEqualTo: reportId)
+        .snapshots()
+        .listen((snapshot) {
+      print(snapshot.docs.length);
+      if (snapshot.docs.isNotEmpty) {
+        // Add the first report snapshot to the stream
+        controller.add(snapshot.docs.first);
+      }
+    });
+
+    // Return the stream from the controller
+    return controller.stream;
+  }
+
+
+  Future<void> sendComment(
+      String reportId, String content, String uid, String username) async {
     try {
       // Create a reference to the Firestore collection containing the reports
       CollectionReference reportsCollection =
-      FirebaseFirestore.instance.collection('reports');
+          FirebaseFirestore.instance.collection('reports');
 
       // Create a reference to the specific report document using its ID
       DocumentReference reportDoc = reportsCollection.doc(reportId);
 
       // Create a new comment document with the provided content and UID
-      DocumentReference commentDoc = await reportDoc.collection('comments').add({
+      DocumentReference commentDoc =
+          await reportDoc.collection('comments').add({
         'content': content,
         'uid': uid,
         'userName': username,
@@ -38,40 +71,106 @@ class ReportDbController {
       // An error occurred while sending the comment
       print('Error sending comment: $e');
     }
+  }void goToReportChat(
+      String reportId,
+      UserData studentData,
+      UserData specialistData,
+      bool isStudent,
+      String report_title,
+      ) async {
+    try {
+      // Fetch the report document using the provided DocumentReference
+      CollectionReference reportsCollection =
+      FirebaseFirestore.instance.collection('reports');
+
+      // Create a reference to the specific report document using its ID
+      DocumentReference reportDoc = reportsCollection.doc(reportId);
+
+
+        // Check if the "messages" subcollection is empty
+        var messagesQuery = await reportDoc.collection("messages").get();
+
+        if (messagesQuery.docs.isEmpty) {
+          // "messages" subcollection is empty, add a new message
+          var msgdata = Msg(
+            student_uid: studentData.id!,
+            specialist_uid: specialistData.id!,
+            student_name: studentData.name!,
+            specialist_name: specialistData.name!,
+            student_avatar: studentData.photourl,
+            specialist_avatar: specialistData.photourl,
+            last_msg: "",
+            last_time: Timestamp.now(),
+            msg_num: 0,
+          );
+
+          // Update the messages subcollection within the report document
+          await reportDoc.collection("messages").withConverter(
+            fromFirestore: Msg.fromFirestore,
+            toFirestore: (Msg msg, options) => msg.toFirestore(),
+          ).add(msgdata);
+        }
+
+        // Now proceed with navigation
+        Get.toNamed(AppRoutes.SpecialistReportChat, parameters: {
+          "report_id": reportDoc.id, // Use the document ID directly
+          "student_uid": studentData.id ?? "error",
+          "specialist_uid": specialistData.id ?? "errorName",
+          "report_title": report_title ?? "error",
+          // Add more parameters as needed
+        });
+      }
+    catch (e) {
+      // Handle any errors
+      print("Error fetching report document: $e");
+    }
   }
 
-
-
-  final db = FirebaseFirestore.instance;
-  Query<ReportComment>fetchComments(String reportId)  {
-    var data =  db
+  Query<Msgcontent> fetchChatMessages(String reportId) {
+    var data = db
         .collection("reports")
-        .doc(reportId).collection("comments")
+        .doc(reportId)
+        .collection("messages")
         .withConverter(
-        fromFirestore: ReportComment.fromFirestore,
-        toFirestore: (ReportComment reportComment, options) => reportComment.toFirestore()).orderBy("timestamp", descending: false);
+            fromFirestore: Msgcontent.fromFirestore,
+            toFirestore: (Msgcontent reportComment, options) =>
+                reportComment.toFirestore())
+        .orderBy("timestamp", descending: false);
 
     return data;
   }
 
+  final db = FirebaseFirestore.instance;
 
-  fetchAllReports(){
+  Query<ReportComment> fetchComments(String reportId) {
+    var data = db
+        .collection("reports")
+        .doc(reportId)
+        .collection("comments")
+        .withConverter(
+            fromFirestore: ReportComment.fromFirestore,
+            toFirestore: (ReportComment reportComment, options) =>
+                reportComment.toFirestore())
+        .orderBy("timestamp", descending: false);
+
+    return data;
+  }
+
+  fetchAllReports() {
     var reports = db
         .collection("reports")
         .withConverter(
-        fromFirestore: Report.fromFirestore,
-        toFirestore: (Report report, options) => report.toFirestore())
+            fromFirestore: Report.fromFirestore,
+            toFirestore: (Report report, options) => report.toFirestore())
         .orderBy("timestamp", descending: false);
 
     return reports;
   }
 
-
-
-
   Future<Map<String, List<Report>>?> fetchReportsByStatus() async {
     final firestore = FirebaseFirestore.instance;
-    final reportsCollection = firestore.collection('reports'); // Replace with your Firestore collection name
+    final reportsCollection = firestore
+        .collection('reports'); // Replace with your Firestore collection name
 
     final notAssignedReports = <Report>[];
     final inProgressReports = <Report>[];
@@ -107,14 +206,7 @@ class ReportDbController {
     } catch (e) {
       // Handle any errors (e.g., Firestore read error)
       print('Error fetching reports: $e');
-      return null;// You might want to handle this differently
+      return null; // You might want to handle this differently
     }
   }
-
-
-
-
-
-
-
 }

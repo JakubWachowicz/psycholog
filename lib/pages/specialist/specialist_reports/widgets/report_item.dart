@@ -43,7 +43,7 @@ Widget ReportItem(Report report) {
                     //Text("Priority: " +  report.priority.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
                     SizedBox(height: 10.w,),
                     Text(
-                      duTimeLineFormat(
+                      fullDateFormat(
                         report.timestamp!.toDate(),
                       ),
                     ),

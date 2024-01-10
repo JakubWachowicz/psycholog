@@ -123,9 +123,8 @@ class SpecialistReportKanbanConroller extends GetxController {
   RxList<DraggableList> buildDraggableLists(List<Report> reportList) {
     // Create DraggableList items based on the status or any other criteria
     RxList<DraggableList> lists = [
-      DraggableList(header: 'Not assign', items: []),
-      DraggableList(header: 'Assign', items: []),
-      DraggableList(header: 'In progress', items: []),
+      DraggableList(header: 'ToDo', items: []),
+      DraggableList(header: 'InProgress', items: []),
       DraggableList(header: 'Done', items: []),
     ].obs;
 
@@ -134,20 +133,18 @@ class SpecialistReportKanbanConroller extends GetxController {
       print("Ja działam");
       // Add the report to the corresponding DraggableList based on its status
       switch (report.status) {
-        case 'not assigned':
+        case 'Status.ToDo':
           lists[0].items.add(report);
           print("Ja yeppp!1");
           print(report);
           break;
-        case 'assigned':
+        case 'Status.InProgress':
           lists[1].items.add(report);
           break;
-        case 'in progress':
+        case 'Status.Done':
           lists[2].items.add(report);
           break;
-        case 'done':
-          lists[3].items.add(report);
-          break;
+
       // Add more cases if you have additional status categories
       }
     }

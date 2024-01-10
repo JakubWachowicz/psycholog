@@ -48,19 +48,6 @@ class AuthenticationClontroller extends GetxController {
         var cred = await firebaseAuth.createUserWithEmailAndPassword(
             email: email, password: password);
 
-        /*
-
-        UserData user = UserData();
-
-        UserLoginResponseEntity userData = UserLoginResponseEntity();
-        userData.accessToken = cred.user!.uid;
-        userData.displayName = firstName;
-        userData.email = email;
-        userData.photoUrl = "test";
-        UserStore.to.saveProfile(userData);
-
-        */
-
         var userbase = await db
             .collection("users")
             .withConverter(
@@ -117,6 +104,8 @@ class AuthenticationClontroller extends GetxController {
     }
     return true;
   }
+
+
 
   Future<bool> loginUser(String email, String password) async {
     try {

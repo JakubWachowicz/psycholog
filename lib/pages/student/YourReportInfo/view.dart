@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jw_projekt/pages/student/YourReportInfo/widgets/commentList.dart';
 import 'package:jw_projekt/pages/student/your_reports/widgets/your_reports_list.dart';
+import 'package:jw_projekt/styles/specialist_styles.dart';
+
+import '../../../Widgets/menu_tile.dart';
+import '../../specialist/specialist_report_menagment/widgets/priority_dropdown.dart';
 import 'controller.dart';
+
 
 class YourReportInfoPage extends GetView<YourReportInfoConroller> {
   const YourReportInfoPage({Key? key}) : super(key: key);
@@ -37,10 +42,12 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
     }
 
 
+
     Widget _buildContent(RxString value){
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 8.0),
         child: Container(
+          width: 360.w,
           decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -49,7 +56,7 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                  const Text('Report: ',style: TextStyle(fontWeight: FontWeight.bold),),
+                  const Text('Report content: ',style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 5.w,),
                 Obx(
                       () => Text(
@@ -65,6 +72,32 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
       );
     }
 
+
+    Widget _buildGoChatButton() {
+      return InkWell(
+        onTap: () {
+          controller.goChat();
+        },
+        child: Container(
+          alignment: Alignment.center,
+          width: 360.w,
+          height: 360.h / 7,
+          margin: EdgeInsets.only(bottom: 10),
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color: Colors.green),
+          child: Text(
+            "Go to chat",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
+
     Widget _buildReportBody() {
       return Padding(
         padding: const EdgeInsets.all(8.0),
@@ -75,10 +108,12 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
             Row(
               children: [
                 Obx(
-                      () => Text(
-                        controller.state.title.value,
-                        style: TextStyle(fontSize: 22.sp,color: Colors.green,fontWeight: FontWeight.bold),
+                      () => Expanded(
+                        child: Text(
+                          controller.state.title.value,
+                          style: TextStyle(fontSize: 22.sp,color: Colors.green,fontWeight: FontWeight.bold),
                   ),
+                      ),
                 ),
                 SizedBox(width: 20.w,),
 
@@ -104,6 +139,8 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
             SizedBox(height: 10.w,),
             _buildContent( controller.state.content),
             SizedBox(height: 10.w,),
+            _buildGoChatButton()
+
 
 
 
@@ -112,106 +149,96 @@ class YourReportInfoPage extends GetView<YourReportInfoConroller> {
       );
     }
 
-    Widget _buildCommentSection() {
-      return Container(
-        height: 100,
-        child: Column(children: [
 
-          Expanded(
-            child: TextField(
-              controller: controller.commentContent,
-              decoration: InputDecoration(
-                hintText: 'Add a comment...',
-              ),
-            ),
-          ),
-          IconButton(
-              icon: Icon(Icons.send),
-              onPressed: () {
-                final comment = controller.commentContent.text.trim();
-                if (comment.isNotEmpty) {
-                  controller.handleSendComment(comment);
-                  controller.commentContent.clear();
-                }
-              })
-        ]),
-      );
-    }
+
 
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Container(
-        decoration: BoxDecoration(
-          color: CupertinoColors.lightBackgroundGray,
-        ),
+      body:  Container(
+        height: 360.w,
+        color: SpecialistStyles.backgroundColor,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: SingleChildScrollView(
+            child: Container(
 
-        child: SafeArea(
-          child: ConstrainedBox(
-            constraints: BoxConstraints.expand(),
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Container(
-                                  child: _buildReportBody(),
-                              alignment: Alignment.topLeft,),
+    child: Column(
+    mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Obx(
+                              () => Expanded(
+                            child: Text(
+                              controller.state.title.value,
 
-
-                            ],
-                          ),
-
-                        ),
-                      ),
-                      SizedBox(height: 50,)
-
-                    ],
-                  ),
-                ),
-                Positioned(
-                    bottom: 0.h,
-                    child: Container(
-                      color: Colors.white70,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 360.w-30.w,
-                            child: TextField(
-                              maxLines: null,
-                              keyboardType: TextInputType.multiline,
-                              controller: controller.commentContent,
-                              decoration: InputDecoration(
-                                hintText: 'Add a comment...',
-                              ),
+                              style: TextStyle(
+                                  fontSize: 22.sp,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
+                        ),
 
-                          InkWell(
-                            onTap: () {
-                              final comment =
-                              controller.commentContent.text.trim();
-                              if (comment.isNotEmpty) {
-                                controller.handleSendComment(comment);
-                                controller.commentContent.clear();
-                              }
-                            },
-                            child: Icon(Icons.send),
-                          )
+
+                      ],
+                    ),
+                    Obx(
+                          () => Row(
+                        children: [
+                          const Icon(Icons.info),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          Text(
+                            controller.state.reportType.value,
+                            style: TextStyle(
+                                fontSize: 16.sp,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
-                    ))
-              ],
-            ),
+                    ),
+                  ],
+                ),
+              ),
+              MenuTile(child: Row(children: [
+                Text("Date: "),
+                Obx(()=>Text(controller.state.timeStamp.toString())),
+              ],), icon:Icons.calendar_month ),
+
+              MenuTile(child: Row(children: [
+                Text("Status: "),
+                Obx(()=>Text(controller.state.status.toString())),
+              ],), icon:Icons.circle,iconColor: ValueColorMapper.statusToColorString(controller.state.status.toString(),),),
+
+              SizedBox(
+                height: 5.w,
+              ),
+              _buildContent(controller.state.content),
+              SizedBox(
+                height: 10.w,
+              ),
+              _buildGoChatButton()
+
+
+            ],
+    ),
+    ),
           ),
         ),
-      ),
+      )
     );
   }
 }

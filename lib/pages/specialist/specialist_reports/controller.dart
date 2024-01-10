@@ -67,6 +67,54 @@ class SpecialistReportsConroller extends GetxController {
     }
   }
 
+  void updateFilterList(){
+    state.reportFilteredList.clear();
+    state.reportFilteredList.assignAll(state.reportList.value);
+    //filterMessages(state.messages, searchController.text);
+
+  }
+  void filterReports(String date, String priority, String status, String caretaker) {
+    List<Report> filteredList = state.reportList;
+
+    if (priority != "") {
+      filteredList = filteredList.where((report) => report.priority!.contains(priority)).toList();
+    }
+
+    if (status != "") {
+      filteredList = filteredList.where((report) => report.status!.contains(status)).toList();
+    }
+
+    if (caretaker != "") {
+      filteredList = filteredList.where((report) => report.caretaker!.contains(caretaker)).toList();
+    }
+
+    if (date.isNotEmpty) {
+      if (date == "From latest") {
+        filteredList.sort((a, b) {
+          final aTime = a.timestamp;
+          final bTime = b.timestamp;
+          return bTime!.compareTo(aTime!);
+        });
+      } else if (date == "From oldest") {
+        filteredList.sort((a, b) {
+          final aTime = a.timestamp;
+          final bTime = b.timestamp;
+          return aTime!.compareTo(bTime!);
+        });
+      }
+    }else{
+      filteredList.sort((a, b) {
+        final aTime = a.timestamp;
+        final bTime = b.timestamp;
+        return bTime!.compareTo(aTime!);
+      });
+    }
+
+    state.reportFilteredList.assignAll(filteredList);
+  }
+
+
+
   @override
   void onReady() {
     // TODO: implement onReady
@@ -87,6 +135,7 @@ class SpecialistReportsConroller extends GetxController {
             case DocumentChangeType.added:
               if (change.doc.data() != null) {
                 state.reportList.insert((0), change.doc.data()!);
+                updateFilterList();
               }
               break;
             case DocumentChangeType.modified:
@@ -96,8 +145,10 @@ class SpecialistReportsConroller extends GetxController {
                 final index = state.reportList.indexWhere((report) => report.reportId == modifiedReport.reportId);
                 if (index != -1) {
                   state.reportList[index] = modifiedReport;
+                  updateFilterList();
                 }
               }
+              updateFilterList();
               break;
             case DocumentChangeType.removed:
               break;
@@ -106,5 +157,6 @@ class SpecialistReportsConroller extends GetxController {
       },
       onError: (error) => print("listen failed: ${error}"),
     );
+    updateFilterList();
   }
 }

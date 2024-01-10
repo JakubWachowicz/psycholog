@@ -1,68 +1,69 @@
-import 'package:jw_projekt/common/routes/routes.dart';
-
-import '../entities/msg_content.dart';
-import  'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-class SendMessageController{
+import 'package:get/get.dart';
+import 'package:jw_projekt/common/routes/routes.dart';
+import 'package:jw_projekt/entities/msg_content.dart';
 
+import '../entities/messages.dart';
+import '../entities/report.dart';
+
+class SendMessageController {
   late String uid;
   late String to_uid;
-  final db = FirebaseFirestore.instance;
   late String doc_id;
   late bool isItStudent;
-  SendMessageController(String this.doc_id,this.uid,this.to_uid,this.isItStudent);
+  late DocumentReference messagesDocRef;
 
-
-  Future<void> updateIsRead() async {
-
-    if(Get.currentRoute.contains(AppRoutes.Chat)){
-
-      if(isItStudent){
-        await db.collection("messages").doc(doc_id).update({
-          "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,uid),
-          "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,to_uid),
-        });
-      }
-
-    }else {
-      if(Get.currentRoute.contains(AppRoutes.SpecialistChat)){
-        await db.collection("messages").doc(doc_id).update({
-          "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,to_uid),
-          "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,uid),
-        });
-      }
-      }}
+  SendMessageController(this.doc_id, this.uid, this.to_uid, this.isItStudent,
+      {required this.messagesDocRef});
 
 
 
-  readAllMessages(int unreadMessages) async {
-
-
-    QuerySnapshot unreadMessagesQuery = await db
-        .collection("messages")
-        .doc(doc_id)
-        .collection("msglist").where('sender',isNotEqualTo: uid).where('isRead',isEqualTo: "False")
-        .get();
-    print(unreadMessagesQuery);
-
-    print("Jestem tutaj");
-    int i = 68;
-    for (QueryDocumentSnapshot messageSnapshot in unreadMessagesQuery.docs) {
-      // Update the 'isRead' field to true
-      print(i);
-      await db.collection("messages")
-        .doc(doc_id)
-        .collection("msglist").doc(messageSnapshot.id).update({
-        'isRead': "True",
-      });
-
-  }}
+  Stream<DocumentSnapshot<Msg>>  getChatInformation(){
+    return messagesDocRef.withConverter(
+    fromFirestore: Msg.fromFirestore,
+    toFirestore: (Msg msg, options) => msg.toFirestore()).snapshots();
+  }
 
 
 
-  sendMessage(String message,String senderName) async {
 
-    if( message.trim() == "") return;
+ read() async {
+   if(isItStudent){
+
+     if(Get.currentRoute.contains(AppRoutes.Chat) || Get.currentRoute.contains(AppRoutes.SpecialistReportChat)){
+       await messagesDocRef.update({
+
+         "unreadMessagesCountStudent": 0,
+
+       });
+     }
+
+   }
+   else{
+
+     if(Get.currentRoute.contains(AppRoutes.SpecialistChat) || Get.currentRoute.contains(AppRoutes.SpecialistReportChat)){
+       await messagesDocRef.update({
+
+         "unreadMessagesCountSpecialist":  0,
+
+       });
+     }
+
+   }
+ }
+  getMessageList() async {
+
+    return await messagesDocRef
+        .collection("msglist")
+        .withConverter(
+      fromFirestore: Msgcontent.fromFirestore,
+      toFirestore: (Msgcontent msgcontent, options) =>
+          msgcontent.toFirestore(),
+    ).orderBy("addtime", descending: false);
+  }
+
+  sendMessage(String message, String senderName) async {
+    if (message.trim() == "") return;
     String sendContent = message.trim();
     final content = Msgcontent(
       sender: senderName,
@@ -72,55 +73,63 @@ class SendMessageController{
       uid: uid,
       isRead: "False",
     );
-    await db
-        .collection("messages")
-        .doc(doc_id)
+
+    await messagesDocRef
         .collection("msglist")
         .withConverter(
-        fromFirestore: Msgcontent.fromFirestore,
-        toFirestore: (Msgcontent msgcontent, options) =>
-            msgcontent.toFirestore())
+      fromFirestore: Msgcontent.fromFirestore,
+      toFirestore: (Msgcontent msgcontent, options) =>
+          msgcontent.toFirestore(),
+    )
         .add(content)
         .then((DocumentReference doc) {
       print("Document snapshot added with id ${doc.id}");
-      //TODO:Przetestować czy działa
-      //Get.focusScope?.unfocus();
-    });
-    await db.collection("messages").doc(doc_id).update({
-      "last_msg": sendContent,
-      "last_time": Timestamp.now(),
-      "unreadMessagesCountStudent":0,
-      "unreadMessagesCountSpecialist":0,
     });
 
+
     if(isItStudent){
-      await db.collection("messages").doc(doc_id).update({
-        "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,uid),
-        "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,to_uid),
+      await messagesDocRef.update({
+        "last_msg": sendContent,
+        "last_time": Timestamp.now(),
+        "unreadMessagesCountStudent": 0,
+        "unreadMessagesCountSpecialist":  FieldValue.increment(1),
       });
-    }else{
-      await db.collection("messages").doc(doc_id).update({
-        "unreadMessagesCountStudent":await getUnreadMessageCount(doc_id,to_uid),
-        "unreadMessagesCountSpecialist":await getUnreadMessageCount(doc_id,uid),
+    }
+    else{
+      await messagesDocRef.update({
+        "last_msg": sendContent,
+        "last_time": Timestamp.now(),
+        "unreadMessagesCountStudent": FieldValue.increment(1),
+        "unreadMessagesCountSpecialist":  0,
       });
     }
 
+
+
   }
 
-  Future<int> getUnreadMessageCount(String docId,String uid) async {
-    var from_messages = await db
-        .collection("messages")
-        .doc(docId)
+  Future<int> getUnreadMessageCount(String uid) async {
+    var from_messages = await messagesDocRef
         .collection("msglist")
         .withConverter(
-        fromFirestore: Msgcontent.fromFirestore,
-        toFirestore: (Msgcontent msg, options) => msg.toFirestore())
+      fromFirestore: Msgcontent.fromFirestore,
+      toFirestore: (Msgcontent msg, options) => msg.toFirestore(),
+    )
         .where("uid", isNotEqualTo: uid)
         .where("isRead", isEqualTo: "False")
         .get();
-    print('Liczba');
-    print(from_messages.docs.length);
     return from_messages.docs.length;
   }
 
+  Future<void> setMessageCountSpecialist() async {
+    await messagesDocRef.update({
+      'unreadMessagesCountSpecialist': 0,
+    });
+  }
+
+  Future<void> setMessageCountStudent() async {
+    await messagesDocRef.update({
+      'unreadMessagesCountStudent': 0,
+    });
+  }
 }
